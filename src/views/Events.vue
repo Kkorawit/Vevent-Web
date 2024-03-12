@@ -2,37 +2,40 @@
 import Sidebar from "../components/Sidebar.vue";
 // import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import gql from "graphql-tag";
-import { computed } from "vue";
+import { onBeforeMount } from "vue";
 // import { useQuery } from "@apollo/client";
-import { ref,onMounted } from "vue";
-import { useQuery } from "@vue/apollo-composable";
+import { ref } from "vue";
 // import { compact } from "@apollo/client/utilities";
-
-
+import { useApolloClient } from "@vue/apollo-composable";
 // const uEmail = "Organization.032301@gmail.com";
 const GET_EVENTS = gql`
   query FindAllEventCreatedByUEmail {
     findAllEventCreatedByUEmail(uEmail: "Organization.032301@gmail.com") {
-        id
-        title
+      id
+      title
     }
-}
-`
-// const result = ref()
+  }
+`;
+const { resolveClient } = useApolloClient();
+const client = resolveClient();
+const result = ref();
+onBeforeMount(async () => {
+  const { data, error } = await client.query({
+    query: GET_EVENTS,
+  });
+  if (error) {
+    console.error("GraphQL error:", error);
+  }
+  result.value = data;
+});
 
-
-const { data } = useQuery(GET_EVENTS)
-console.log(data);
-const result = computed(()=> data.find)
+// const { data } = useQuery(GET_EVENTS);
+// const result = computed(() => data.findAllEventCreatedByUEmail);
+// console.log("result => " + result.value);
 
 // result.value = computed(()=>{
 //   data.value.data.title ?? []
 // })
-
-
-
-  
-
 
 // watchEffect(()=> {
 //   console.log(data?.value);
@@ -43,10 +46,9 @@ const result = computed(()=> data.find)
 //   console.error('GraphQL error:', error.value);
 // }
 
-
 // console.log(result);
 // onBeforeMount(()=>{
-  
+
 // const { data,error } = useQuery(GET_EVENTS)
 // if (error.value) {
 //   console.error('GraphQL error:', error.value);
@@ -77,8 +79,6 @@ const result = computed(()=> data.find)
 //   }
 // }
 
-
-
 // const { data, loading, error } = useQuery(query);
 // const events = UseResultReturn(result, [], result.findAllEventCreatedByUEmail);
 // const events = computed(() => result.value?. all)
@@ -95,7 +95,6 @@ const result = computed(()=> data.find)
 //   })
 
 //   return useQuery(GET_EVENTS);
-
 
 // }
 

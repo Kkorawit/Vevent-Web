@@ -1,37 +1,23 @@
-import { createApp, h, provide } from 'vue'
+import { createApp } from 'vue';
+import { createHttpLink, ApolloClient, InMemoryCache } from '@apollo/client/core';
+import { DefaultApolloClient, provideApolloClient } from '@vue/apollo-composable';
+import App from '@/App.vue';
+import router from '@/plugins/router';
 import '@/style.css'
-import router from '@/plugins/router'
-import App from '@/App.vue'
-import { createHttpLink, ApolloClient, InMemoryCache } from '@apollo/client/core'
-import { DefaultApolloClient } from '@vue/apollo-composable'
-// import { DefaultApolloClient } from '@vue/apollo-composable'
 
-//HTTP connect API
 const httpLink = createHttpLink({
-    uri: 'https://capstone23.sit.kmutt.ac.th/kw1/dev/graphql',
-})
+    uri: 'http://localhost:8080/local/graphql',
+});
 
-
-//Cretae the apollo client
 const apolloClient = new ApolloClient({
     link: httpLink,
     cache: new InMemoryCache(),
-})
+});
 
-// const app = createApp({});
-// createApp(App).use(router).mount('#app')
+const app = createApp(App);
+app.use(router);
+app.provide(DefaultApolloClient, apolloClient);
+app.mount('#app');
 
-const app = createApp({
-    setup() {
-        // provide(DefaultApolloClient, apolloClient)
-        provide(DefaultApolloClient, apolloClient);
-    },
 
-    render: () => h(app),
-})
-
-// app.mount('#app')
-
-createApp(App).use(router).provide('apolloClient', apolloClient).mount('#app');
-// app.use(router).provide('apolloClient', apolloClient).mount('#app');
 

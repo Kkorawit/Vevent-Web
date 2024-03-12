@@ -1,18 +1,14 @@
 <script>
-
+import { RouterView } from 'vue-router';
+import Sidebar from './components/Sidebar.vue'
 </script>
 
 <template>
   <div>
-    <router-view/>
-    <ul>
-      <li>
-        <router-link :to="{name:'home'}">Home</router-link>
-        <router-link :to="{name:'a'}">A Page</router-link>
-      </li>
-    </ul>
+    <router-view></router-view>
   </div>
 </template>
 
-<style scoped>
+<style>
+
 </style>

@@ -1,8 +1,9 @@
 import { createRouter,createWebHistory } from "vue-router";
 
 const routes = [
-    {path:'/',name:'home',component:()=>import('@/views/Home.vue')},
-    {path:'/A',name:'a',component:()=>import('@/views/A.vue')}
+    {path:'/',name:'dashboard',component:()=>import('@/views/Dashboard.vue')},
+    {path:'/events',name:'events',component:()=>import('@/views/Events.vue')},
+    {path:'/participants',name:'participants',component:()=>import('@/views/Participants.vue')},
 ]
 
 

@@ -1,4 +1,4 @@
-<script>
+<script setup>
 import gql from 'graphql-tag'
 
 const uEmail = "Organization.032301@gmail.com";

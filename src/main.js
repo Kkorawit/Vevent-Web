@@ -6,7 +6,7 @@ import router from '@/plugins/router';
 import '@/style.css'
 
 const httpLink = createHttpLink({
-    uri: 'http://localhost:8080/local/graphql',
+    uri: 'https://capstone23.sit.kmutt.ac.th/kw1/dev/graphql',
 });
 
 const apolloClient = new ApolloClient({

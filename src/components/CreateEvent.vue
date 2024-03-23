@@ -1,38 +1,42 @@
 <script setup>
 import DateTimeFormat from "../components/DateTimeFormat.vue";
-import EditEvent from "./EditEvent.vue";
+// import EditEvent from "./EditEvent.vue";
 import { ref } from "vue";
 
-const emits = defineEmits(["isShow", "close"]);
-const props = defineProps({
-  info: {
-    type: Object,
-    request: true,
-  },
-  state: {
-    type: String,
-    request: true,
-  },
-});
+const newTitle = ref('');
+const newDescription = ref('');
+const newCategory = ref('');
+const newAmountReceived = ref('');
+const newRegisterStartDate = ref();
+const newRegisterEndtDate = ref();
+const newStartDate = ref();
+const newEndtDate = ref();
+const newPoster = ref('');
+const newValidationType = ref('');
 
-console.log(props.info);
-console.log(props.state);
+// class insertEvent {
+//   constructor()
+// }
 
-const state = ref(props.state);
-const changeState = (s) => {
-  if (s == "editEvent") {
-    state.value = s;
-    console.log(state.value)
-  } else if (s == "eventList") {
-    state.value = s;
-  }
-};
+
+
+
+
+// const state = ref(props.state);
+// const changeState = (s) => {
+//   if (s == "editEvent") {
+//     state.value = s;
+//     console.log(state.value)
+//   } else if (s == "eventList") {
+//     state.value = s;
+//   }
+// };
 </script>
 <template>
-  <div v-if="state == 'eventDetail'">
+  <div>
     <div class="header">
-      <div>Events > Event Detail</div>
-      <h2>{{props.info.title}}</h2>
+      <div>Events > Create Event</div>
+      <h2>สร้างโพสกิจกรรม</h2>
       <hr />
     </div>
     <br />
@@ -53,7 +57,7 @@ const changeState = (s) => {
       <div class="main">
         <div class="detail-section">
           <label for="title">หัวข้อกิจกรรม</label>
-          <input type="text" id="title" disabled v-model="props.info.title" />
+          <input type="text" id="title"  v-model="newTitle" />
         </div>
         <div class="detail-section">
           <label for="description">รายละเอียดกิจกรรม</label>
@@ -115,15 +119,6 @@ const changeState = (s) => {
             id="category"
             disabled
             v-model="props.info.category"
-          />
-        </div>
-        <div class="detail-section">
-          <label for="subCategory">หมวดหมู่ย่อย</label>
-          <input
-            type="text"
-            id="subCategory"
-            disabled
-            v-model="props.info.subCategory"
           />
         </div>
         <div class="detail-section">
@@ -252,7 +247,6 @@ textarea {
   text-align: start;
   width: 100%;
   margin-bottom: 24px;
-  pointer-events: none;
   /* background-color: blueviolet; */
 }
 

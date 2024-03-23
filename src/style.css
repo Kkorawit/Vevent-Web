@@ -37,14 +37,21 @@ h1 {
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  /* border: 1px solid transparent; */
+  /* padding: 0.6em 1.2em; */
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  /* font-family: inherit; */
+  /* background-color: #1a1a1a; */
   cursor: pointer;
-  transition: border-color 0.25s;
+  /* transition: border-color 0.25s; */
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center; /* Aligns child elements vertically */
+  justify-content: center; /* Aligns child elements horizontally */
+  padding: 0; /* Remove default padding if needed */
+  border: none; /* Remove default border if needed */
 }
 button:hover {
   border-color: #646cff;
@@ -68,7 +75,7 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: #FCFAF9;
   }
   a:hover {
     color: #747bff;

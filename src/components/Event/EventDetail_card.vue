@@ -1,6 +1,6 @@
 <script setup>
-import DateTimeFormat from "../components/DateTimeFormat.vue";
-import EditEvent from "./EditEvent.vue";
+import DateTimeFormat from "@/components/DateTimeFormat.vue";
+import EditEvent from "@/components/Event/EditEvent.vue";
 import { ref } from "vue";
 
 const emits = defineEmits(["isShow", "close"]);

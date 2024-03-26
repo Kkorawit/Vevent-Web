@@ -5,8 +5,8 @@ import { onBeforeMount, onMounted } from "vue";
 import { ref } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 // import router from "../plugins/router";
-import EventDetailCard from "../components/EventDetail_card.vue";
-import CreateEvent from "../components/CreateEvent.vue";
+import EventDetailCard from "@/components/Event/EventDetail_card.vue";
+import CreateEvent from "@/components/Event/CreateEvent.vue";
 import getAllEvent from "../repositories/EventRepo";
 
 // const uEmail = "Organization.032301@gmail.com";

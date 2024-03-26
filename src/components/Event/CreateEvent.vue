@@ -1,6 +1,6 @@
 <script setup>
 import { from, gql, useApolloClient } from "@apollo/client";
-import DateTimeFormat from "../components/DateTimeFormat.vue";
+import DateTimeFormat from "@/components/DateTimeFormat.vue";
 import { ref } from "vue";
 // import { load } from '@google/maps';
 

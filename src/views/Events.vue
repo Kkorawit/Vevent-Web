@@ -1,13 +1,12 @@
 <script setup>
 import Sidebar from "../components/Sidebar.vue";
 import gql from "graphql-tag";
-import { onBeforeMount } from "vue";
+import { onBeforeMount, onMounted } from "vue";
 import { ref } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 // import router from "../plugins/router";
 import EventDetailCard from "../components/EventDetail_card.vue";
 import CreateEvent from "../components/CreateEvent.vue";
-
 
 // const uEmail = "Organization.032301@gmail.com";
 const GET_EVENTS = gql`
@@ -39,9 +38,15 @@ const getAllEvent = async () => {
   console.log(result.value);
 };
 
-onBeforeMount(async () => {
-  await getAllEvent();
-});
+// onBeforeMount(async () => {
+//   await getAllEvent();
+// });
+onMounted(async () => {
+  await getAllEvent()
+
+}) 
+
+
 
 //get event detail by id
 const getEventById = async (id) => {
@@ -50,7 +55,7 @@ const getEventById = async (id) => {
   const { data, error } = await client.query({
     query: gql`
       query FindAllRegisEventsByUEmail {
-        findEventDetailsByEventId(id: "1") {
+        findEventDetailsByEventId(id: ${id}) {
           id
           title
           eventDescription
@@ -85,15 +90,12 @@ const getEventById = async (id) => {
   console.log(result.value);
 };
 
-
 // func delete event
 const deleteEvent = async (id) => {
   result.value = ref();
   console.log(id);
   const { data, error } = await client.query({
-    query: gql`
-      
-    `,
+    query: gql``,
   });
   if (error) {
     console.error("GraphQL error:", error);
@@ -102,8 +104,6 @@ const deleteEvent = async (id) => {
   console.log(result.value);
 };
 
-
-
 const emits = defineEmits(["reload"]);
 
 const state = ref("eventList");
@@ -111,7 +111,7 @@ const changeState = async (id, s) => {
   console.log("change state");
   console.log(id);
   console.log(s);
-  state.value = ''
+  state.value = "";
   if (s == "eventDetail") {
     await getEventById(id);
     state.value = s;
@@ -119,11 +119,9 @@ const changeState = async (id, s) => {
     state.value == s;
   } else if (s == "createEvent") {
     state.value == s;
-  } else if(s == "deleteEvent") {
+  } else if (s == "deleteEvent") {
     state.value == s;
-    
-
-  }else {
+  } else {
     state.value == "eventList";
     await getAllEvent();
   }
@@ -167,10 +165,17 @@ function checkRole(role) {
             <h2>All My Events</h2>
           </div>
           <div class="create-button">
-            <button @click="changeState(null,'createEvent')"> <img src="../assets/Plus.png" alt="plus" style="width: 24px; height: 24px;">  Create New Event</button>
+            <button @click="changeState(null, 'createEvent')">
+              <img
+                src="../assets/Plus.png"
+                alt="plus"
+                style="width: 24px; height: 24px"
+              />
+              Create New Event
+            </button>
           </div>
         </div>
-          <hr />
+        <hr />
       </div>
       <br />
       <div>
@@ -197,11 +202,11 @@ function checkRole(role) {
                 <td>{{ event.eventStatus }}</td>
                 <td>
                   <div>
-                    <button @click="changeState(event.id ,'deleteEvent' )">
+                    <button @click="changeState(event.id, 'deleteEvent')">
                       <img
                         src="../assets/Recycle Bin red.png"
                         alt="bin"
-                        style="width: 24px; height: 24px; opacity: 60%;" 
+                        style="width: 24px; height: 24px; opacity: 60%"
                       />
                     </button>
                   </div>
@@ -212,13 +217,18 @@ function checkRole(role) {
         </table>
       </div>
     </div>
+    <!-- Event detail page -->
     <div v-if="state != '' && state == 'eventDetail'">
       <div v-for="data in result">
         <EventDetailCard :info="data" :state="state" />
       </div>
     </div>
-    <div v-if="state !='' && state == 'createEvent'">
-      <CreateEvent/>
+    <!-- Create evnet page -->
+    <div>
+    <!-- <div v-if="state != '' && state == 'createEvent'"> -->
+      <div v-for="data in result">
+        <CreateEvent :info="data"></CreateEvent>
+      </div>
     </div>
   </div>
   <div v-if="role == 'participant'">
@@ -245,21 +255,17 @@ button {
   align-items: center;
   cursor: pointer;
   outline: none;
-
 }
-
 
 .create-button button {
   background-color: #4520cc;
   color: white;
-  
 }
 
 .title {
   display: grid;
   grid-template-columns: auto auto;
   justify-content: space-between;
-
 }
 
 .header {

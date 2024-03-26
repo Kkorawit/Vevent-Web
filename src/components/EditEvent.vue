@@ -3,8 +3,6 @@ import DateTimeFormat from "../components/DateTimeFormat.vue";
 import { ref } from "vue";
 // import { load } from '@google/maps';
 
-
-
 const props = defineProps({
   info: {
     type: Object,
@@ -27,7 +25,7 @@ const checklengthTitle = ref(false);
 const checklengthDescription = ref(false);
 const checklengthCategory = ref(false);
 const checkAmountReceived = ref(false);
-const checkSubCategory  = ref(false);
+const checkSubCategory = ref(false);
 
 // ยังทำไม่ได้
 const checkRegisStartDate = ref(true);
@@ -37,9 +35,7 @@ const checkEndDate = ref(true);
 const checkMep = ref(true);
 
 class UpdateEvent {
-  constructor(id, title , eventDescription, amountReceived, category,){
-
-  }
+  constructor(id, title, eventDescription, amountReceived, category) {}
 }
 
 // show messager in forrm
@@ -47,7 +43,7 @@ const mesAlertTitle = ref("");
 const mesAlertDescription = ref("");
 const mesAlertCategory = ref("");
 const mesAlertAmountRe = ref("");
-const mesAlertSubCategory  = ref("");
+const mesAlertSubCategory = ref("");
 
 const countWord = (type, input) => {
   console.log(input);
@@ -101,10 +97,10 @@ const countWord = (type, input) => {
       checkAmountReceived.value = true;
       mesAlertAmountRe.value = "";
     }
-  }else if (type == "subCategory") {
+  } else if (type == "subCategory") {
     checkSubCategory.value = false;
     mesAlertSubCategory.value = "";
-    console.log(input.length)
+    console.log(input.length);
     if (input.trim().length == 0) {
       checkSubCategory.value = false;
       mesAlertSubCategory.value = "กรุณาใส่ข้อมูลให้ครบถ้วน";
@@ -116,11 +112,93 @@ const countWord = (type, input) => {
 };
 
 const posterStatus = ref("");
+
+const images = ref([]);
 const isDraging = ref(false);
 
-const removePoster = () => {
+const selectFile = () => {
+  const fileInput = document.getElementById("fileInput");
+  if (fileInput) {
+    fileInput.click();
+  } else {
+    // Handle the case where the element is not found
+    console.error("File input element not found!");
+  }
+};
+
+const onFileSelect = (event) => {
+  const files = event.target.files;
+  if (files.length != 0) {
+    console.log("file != 0");
+    for (let i = 0; i < files.length; i++) {
+      console.log("loop file");
+      const file = files[i];
+      const isImage = files[i].type.split("/")[0];
+      if (isImage == "image") {
+        //check type
+        console.log("check type");
+        if (images.value.some((e) => e.name === file.name)) {
+          // Skip adding duplicate files
+          console.warn("A file with the same name already exists:", file.name);
+        } else {
+          const imageUrl = URL.createObjectURL(file);
+          images.value.push({ name: file.name, url: imageUrl });
+          newPoster.value = imageUrl;
+          console.log(newPoster.value);
+          posterStatus.value = "addImg";
+        }
+      } else if (isImage != "image") {
+        console.error("Only image files are allowed!");
+      }
+      console.log(images.value);
+    }
+  }
+};
+
+const deleteImage = () => {
+  newPoster.value = "";
   posterStatus.value = "delete";
 };
+
+const onDragover = (event) => {
+  event.preventDefault();
+  isDraging.value = true;
+  event.dataTransfer.dropEffect = "copy"
+}
+
+const onDragleave = (event) => {
+  event.preventDefault();
+  isDraging.value = false;
+}
+
+const onDrop = (event) => {
+  event.preventDefault();
+  isDraging.value = false;
+  const files = event.dataTransfer.files;
+  for (let i = 0; i < files.length; i++) {
+      console.log("loop file");
+      const file = files[i];
+      const isImage = files[i].type.split("/")[0];
+      if (isImage == "image") {
+        //check type
+        console.log("check type");
+        if (images.value.some((e) => e.name === file.name)) {
+          // Skip adding duplicate files
+          console.warn("A file with the same name already exists:", file.name);
+        } else {
+          const imageUrl = URL.createObjectURL(file);
+          images.value.push({ name: file.name, url: imageUrl });
+          newPoster.value = imageUrl;
+          console.log(newPoster.value);
+          posterStatus.value = "addImg";
+        }
+      } else if (isImage != "image") {
+        console.error("Only image files are allowed!");
+      }
+      console.log(images.value);
+    }
+
+}
 
 // const selectFile = () => {
 //   // this.$refs.fileInput.click();
@@ -129,21 +207,21 @@ const removePoster = () => {
 // const fileChooser = document.getElementById('file-chooser');
 // const fileInput = document.getElementById('file-input');
 
-function selectFile() {
-  const fileInput = document.getElementById("file-input");
-  if (fileInput) {
-    fileInput.click();
-    newPoster.value = file.target.file[0];
-  } else {
-    console.error('File input element with ID "file-input" not found.');
-  }
-}
+// function selectFile() {
+//   const fileInput = document.getElementById("file-input");
+//   if (fileInput) {
+//     fileInput.click();
+//     newPoster.value = file.target.file[0];
+//   } else {
+//     console.error('File input element with ID "file-input" not found.');
+//   }
+// }
 
-const inputFile = (file) => {
-  file.click();
-  console.log(file);
-  newPoster.value = file.target.file[0];
-};
+// const inputFile = (file) => {
+//   file.click();
+//   console.log(file);
+//   newPoster.value = file.target.file[0];
+// };
 
 // get Location
 // function getLocationOnClick() {
@@ -187,21 +265,21 @@ const newLongitude = ref(0);
 
 const createMap = async () => {
   await load();
-      map.value = new google.maps.Map(document.getElementById('map-container'), {
-        zoom: 15,
-        center: mapCenter.value,
-        mapTypeId: google.maps.mapTypeId.ROADMAP,
-      });
-    };
+  map.value = new google.maps.Map(document.getElementById("map-container"), {
+    zoom: 15,
+    center: mapCenter.value,
+    mapTypeId: google.maps.mapTypeId.ROADMAP,
+  });
+};
 
-    const updateMapCenter = async  () => {
-      mapCenter.value = { lat: newLatitude.value, lng: newLongitude.value };
-      if (map.value) {
-        map.value.setCenter(mapCenter.value);
-      } else {
-        await createMap(); // Create the map if it doesn't exist yet
-      }
-    };
+const updateMapCenter = async () => {
+  mapCenter.value = { lat: newLatitude.value, lng: newLongitude.value };
+  if (map.value) {
+    map.value.setCenter(mapCenter.value);
+  } else {
+    await createMap(); // Create the map if it doesn't exist yet
+  }
+};
 
 // Function to show user location on the map
 // const showUserLocationOnTheMap =  async (latitude, longitude) => {
@@ -351,41 +429,33 @@ const createMap = async () => {
         </div>
         <div class="detail-section">
           <label for="description">รูปภาพกิจกรรม <span>*</span></label>
-          <img
-            v-if="posterStatus == ''"
-            :src="props.info.posterImg"
-            alt="Event Location"
-            class="poster-img"
-          />
+          <div class="container-poster" v-if="newPoster != ''">
+            <div class="image" >
+              <span class="delete" @click="deleteImage" style="cursor: pointer"
+                >&times;</span
+              >
+              <img :src="newPoster" alt="choose image" />
+            </div>
+          </div>
           <div v-if="posterStatus == 'delete'" class="card">
-            <div class="drag-area">
+            <div class="drag-area" @dragover.prevent="onDragover" @dragleave.prevent="onDragleave" @drop.prevent="onDrop">
               <span v-if="isDraging != true">
                 Drag & drop image here or
-                <a href="#" id="file-chooser">
-                  <span class="select" role="button"> choose </span>
-                </a>
-                <!-- <input  type="file" id="file-input" class="file" style="display: none;"ref="fileInput" @change="onFileSelect()"> -->
-                <input
-                  type="file"
-                  id="file-input"
-                  class="file"
-                  v-on:input="inputFile"
-                  aria-hidden="true"
-                  v-show="false"
-                />
+                <span class="select" role="button" @click="selectFile"
+                  ><b><u>choose </u> </b></span
+                >
               </span>
-              <div v-if="isDraging == true" class="select">Drop image here</div>
+              <div v-else class="select">Drop image here</div>
+              <input
+                id="fileInput"
+                name="file"
+                type="file"
+                class="file"
+                ref="fileInput"
+                style="display: none"
+                @change="onFileSelect"
+              />
             </div>
-            <div class="container-poster">
-              <div class="image">
-                <span>&times;</span>
-              </div>
-            </div>
-            <button type="button">Upload</button>
-          </div>
-          <div v-if="posterStatus != 'delete'" class="button-posterImg">
-            <button @click="changePoster()">Upload new poster image</button>
-            <button @click="removePoster()">Delete</button>
           </div>
         </div>
       </div>
@@ -410,12 +480,15 @@ const createMap = async () => {
           />
         </div>
         <div class="detail-section">
-          <label for="subCategory">หมวดหมู่ย่อย<span
+          <label for="subCategory"
+            >หมวดหมู่ย่อย<span
               >*<span v-if="mesAlertSubCategory != ''">{{
                 mesAlertSubCategory
               }}</span></span
-            ></label>
-          <input @change="countWord('subCategory', newSubCategory)"
+            ></label
+          >
+          <input
+            @change="countWord('subCategory', newSubCategory)"
             type="text"
             id="subCategory"
             v-model="newSubCategory"
@@ -478,7 +551,7 @@ const createMap = async () => {
     </div>
   </div>
 </template>
-<style>
+<style scoped>
 .detail-section span {
   color: red;
 }
@@ -615,13 +688,14 @@ textarea {
   font-weight: 400;
   width: 100%;
   background-color: #4520cc;
+  place-content: center;
 }
 
 .drag-area {
-  height: 150px;
+  height: 210px;
   border-radius: 8px;
-  border: 2px dashed #4520cc;
-  color: #4520cc;
+  border: 2px dashed #d1d1d1;
+  color: #d1d1d1;
   /* justify-content: center;
   align-items: center; */
   display: grid;
@@ -642,13 +716,43 @@ textarea {
 
 .container-poster {
   width: 100%;
-  height: auto;
-  display: flex;
-  justify-content: flex-start;
+  height: 210px;
+  overflow: hidden;
+  /* display: flex;
+  justify-content: flex-start; */
   align-items: center;
   flex-wrap: wrap;
-  max-height: 200px;
+  /* max-height: 360px; */
   position: relative;
-  margin-bottom: 8px;
+  border-radius: 8px;
+  outline-color: #d1d1d1;
+  outline-style: dashed;
+  margin-top: 16px;
+}
+
+
+.image img {
+  /* margin-top: -8px; */
+  width: 100%;
+  height: auto;
+  /* max-height: 210px; */
+  display: flex;
+  justify-content: flex-start;
+  overflow: hidden;
+
+  
+
+}
+
+.image span {
+  position: absolute;
+  top: 2px;
+  right: 9px;
+  font-size: 20px;
+}
+
+.image span:hover {
+  transform: scale(1.2);
+  transition: transform 0.3s ease-in-out; 
 }
 </style>

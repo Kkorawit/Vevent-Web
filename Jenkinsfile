@@ -12,8 +12,8 @@ pipeline {
             }
             stage('Down Container') {
                 steps{
-                sh"docker stop magical_villani"
-                sh"docker rm magical_villani"
+                sh"docker stop web-vevent"
+                sh"docker rm web-vevent"
                 }
             }
             stage('Build Container') {

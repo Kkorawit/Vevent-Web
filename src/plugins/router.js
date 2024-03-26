@@ -10,7 +10,7 @@ const routes = [
 
 const router =createRouter({
     routes,
-    history:createWebHistory("/kw1"),
+    history:createWebHistory(),
 })
 
 export default router

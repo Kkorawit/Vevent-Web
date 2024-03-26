@@ -1,0 +1,11 @@
+version : "3.2"
+services :
+        web-vevent:
+                container_name : web-vevent
+                build : ./
+                image : web-vevent-image
+                networks:
+                    - capstone-dev-vevent
+                    - capstone-prod-vevent
+                    - capstone-qa-vevent
+                restart : always

@@ -6,12 +6,12 @@ import path from 'path'
 export default defineConfig({
   proxy:{
     '/api':{
-      target: 'http://dev-app-vevent:8080',
+      target: 'https://capstone23.sit.kmutt.ac.th/kw1',
       changeOrigin: true,
       secure: false
     },
     '/graphl':{
-      target: 'http://localhost:8080',
+      target: 'https://capstone23.sit.kmutt.ac.th/kw1',
       changeOrigin:true,
       secure:false
     }

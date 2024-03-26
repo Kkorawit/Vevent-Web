@@ -7,8 +7,10 @@ import { useApolloClient } from "@vue/apollo-composable";
 // import router from "../plugins/router";
 import EventDetailCard from "../components/EventDetail_card.vue";
 import CreateEvent from "../components/CreateEvent.vue";
+import getAllEvent from "../repositories/EventRepo";
 
 // const uEmail = "Organization.032301@gmail.com";
+
 const GET_EVENTS = gql`
   query FindAllEventCreatedByUEmail {
     findAllEventCreatedByUEmail(uEmail: "Organization.032301@gmail.com") {
@@ -25,25 +27,25 @@ const client = resolveClient();
 const result = ref();
 
 // get all event
-const getAllEvent = async () => {
-  result.value = ref();
-  const { data, error } = await client.query({
-    query: GET_EVENTS,
-  });
-  if (error) {
-    console.error("GraphQL error:", error);
-  }
-  result.value = data;
-  state.value = "eventList";
-  console.log(result.value);
-};
+// const getAllEvent = async () => {
+//   result.value = ref();
+//   const { data, error } = await client.query({
+//     query: GET_EVENTS,
+//   });
+//   if (error) {
+//     console.error("GraphQL error:", error);
+//   }
+//   result.value = data;
+//   state.value = "eventList";
+//   console.log(result.value);
+// };
 
 // onBeforeMount(async () => {
 //   await getAllEvent();
 // });
 onMounted(async () => {
-  await getAllEvent()
-
+  result.value = await getAllEvent()
+  state.value='eventList'
 }) 
 
 

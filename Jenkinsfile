@@ -4,9 +4,9 @@ pipeline {
             stage('Clean') {
                 steps {
                     script {
-                        sh"docker system prune -a"
-                        sh"docker volume prune"
-                        sh"docker images prune"
+                        sh"docker system prune -af"
+                        sh"docker volume prune -f"
+                        sh"docker images prune -f"
                     }
                 }
             }
@@ -19,6 +19,11 @@ pipeline {
             stage('Build Container') {
                 steps{
                 sh"docker build --build-arg ENV_FILE=.env.development -t web-vevent-image ."
+                }
+            }
+            stage('Run Container') {
+                steps{
+                    sh"docker run -d -p 3000:3000 web-vevent-image"
                 }
             }
         }

@@ -12,8 +12,8 @@ pipeline {
             }
             stage('Down Container') {
                 steps{
-                sh"docker stop web-vevent"
-                sh"docker rm web-vevent"
+                sh"docker stop magical_villani"
+                sh"docker rm magical_villani"
                 }
             }
             stage('Build Container') {
@@ -23,7 +23,7 @@ pipeline {
             }
             stage('Run Container') {
                 steps{
-                    sh"docker run -d -p 3000:3000 web-vevent-image"
+                    sh"docker run -d -p 3000:3000 --name web-vevent web-vevent-image"
                 }
             }
         }

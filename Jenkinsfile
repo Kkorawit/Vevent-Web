@@ -6,7 +6,7 @@ pipeline {
                     script {
                         sh"docker system prune -af"
                         sh"docker volume prune -f"
-                        sh"docker images prune -f"
+                        sh"docker image prune -f"
                     }
                 }
             }

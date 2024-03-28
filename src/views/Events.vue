@@ -11,16 +11,16 @@ import getAllEvent from "../repositories/EventRepo";
 
 // const uEmail = "Organization.032301@gmail.com";
 
-const GET_EVENTS = gql`
-  query FindAllEventCreatedByUEmail {
-    findAllEventCreatedByUEmail(uEmail: "Organization.032301@gmail.com") {
-      id
-      title
-      startDate
-      eventStatus
-    }
-  }
-`;
+// const GET_EVENTS = gql`
+//   query FindAllEventCreatedByUEmail {
+//     findAllEventCreatedByUEmail(uEmail: "Organization.032301@gmail.com") {
+//       id
+//       title
+//       startDate
+//       eventStatus
+//     }
+//   }
+// `;
 
 const { resolveClient } = useApolloClient();
 const client = resolveClient();
@@ -159,7 +159,7 @@ function checkRole(role) {
     <div class="side-bar">
       <Sidebar></Sidebar>
     </div>
-    <div v-if="state != '' && state == 'eventList'">
+    <div class="content-table" v-if="state != '' && state == 'eventList'">
       <div class="header">
         <div class="title">
           <div>
@@ -238,7 +238,7 @@ function checkRole(role) {
   </div>
 </template>
 
-<style>
+<style scoped>
 .content {
   margin-top: 40px;
   margin-left: 0;
@@ -283,4 +283,5 @@ button {
 .event_list :hover {
   transform: scale(1.1);
 }
+
 </style>

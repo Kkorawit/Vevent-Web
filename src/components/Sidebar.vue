@@ -16,7 +16,7 @@ import { RouterView } from "vue-router";
   </div>
 </template>
 
-<style>
+<style scoped>
 .logo {
     margin-top: 40px;
     margin-bottom: 40px;

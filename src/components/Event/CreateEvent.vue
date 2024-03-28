@@ -505,7 +505,7 @@ const createMap = async () => {
     </div>
   </div>
 </template>
-<style>
+<style scoped>
 .detail-section span {
   color: red;
 }

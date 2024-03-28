@@ -27,59 +27,59 @@
     }
 }
 
-// export const storeToken = ()=>{
-//     const accessToken = ref(localStorage.getItem('access_token'))
-//     const userRole = ref('')
-//     const userEmail = ref('')
+export const storeToken = ()=>{
+    const accessToken = ref(localStorage.getItem('access_token'))
+    const userRole = ref('')
+    const userEmail = ref('')
 
-//     const getAccessToken = computed(()=>{
-//         return accessToken.value
-//     })
+    const getAccessToken = computed(()=>{
+        return accessToken.value
+    })
 
-//     const getUserRole = computed(()=>{
-//         return userRole.value
-//     })
+    const getUserRole = computed(()=>{
+        return userRole.value
+    })
 
-//     const getUserEmail = computed(()=>{
-//         return userEmail.value
-//     })
+    const getUserEmail = computed(()=>{
+        return userEmail.value
+    })
 
-//     const setAccessToken = (token) => {
-//         if(token === null) {
-//             accessToken.value = ''
-//             return;
-//         }
-//         accessToken.value = token
-//     }
+    const setAccessToken = (token) => {
+        if(token === null) {
+            accessToken.value = ''
+            return;
+        }
+        accessToken.value = token
+    }
 
-//     const setUserRole = (role) => {
-//         if(role === null){
-//             userRole.value = ''
-//             return
-//         }
-//         userRole.value = role
-//     }
+    const setUserRole = (role) => {
+        if(role === null){
+            userRole.value = ''
+            return
+        }
+        userRole.value = role
+    }
 
-//     const setUserEmail = (email) => {
-//         if(email === null){
-//             userEmail.value = ''
-//             return
-//         }
-//         userEmail.value = email
-//     }
+    const setUserEmail = (email) => {
+        if(email === null){
+            userEmail.value = ''
+            return
+        }
+        userEmail.value = email
+    }
 
 
-//     return {
-//         accessToken,
-//         userRole,
-//         userEmail,
-//         setAccessToken,
-//         setUserRole,
-//         setUserEmail,
-//         getAccessToken,
-//         getUserRole,
-//         getUserEmail,
-//       };
-// }
+    return {
+        accessToken,
+        userRole,
+        userEmail,
+        setAccessToken,
+        setUserRole,
+        setUserEmail,
+        getAccessToken,
+        getUserRole,
+        getUserEmail,
+      };
+}
 
 export {getRefreshToken}

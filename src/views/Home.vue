@@ -15,75 +15,40 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
-    class="grid grid-cols-10 gap-x-10 mx-10 grid-rows-12 grid-flow-col w-screen"
-  >
-    <!-- Header -->
-    <div class="header bg-red-200 flex flex-row items-center h-[100px] col-span-10 grid grid-cols-3">
-      <!-- left navbar -->
-      <div class="left-bar col-start-1">
-        <img
-          class="col-start-1 h-[37px] w-[148px]"
-          src="@/assets/LOGO-web.png"
-        />
-      </div>
-      <!-- center navbar -->
-      <div class="center-tab col-start-2 flex justify-center">
-        <ul class="flex gap-12 text-xl">
-          <li>home</li>
-          <li>about-us</li>
-        </ul>
-      </div>
-      <!-- right navbar -->
-      <div class="right-bar col-start-3 flex justify-end">
-        <button>SignIn</button>
-        <button>SignUp</button>
-      </div>
+  <div class="bar grid grid-cols-3 gap-x-10  bg-white h-[100px] drop-shadow-xl">
+    <!-- bar logo -->
+    <div class="logo grid cols-start-1 content-center ml-10">
+      <img src="@/assets/LOGO-web.png" class="w-[148px] h-[37px]" alt="logo" />
     </div>
-    <!-- Slider -->
-    <div
-      class="bg-purple-500 row-start-2 row-end-5 text-white h-[540px] relative"
-    >
-      <div class="grid grid-cols-12 grid-rows-12 grid-flow-col w-screen">
-        <div class="col-start-1 col-span-4 row-span-5 flex justify-center">
-          <div
-            class="grid justify-items-left flex items-center gap-2 absolute top-[80px]"
-          >
-            <div class="text-[48px]">Upcoming</div>
-            <div class="text-[48px]">Events</div>
-            <hr width="30px" />
-            <div>กิจกรรมที่กำลังจะเกิดขึ้น</div>
-            <div>และเราไม่อยากให้คุณพลาด</div>
-          </div>
-        </div>
-        <!-- <div class="col-start-1 col-span-6 row-span-6 p-12">
-          <div>TEXT2</div>
-        </div> -->
-        <div class="col-start-6 row-span-12 col-span-7">
-          <carousel
-            :items-to-show="2.5"
-            :wrap-around="true"
-            :touch-drag="true"
-            snap-align="start"
-            class="absolute top-[80px]"
-          >
-            <slide v-for="event in events" :key="event">
-              <img
-                class="w-[420px] h-[380px] rounded-[16px]"
-                :src="event.posterImg"
-              />
-            </slide>
-            <template #addons>
-              <Navigation />
-              <!-- <Pagination /> -->
-            </template>
-          </carousel>
-        </div>
-      </div>
+    <!-- bar menu -->
+    <div class="menu cols-start-2 flex justify-center ">
+      <div class="flex flex-row items-center">
+        <button
+        class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
+        >
+        Home
+      </button>
+      <button
+        class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 mr-10"
+        >
+        About us
+      </button>
     </div>
-    <!-- Content -->
-    <div class="bg-blue-200 row-span-8">body</div>
+    </div>
+    <!-- bar profile -->
+    <div class="profile-user col-start-3 flex justify-end mr-10"> 
+      <div class="flex flex-row items-center">
+        <button
+        class="box-content h-[43px] w-[240px] border border-1 border-solid  border-gray-200 rounded-[16px] bg-white focus:bg-purple-900"
+        >
+        Sign in with Google
+      </button>
+      </div>
+
+    </div>
   </div>
+  <div class="content-slid"></div>
+  <div class="event-list"></div>
 </template>
 
 <style scoped>

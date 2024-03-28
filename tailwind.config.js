@@ -4,7 +4,15 @@ module.exports = {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily:{
+        poppins: ["Poppins", "sans-serif"],
+        IBM: ["IBM Plex Sans","sans-serif"]
+      },
+      rounded:{
+        
+      }
+    },
   },
   plugins: [],
 }

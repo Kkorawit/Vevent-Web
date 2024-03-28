@@ -10,6 +10,7 @@ export default async function getAllEvent () {
       title
       startDate
       eventStatus
+      posterImg
     }
   }
 `;

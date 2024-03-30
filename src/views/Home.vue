@@ -5,6 +5,8 @@ import { googleLogout, GoogleLogin, decodeCredential } from "vue3-google-login";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css/bundle";
+import EventListOrganization from "@/components/Event/EventListOrganization.vue"
+
 
 //all events
 const allEvents = ref([]);
@@ -17,6 +19,10 @@ const selectedCategory = ref([]);
 //search event
 const eventTitle = ref('');
 const searchEvent = ref('');
+//user information
+const user = ref();
+const role = ref("organization");
+
 //event filterd
 const filterEvent = computed(() => {
   return allEvents.value.filter((event) => {
@@ -46,7 +52,7 @@ const filterEvent = computed(() => {
 //     });
 //   });
 // });
-const user = ref();
+
 
 onMounted(async () => {
   let response = await getAllEvent();
@@ -85,6 +91,7 @@ const onSlideChange = () => {
 const logOut = () => {
   googleLogout();
 };
+
 </script>
 
 <template>
@@ -178,7 +185,7 @@ const logOut = () => {
     </div>
   </div>
   <!-- Menu bar/ filter&search -->
-  <div class="event-list grid grid-cols-12 mx-10 gap-x-10 col-span-12">
+  < class="event-list grid grid-cols-12 mx-10 gap-x-10 col-span-12">
     <div class="col-span-12 grid grid-cols-12">
       <div
         class="col-start-1 col-end-3 pt-[58px] pl-[80px] flex justify-center text-main text-topic"
@@ -236,6 +243,98 @@ const logOut = () => {
       </div>
       {{filterEvent}}
     </div>
+  
+
+
+<template>
+  <!-- organization -->
+  <div v-if="role == 'organization'">
+    <div
+      class="bar grid grid-cols-3 gap-x-10 bg-white h-[100px] drop-shadow-xl"
+    >
+      <!-- bar logo -->
+      <div class="logo grid cols-start-1 content-center ml-10">
+        <img
+          src="@/assets/LOGO-web.png"
+          class="w-[148px] h-[37px]"
+          alt="logo"
+        />
+      </div>
+      <!-- bar menu -->
+      <div class="menu cols-start-2 flex justify-center">
+        <div class="flex flex-row items-center">
+          <button
+            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
+          >
+            Dashboard
+          </button>
+          <button
+            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 mr-10"
+          >
+            Event
+          </button>
+        </div>
+      </div>
+      <!-- bar profile -->
+      <div class="profile-user col-start-3 flex justify-end mr-10">
+        <div class="flex flex-row items-center">
+          <button
+            class="box-content h-[43px] w-[240px] border border-1 border-solid border-gray-200 rounded-[16px] bg-white focus:bg-purple-900"
+          >
+            Sign in with Google
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- content event list -->
+    <div v-if="events != '' " class="event-list">
+      <EventListOrganization :info="events"></EventListOrganization>
+    </div>
+  </div>
+
+
+  <!-- participant -->
+  <div v-if="role == 'participant'">
+    <div
+      class="bar grid grid-cols-3 gap-x-10 bg-white h-[100px] drop-shadow-xl"
+    >
+      <!-- bar logo -->
+      <div class="logo grid cols-start-1 content-center ml-10">
+        <img
+          src="@/assets/LOGO-web.png"
+          class="w-[148px] h-[37px]"
+          alt="logo"
+        />
+      </div>
+      <!-- bar menu -->
+      <div class="menu cols-start-2 flex justify-center">
+        <div class="flex flex-row items-center">
+          <button
+            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
+          >
+            Home
+          </button>
+          <button
+            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 mr-10"
+          >
+            About us
+          </button>
+        </div>
+      </div>
+      <!-- bar profile -->
+      <div class="profile-user col-start-3 flex justify-end mr-10">
+        <div class="flex flex-row items-center">
+          <button
+            class="box-content h-[43px] w-[240px] border border-1 border-solid border-gray-200 rounded-[16px] bg-white focus:bg-purple-900"
+          >
+            Sign in with Google
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="content-slid"></div>
+    <div class="event-list"></div>
   </div>
 </template>
 <!-- google information -->

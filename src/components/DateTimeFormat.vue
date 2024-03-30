@@ -1,44 +1,56 @@
 <script setup>
-import { onBeforeMount, ref } from 'vue';
-
+import { onBeforeMount, ref } from "vue";
+// import moment from 'moment';
+import moment from "moment-timezone";
 
 const prop = defineProps({
-    eventStartTime: {
-        type:String,
-        request:true
-    },
-    format: {
-        type:Number,
-        request:true
-    }
+  eventStartTime: {
+    type: String,
+    request: true,
+  },
+  format: {
+    type: Number,
+    request: true,
+  },
+});
 
-})
+console.log(prop.eventStartTime);
 
+const chooseFormat = prop.format;
+console.log(chooseFormat);
 
-console.log(prop.eventStartTime)
-
-
-const chooseFormat = prop.format
-console.log(chooseFormat)
-
-const dateTime = ref('');
-
+const format = ref(prop.format);
+const dateTime = ref("");
+const date = ref("");
+const time = ref("");
 
 const dateTImeFormat = () => {
-    const eventStartDateTime = new Date(prop.eventStartTime)
-    const date = eventStartDateTime.toLocaleDateString()
-    const time = eventStartDateTime.toLocaleTimeString()
-    console.log(eventStartDateTime)
-    console.log(date)
-    console.log(time)
+  const input = prop.eventStartTime;
+  date.value  = moment(input).format("ll");
+//   time.value = moment(input).format('LT');
+  time.value = moment(input).utcOffset(+'-7*60').format('LT');
 
-    if(date != null && time != null){
-        dateTime.value = date + ' ' + time
-        console.log(dateTime.value);
-    }else {
-        console.log('datetime is null');
-    }
-}
+  console.log(date.value);
+  console.log(time.value);
+  
+  if(date.value != null && time.value != null){
+      dateTime.value = date.value + ' ' + time.value
+      console.log(dateTime.value);
+  }else {
+      console.log('datetime is null');
+  }
+
+
+  
+
+  // const eventStartDateTime = new Date(prop.eventStartTime)
+
+  // const date = eventStartDateTime.toLocaleDateString()
+  // const time = eventStartDateTime.toLocaleTimeString()
+  // console.log(eventStartDateTime)
+  // console.log(date)
+  // console.log(time)
+};
 
 // const formatDateTime = (dateTimeString) => {
 //   // Parse the date-time string using Date object
@@ -58,7 +70,7 @@ const dateTImeFormat = () => {
 //   const buddhistYear = year + 543;
 
 //   // Format the date in the desired format
-   
+
 //    if(dateTimeString != null){
 //         dateTime.value = `${month}/${day}/${buddhistYear} ${hours}:${minutes}:${seconds}`;
 //         console.log(dateTime.value);
@@ -67,36 +79,31 @@ const dateTImeFormat = () => {
 //     }
 // }
 
-
-
-
-onBeforeMount( () => {
-    dateTImeFormat()
-    // formatDateTime(prop.eventStartTime);
-})
-
+onBeforeMount(() => {
+  dateTImeFormat();
+  // formatDateTime(prop.eventStartTime);
+});
 </script>
- 
+
 <template>
-    <div v-if="chooseFormat == 1">
-         <input
-            type="text"
-            id="registerStartDate"
-            disabled
-            v-model="dateTime"
-          />
-    </div>
-    <!-- just Date -->
-    <div v-if="chooseFormat == 2">
-        {{eventStartDateTime.toDateString().substring(3)}}
-    </div>
-    <!-- just Time -->
-    <div v-if="chooseFormat == 3">
-        {{eventStartDateTime.toLocaleTimeString()}}
-    </div>
+  <div v-if="chooseFormat == 1">
+    <input type="text" id="registerStartDate" disabled v-model="dateTime" />
+  </div>
+  <!-- just Date -->
+  <div v-if="chooseFormat == 2">
+    <!-- {{eventStartDateTime.toDateString().substring(3)}} -->
+    <!-- {{prop.eventStartTime.moment().format('ll')}} -->
+  </div>
+  <!-- just Time -->
+  <div v-if="chooseFormat == 3">
+    <!-- {{eventStartDateTime.toLocaleTimeString()}} -->
+    <!-- {{prop.eventStartTime.moment().format('LT')}} -->
+  </div>
 
+  <!-- date time -->
+  <div v-if="chooseFormat == 3">
+    {{ dateTime }}
+  </div>
 </template>
- 
-<style>
 
-</style>
+<style></style>

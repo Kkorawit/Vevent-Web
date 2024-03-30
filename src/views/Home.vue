@@ -1,15 +1,16 @@
 <script setup>
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
-import getAllEvent from "../repositories/EventRepo";
+import getAllEventCreatedByUEmail from "../repositories/EventRepo";
 import { onMounted, ref } from "vue";
 import EventListOrganization from "@/components/Event/EventListOrganization.vue"
 
 
 const events = ref([]);
+const emailUser = ref("Organization.032301@gmail.com");
 
 onMounted(async () => {
-  let allEvents = await getAllEvent();
+  let allEvents = await getAllEventCreatedByUEmail(emailUser.value);
   events.value = allEvents.findAllEventCreatedByUEmail;
   console.log(events.value.findAllEventCreatedByUEmail);
   console.log(events.value[0]);

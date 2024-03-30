@@ -3,6 +3,8 @@ import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
 import getAllEvent from "../repositories/EventRepo";
 import { onMounted, ref } from "vue";
+import EventListOrganization from "@/components/Event/EventListOrganization.vue"
+
 
 const events = ref([]);
 
@@ -12,43 +14,100 @@ onMounted(async () => {
   console.log(events.value.findAllEventCreatedByUEmail);
   console.log(events.value[0]);
 });
+
+const role = ref("organization");
 </script>
 
 <template>
-  <div class="bar grid grid-cols-3 gap-x-10  bg-white h-[100px] drop-shadow-xl">
-    <!-- bar logo -->
-    <div class="logo grid cols-start-1 content-center ml-10">
-      <img src="@/assets/LOGO-web.png" class="w-[148px] h-[37px]" alt="logo" />
-    </div>
-    <!-- bar menu -->
-    <div class="menu cols-start-2 flex justify-center ">
-      <div class="flex flex-row items-center">
-        <button
-        class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
-        >
-        Home
-      </button>
-      <button
-        class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 mr-10"
-        >
-        About us
-      </button>
-    </div>
-    </div>
-    <!-- bar profile -->
-    <div class="profile-user col-start-3 flex justify-end mr-10"> 
-      <div class="flex flex-row items-center">
-        <button
-        class="box-content h-[43px] w-[240px] border border-1 border-solid  border-gray-200 rounded-[16px] bg-white focus:bg-purple-900"
-        >
-        Sign in with Google
-      </button>
+  <!-- organization -->
+  <div v-if="role == 'organization'">
+    <div
+      class="bar grid grid-cols-3 gap-x-10 bg-white h-[100px] drop-shadow-xl"
+    >
+      <!-- bar logo -->
+      <div class="logo grid cols-start-1 content-center ml-10">
+        <img
+          src="@/assets/LOGO-web.png"
+          class="w-[148px] h-[37px]"
+          alt="logo"
+        />
       </div>
+      <!-- bar menu -->
+      <div class="menu cols-start-2 flex justify-center">
+        <div class="flex flex-row items-center">
+          <button
+            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
+          >
+            Dashboard
+          </button>
+          <button
+            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 mr-10"
+          >
+            Event
+          </button>
+        </div>
+      </div>
+      <!-- bar profile -->
+      <div class="profile-user col-start-3 flex justify-end mr-10">
+        <div class="flex flex-row items-center">
+          <button
+            class="box-content h-[43px] w-[240px] border border-1 border-solid border-gray-200 rounded-[16px] bg-white focus:bg-purple-900"
+          >
+            Sign in with Google
+          </button>
+        </div>
+      </div>
+    </div>
 
+    <!-- content event list -->
+    <div v-if="events != '' " class="event-list">
+      <EventListOrganization :info="events"></EventListOrganization>
     </div>
   </div>
-  <div class="content-slid"></div>
-  <div class="event-list"></div>
+
+
+  <!-- participant -->
+  <div v-if="role == 'participant'">
+    <div
+      class="bar grid grid-cols-3 gap-x-10 bg-white h-[100px] drop-shadow-xl"
+    >
+      <!-- bar logo -->
+      <div class="logo grid cols-start-1 content-center ml-10">
+        <img
+          src="@/assets/LOGO-web.png"
+          class="w-[148px] h-[37px]"
+          alt="logo"
+        />
+      </div>
+      <!-- bar menu -->
+      <div class="menu cols-start-2 flex justify-center">
+        <div class="flex flex-row items-center">
+          <button
+            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
+          >
+            Home
+          </button>
+          <button
+            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 mr-10"
+          >
+            About us
+          </button>
+        </div>
+      </div>
+      <!-- bar profile -->
+      <div class="profile-user col-start-3 flex justify-end mr-10">
+        <div class="flex flex-row items-center">
+          <button
+            class="box-content h-[43px] w-[240px] border border-1 border-solid border-gray-200 rounded-[16px] bg-white focus:bg-purple-900"
+          >
+            Sign in with Google
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="content-slid"></div>
+    <div class="event-list"></div>
+  </div>
 </template>
 
 <style scoped>

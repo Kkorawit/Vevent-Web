@@ -11,8 +11,15 @@ module.exports = {
       },
       rounded:{
         
+      },
+      colors: {
+      'main' : '#4520CC',
+      },
+      fontSize: {
+        'topic': '48px',
       }
     },
+    
   },
   plugins: [],
 }

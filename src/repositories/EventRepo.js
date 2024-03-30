@@ -8,6 +8,8 @@ export default async function getAllEvent () {
     findAllEventCreatedByUEmail(uEmail: "Organization.032301@gmail.com") {
       id
       title
+      description
+      category
       startDate
       eventStatus
       posterImg

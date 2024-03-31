@@ -2,16 +2,39 @@
 import { RouterView } from "vue-router";
 </script>
 <template>
-  <div class="sidebar">
-    <div class="logo">
-        <img src="../assets//LOGO-web.png" alt="logo" width="128">
+  <div
+    class="bar grid grid-cols-3 gap-x-10 col-span-3 h-[100px] drop-shadow-xl"
+  >
+    <!-- bar logo -->
+    <div class="logo grid cols-start-1 content-center ml-10">
+      <img src="@/assets/LOGO-web.png" class="w-[148px] h-[37px]" alt="logo" />
     </div>
-    <div class="menu-item">
-      <RouterView>
-        <router-link :to="{ name: 'dashboard' }">Dashboard</router-link>
-        <router-link :to="{ name: 'events' }">Events</router-link>
-        <router-link :to="{ name: 'participants' }">Manage Users</router-link>
-      </RouterView>
+    <!-- bar menu -->
+    <div class="menu cols-start-2 flex justify-center">
+      <div class="flex flex-row items-center">
+        <button
+          class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
+        >
+          Home
+        </button>
+        <button
+          class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 mr-10"
+        >
+          About us
+        </button>
+      </div>
+    </div>
+    <!-- bar profile -->
+    <div class="profile-user col-start-3 flex justify-end mr-10">
+      <div class="flex flex-row items-center">
+        <button
+          class="box-content h-[43px] w-[240px] border border-1 border-solid border-gray-200 rounded-[16px] bg-white focus:bg-purple-900"
+          @click=""
+        >
+          Sign in with Google
+        </button>
+        <!-- <GoogleLogin :callback="logIn" /> -->
+      </div>
     </div>
   </div>
 </template>

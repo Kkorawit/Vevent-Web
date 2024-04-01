@@ -48,14 +48,9 @@ onMounted(() => {
 const allEvents = ref(props.info);
 const searchEvent = ref("");
 
-
 const filtered = ref(props.info);
 const eventList = computed(() => {
-  console.log(filtered.value);
-
   return filtered.value.filter((event) => {
-    console.log(event.title);
-    
     return searchEvent.value ? event.title.includes(searchEvent.value) : true;
   });
 });
@@ -133,7 +128,11 @@ const changeState = async (s, id) => {
           <!-- card: all event -->
           <button
             @click="filterEvent('')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border focus:border-2 focus:border-solid focus:border-purple-700"
+            :class="
+              filterStatus == ''
+                ? 'filter-card-allEvent w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white '
+                : 'filter-card-allEvent w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-primaryColor'
+            "
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-purple100"
@@ -152,7 +151,7 @@ const changeState = async (s, id) => {
           <!-- card: Upcoming -->
           <button
             @click="filterEvent('UP')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border focus:border-2 focus:border-solid focus:border-gray-400"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-gray-400"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-gray-100"
@@ -171,7 +170,7 @@ const changeState = async (s, id) => {
           <!-- card:Onging -->
           <button
             @click="filterEvent('ON')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border focus:border-2 focus:border-solid focus:border-yellow-400"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-yellow-400"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-yellow-100"
@@ -190,7 +189,7 @@ const changeState = async (s, id) => {
           <!-- card: completed -->
           <button
             @click="filterEvent('CO')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border focus:border-2 focus:border-solid focus:border-green-600"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-green-600"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-green-100"
@@ -209,7 +208,7 @@ const changeState = async (s, id) => {
           <!-- card: canceled -->
           <button
             @click="filterEvent('CA')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border focus:border-2 focus:border-solid focus:border-red-500"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-red-500"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-red-100"
@@ -284,7 +283,7 @@ const changeState = async (s, id) => {
             >
               <div
                 v-if="event.eventStatus == 'ON'"
-                class="eventStatus-button box-content h-[40px] w-[100px] rounded-[16px] bg-yellow-100 text-[14px] text-[#EFB008] font-medium grid place-content-center"
+                class="eventStatus-button box-content h-[40px] w-[100px] rounded-[16px] bg-yellow-100 text-[14px] text-yellow font-medium grid place-content-center"
               >
                 Ongoing
               </div>
@@ -307,44 +306,7 @@ const changeState = async (s, id) => {
                 Completed
               </div>
             </div>
-            <div class="bin col-start-10 grid justify-items-end">
 
-            
-            <v-dialog>
-              <template v-slot:activator="{props:activatorProps }">
-                <v-btn
-                class="text-gray-500 hover:text-red-500"
-                v-bind="activatorProps"
-                icon
-                >
-                <v-icon >mdi-trash-can</v-icon>
-
-                </v-btn>
-              </template>
-              <template v-slot:default="{ isActive }">
-                <v-card title="Dialog">
-                  <v-card-text>
-                    asdasdasdasdasd
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    
-                    <v-btn
-                    text="Close"
-                    @click="isActive.value = false">
-
-                    </v-btn>
-                    <v-btn
-                    text="Confirm"
-                    @click="(isActive.value = false,deleteEventById(event.id))">
-
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </template>
-            </v-dialog>
-          </div>
-            <!-- <button class="bin col-start-10 grid justify-items-end">
               <img
                 src="@/assets/Recycle Bin.png"
                 class="w-[24px] h-[24px]"

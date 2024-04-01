@@ -19,12 +19,6 @@ module.exports = {
         purple200:'#B5A6EB',
         purple100:'#DAD2F5',
         primaryLight:'#ECE9FA',
-      },
-      colors: {
-      'main' : '#4520CC',
-      },
-      fontSize: {
-        'topic': '48px',
       }
     },
     

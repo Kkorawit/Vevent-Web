@@ -14,10 +14,10 @@ const prop = defineProps({
   },
 });
 
-console.log(prop.eventStartTime);
+// console.log(prop.eventStartTime);
 
 const chooseFormat = prop.format;
-console.log(chooseFormat);
+// console.log(chooseFormat);
 
 const format = ref(prop.format);
 const dateTime = ref("");
@@ -30,54 +30,16 @@ const dateTImeFormat = () => {
 //   time.value = moment(input).format('LT');
   time.value = moment(input).utcOffset(+'-7*60').format('LT');
 
-  console.log(date.value);
-  console.log(time.value);
+  // console.log(date.value);
+  // console.log(time.value);
   
   if(date.value != null && time.value != null){
       dateTime.value = date.value + ' ' + time.value
-      console.log(dateTime.value);
+      // console.log(dateTime.value);
   }else {
       console.log('datetime is null');
   }
-
-
-  
-
-  // const eventStartDateTime = new Date(prop.eventStartTime)
-
-  // const date = eventStartDateTime.toLocaleDateString()
-  // const time = eventStartDateTime.toLocaleTimeString()
-  // console.log(eventStartDateTime)
-  // console.log(date)
-  // console.log(time)
 };
-
-// const formatDateTime = (dateTimeString) => {
-//   // Parse the date-time string using Date object
-//   const dateObj = new Date(dateTimeString);
-
-//   // Extract year, month (0-indexed), and date
-//   const year = dateObj.getFullYear();
-//   const month = dateObj.getMonth() + 1; // Adjust for 0-based month index
-//   const day = dateObj.getDate();
-
-//   // Extract hours, minutes, and seconds
-//   const hours = dateObj.getHours().toString().padStart(2, '0'); // Pad with leading zero
-//   const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-//   const seconds = dateObj.getSeconds().toString().padStart(2, '0');
-
-//   // Calculate Buddhist Era year (BE)
-//   const buddhistYear = year + 543;
-
-//   // Format the date in the desired format
-
-//    if(dateTimeString != null){
-//         dateTime.value = `${month}/${day}/${buddhistYear} ${hours}:${minutes}:${seconds}`;
-//         console.log(dateTime.value);
-//     }else {
-//         console.log('datetime is null');
-//     }
-// }
 
 onBeforeMount(() => {
   dateTImeFormat();

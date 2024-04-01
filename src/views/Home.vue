@@ -1,9 +1,9 @@
 <script setup>
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
-import getAllEventCreatedByUEmail from "../repositories/EventRepo";
+import { getAllEventCreatedByUEmail }  from "../repositories/EventRepo";
 import { onMounted, ref } from "vue";
-import EventListOrganization from "@/components/Event/EventListOrganization.vue"
+import EventListOrganization from "@/components/Event/EventListOrganization.vue";
 
 
 const events = ref([]);

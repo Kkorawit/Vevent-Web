@@ -15,7 +15,6 @@ const props = defineProps({
   },
 });
 
-const filterStatus = ref('allEvents');
 const eventTitle = ref(Array.from(new Set(props.info?.map((event) => event.title))))
 
 const countAll = ref();

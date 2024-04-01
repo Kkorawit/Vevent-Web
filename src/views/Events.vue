@@ -6,7 +6,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 // import router from "../plugins/router";
 import EventDetailCard from "@/components/Event/EventDetail_card.vue";
 import CreateEvent from "@/components/Event/CreateEvent.vue";
-import getAllEvent from "../repositories/gql/Eventql.js";
+import getAllEventCreatedByUEmail from '@/gql/gqlGet.js'
 
 // const uEmail = "Organization.032301@gmail.com";
 
@@ -43,7 +43,7 @@ const result = ref();
 //   await getAllEvent();
 // });
 onMounted(async () => {
-  result.value = await getAllEvent()
+  result.value = await getAllEventCreatedByUEmail('Organization.032301@gmail.com')
   state.value='eventList'
 }) 
 

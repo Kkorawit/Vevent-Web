@@ -53,7 +53,7 @@ const changeState = (s) => {
       <div class="edit-button">
         <button @click="changeState('editEvent')">
           <img
-            src="../assets/Edit.png"
+            src="@/assets/Edit.png"
             alt="edit"
             style="width: 32px; height: 32px"
           />

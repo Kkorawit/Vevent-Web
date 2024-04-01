@@ -25,9 +25,11 @@ const vuetify = createVuetify({
 import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 import { createHttpLink } from '@apollo/client/link/http';
 import { DefaultApolloClient} from '@vue/apollo-composable';
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 const httpLink = createHttpLink({
-    // uri: 'https://capstone23.sit.kmutt.ac.th/kw1/dev/graphql',
-    uri: `http://localhost:8080${import.meta.env.VITE_GL_ENV}`,
+    uri: 'https://capstone23.sit.kmutt.ac.th/kw1/dev/graphql',
+    // uri: `http://localhost:8080${import.meta.env.VITE_GL_ENV}`,
 });
 
 const apolloClient = new ApolloClient({
@@ -44,6 +46,7 @@ app.config.globalProperties.$axios = axios;
 app.use(router);
 app.use(vuetify);
 app.provide(DefaultApolloClient, apolloClient);
+app.component('VueDatePicker', VueDatePicker);
 app.mount('#app');
 
 

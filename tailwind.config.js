@@ -9,9 +9,6 @@ module.exports = {
         poppins: ["Poppins", "sans-serif"],
         IBM: ["IBM Plex Sans","sans-serif"]
       },
-      rounded:{
-        
-      },
       colors: {
         primaryColor:'#4520CC',
         purple400:'#6A4DD6',

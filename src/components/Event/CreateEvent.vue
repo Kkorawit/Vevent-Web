@@ -1,6 +1,8 @@
 <script setup>
 // import { from, gql, useApolloClient } from "@apollo/client";
 import DateTimeFormat from "@/components/DateTimeFormat.vue";
+import VueDatePicker from "@vuepic/vue-datepicker";
+
 import { ref } from "vue";
 
 const newTitle = ref(""); //from user
@@ -10,7 +12,7 @@ const newCategory = ref(""); //from user
 const newSubCategory = ref(""); //from user
 const newStartDate = ref(); //from user
 const newEndDate = ref(); //from user
-const newRegisterStartDate = ref(); //from user
+// const newRegisterStartDate = ref(); //from user
 const newRegisterEndDate = ref(); //from user
 const newValidationType = ref(""); //from user
 const newValidationRules = ref(5); //from user  (use with GPS and GPS+qrcode only)
@@ -55,7 +57,7 @@ const mesAlertSubCategory = ref("");
 const mesAlertValidateType = ref("");
 const mesAlertValidateRRule = ref("");
 
-const countWord = (type, input) => {
+const checkInput = (type, input) => {
   console.log(input);
   console.log(type);
   // const char = input.trim();
@@ -90,7 +92,7 @@ const countWord = (type, input) => {
   } else if (type == "category") {
     checklengthCategory.value = false;
     mesAlertCategory.value = "";
-    console.log(input)
+    console.log(input);
     if (input.trim().length == 0) {
       checklengthCategory.value = false;
       mesAlertCategory.value = "กรุณาใส่ข้อมูลให้ครบถ้วน";
@@ -135,7 +137,7 @@ const countWord = (type, input) => {
       checkValidateType.value = true;
       mesAlertValidateType.value = "";
     }
-  }else if (type == "validateRule") {
+  } else if (type == "validateRule") {
     checkValidateRule.value = false;
     mesAlertValidateRRule.value = "";
     if (input < 1) {
@@ -152,6 +154,10 @@ const countWord = (type, input) => {
       mesAlertValidateRRule.value = "กรุณาใส่ข้อมูลให้ถูกต้อง";
     }
   }
+  // else if(type == 'regisStartDate') {
+  //   const dateTimeNow = new()
+
+  // }
 };
 
 // const posterStatus = ref("");
@@ -318,8 +324,8 @@ const newLongitude = ref(0);
 //   }
 // }
 
-const adjustAmount = (filed , s) => {
-  if(filed == "amountReceied"){
+const adjustAmount = (filed, s) => {
+  if (filed == "amountReceied") {
     if (newAmountReceived.value >= 10 && newAmountReceived.value <= 100) {
       if (s == "decrementButton") {
         if (newAmountReceived.value > 10) {
@@ -334,14 +340,14 @@ const adjustAmount = (filed , s) => {
     }
     if (newAmountReceived.value < 10) {
       newAmountReceived.value = 10;
-      countWord("amountReceied", newAmountReceived.value);
+      checkInput("amountReceied", newAmountReceived.value);
     }
     if (newAmountReceived.value > 100) {
       newAmountReceived.value = 100;
-      countWord("amountReceied", newAmountReceived.value);
+      checkInput("amountReceied", newAmountReceived.value);
+    }
   }
-  }
-  if(filed == "distanceCounter"){
+  if (filed == "stepCounter") {
     if (newValidationRules.value >= 1 && newValidationRules.value <= 10) {
       if (s == "decrementButton") {
         if (newValidationRules.value > 1) {
@@ -356,17 +362,14 @@ const adjustAmount = (filed , s) => {
     }
     if (newValidationRules.value < 1) {
       newValidationRules.value = 1;
-      countWord("validateRule", newValidationRules.value);
+      checkInput("validateRule", newValidationRules.value);
     }
     if (newValidationRules.value > 10) {
       newValidationRules.value = 10;
-      countWord("validaateRule", newValidationRules.value);
-  }
-
+      checkInput("validaateRule", newValidationRules.value);
+    }
   }
 };
-
-
 
 const posterStatus = ref("");
 
@@ -394,13 +397,12 @@ const onFileSelect = (event) => {
       if (isImage == "image") {
         //check type
         console.log("check type");
-        
-          const imageUrl = URL.createObjectURL(file);
-          images.value.push({ name: file.name, url: imageUrl });
-          newPoster.value = imageUrl;
-          console.log(newPoster.value);
-          posterStatus.value = "addImg";
-        
+
+        const imageUrl = URL.createObjectURL(file);
+        images.value.push({ name: file.name, url: imageUrl });
+        newPoster.value = imageUrl;
+        console.log(newPoster.value);
+        posterStatus.value = "addImg";
       } else if (isImage != "image") {
         console.error("Only image files are allowed!");
       }
@@ -417,42 +419,54 @@ const deleteImage = () => {
 const onDragover = (event) => {
   event.preventDefault();
   isDraging.value = true;
-  event.dataTransfer.dropEffect = "copy"
-}
+  event.dataTransfer.dropEffect = "copy";
+};
 
 const onDragleave = (event) => {
   event.preventDefault();
   isDraging.value = false;
-}
+};
 
 const onDrop = (event) => {
   event.preventDefault();
   isDraging.value = false;
   const files = event.dataTransfer.files;
   for (let i = 0; i < files.length; i++) {
-      console.log("loop file");
-      const file = files[i];
-      const isImage = files[i].type.split("/")[0];
-      if (isImage == "image") {
-        //check type
-        console.log("check type");
-        if (images.value.some((e) => e.name === file.name)) {
-          // Skip adding duplicate files
-          console.warn("A file with the same name already exists:", file.name);
-        } else {
-          const imageUrl = URL.createObjectURL(file);
-          images.value.push({ name: file.name, url: imageUrl });
-          newPoster.value = imageUrl;
-          console.log(newPoster.value);
-          posterStatus.value = "addImg";
-        }
-      } else if (isImage != "image") {
-        console.error("Only image files are allowed!");
+    console.log("loop file");
+    const file = files[i];
+    const isImage = files[i].type.split("/")[0];
+    if (isImage == "image") {
+      //check type
+      console.log("check type");
+      if (images.value.some((e) => e.name === file.name)) {
+        // Skip adding duplicate files
+        console.warn("A file with the same name already exists:", file.name);
+      } else {
+        const imageUrl = URL.createObjectURL(file);
+        images.value.push({ name: file.name, url: imageUrl });
+        newPoster.value = imageUrl;
+        console.log(newPoster.value);
+        posterStatus.value = "addImg";
       }
-      console.log(images.value);
+    } else if (isImage != "image") {
+      console.error("Only image files are allowed!");
     }
+    console.log(images.value);
+  }
+};
 
-}
+const newRegisterStartDate = ref(new Date());
+// In case of a range picker, you'll receive [Date, Date]
+const format = (date) => {
+  const day = date.getDate();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  return `Selected date is ${day}/${month}/${year}`;
+};
+
+
+
 
 
 </script>
@@ -462,7 +476,7 @@ const onDrop = (event) => {
       <!-- header -->
       <div class="flex justify-between">
         <div class="-left">
-          <label class="text-sm">Event > Event Detail > Edit Event</label>
+          <label class="text-sm">Event > Create Event</label>
           <h2 class="text-[32px]">สร้างโพสกิจกรรม</h2>
         </div>
         <!-- button create -->
@@ -498,10 +512,10 @@ const onDrop = (event) => {
                 >
               </label>
               <textarea
-                @change="countWord('title', newTitle)"
+                @change="checkInput('title', newTitle)"
                 type="text"
                 id="title"
-                class="bg-primaryLight border border-purple100 text-gray-900 text-[18px] rounded-[8px] focus:ring-primaryColor focus:border-primaryColor block w-full  px-[24px] py-[16px] overflow-hidden text-overflow-ellipsis"
+                class="bg-primaryLight border border-purple100 text-gray-900 text-[18px] rounded-[8px] focus:ring-primaryColor focus:border-primaryColor block w-full px-[24px] py-[16px] overflow-hidden text-overflow-ellipsis"
                 rows="2"
                 maxlength="100"
                 placeholder="กรุณาเพิ่มข้อมูล (สูงสุด 100 ตัวอักษร)"
@@ -523,7 +537,7 @@ const onDrop = (event) => {
                 >
               </label>
               <textarea
-                @change="countWord('desciption', newDescription)"
+                @change="checkInput('desciption', newDescription)"
                 class="detail bg-primaryLight border border-purple100 text-gray-900 text-[18px] rounded-[8px] focus:ring-primaryColor focus:border-primaryColor block w-full p-[24px]"
                 rows="6"
                 maxlength="500"
@@ -532,56 +546,79 @@ const onDrop = (event) => {
                 required
               ></textarea>
             </div>
-            <div class="sub-left grid grid-cols-2 grid-rows-2 gap-y-10 mb-10">
-              <div class="regisDate col-start-1 row-start-1">
-                1
-              </div> 
-              <div class="regisDate col-start-2 row-start-1">
-                2
+            <div class="sub-left grid grid-cols-2 grid-rows-2 gap-10 mb-10">
+              <div class="regisDate col-start-1 row-start-1 h-full">
+                <label 
+                for="detail"
+                class="block mb-2 text-[16px] font-medium text-gray-900"
+                >วันเปิดรับลงทะเบียน
+                <span class="text-red-400 text-[14px]"
+                  >*
+                  <span v-if="mesAlertDescription != ''">{{
+                    mesAlertDescription
+                  }}</span></span
+                >
+              </label>
+                <VueDatePicker class="my-picker-class" onchange="checkInput('regisStartDate', newRegisterStartDate)" v-model="newRegisterStartDate" :preview-format="format" />
               </div>
-              <div class="startDate col-start-1 row-start-2">
-                3
-              </div> 
-              <div class="endDate col-start-2 row-start-2">
-                4
-              </div>
+
+              <div class="regisDate col-start-2 row-start-1">2</div>
+              <div class="startDate col-start-1 row-start-2">3</div>
+              <div class="endDate col-start-2 row-start-2">4</div>
             </div>
             <!-- poster image -->
             <div class="detail-section">
-          <label for="description">รูปภาพกิจกรรม <span>*</span></label>
-          <div class="container-poster" v-if="newPoster != ''">
-            <div class="image" >
-              <span class="delete bg-red-200 opacity-80 text-red-900 w-[46px] h-[46px] rounded-[16px]  grid place-content-center" @click="deleteImage" style="cursor: pointer"
-                >&times;</span
-              >
-              <img :src="newPoster" alt="choose image" />
-            </div>
-          </div>
-          <div v-else  class="card bg-primaryLight">
-            <div class="drag-area" @dragover.prevent="onDragover" @dragleave.prevent="onDragleave" @drop.prevent="onDrop">
-              <span v-if="isDraging != true" class="grid justify-items-center">
-                <img src="@/assets/gallery.png" class="w-[96x] h-[96px] mb-4"alt="image">
-                <div class="flex text-primaryColor ">
-                  Drag & drop image here or
-                  <span class="select text-primaryColor " role="button" @click="selectFile"
-                    ><b><u>choose </u> </b></span
-                    >
-                
+              <label for="description">รูปภาพกิจกรรม <span>*</span></label>
+              <div class="container-poster" v-if="newPoster != ''">
+                <div class="image">
+                  <span
+                    class="delete bg-red-200 opacity-80 text-red-900 w-[46px] h-[46px] rounded-[16px] grid place-content-center"
+                    @click="deleteImage"
+                    style="cursor: pointer"
+                    >&times;</span
+                  >
+                  <img :src="newPoster" alt="choose image" />
                 </div>
-              </span>
-              <div v-else class="select">Drop image here</div>
-              <input
-                id="fileInput"
-                name="file"
-                type="file"
-                class="file"
-                ref="fileInput"
-                style="display: none"
-                @change="onFileSelect"
-              />
+              </div>
+              <div v-else class="card bg-primaryLight">
+                <div
+                  class="drag-area"
+                  @dragover.prevent="onDragover"
+                  @dragleave.prevent="onDragleave"
+                  @drop.prevent="onDrop"
+                >
+                  <span
+                    v-if="isDraging != true"
+                    class="grid justify-items-center"
+                  >
+                    <img
+                      src="@/assets/gallery.png"
+                      class="w-[96x] h-[96px] mb-4"
+                      alt="image"
+                    />
+                    <div class="flex text-primaryColor">
+                      Drag & drop image here or
+                      <span
+                        class="select text-primaryColor"
+                        role="button"
+                        @click="selectFile"
+                        ><b><u>choose </u> </b></span
+                      >
+                    </div>
+                  </span>
+                  <div v-else class="select">Drop image here</div>
+                  <input
+                    id="fileInput"
+                    name="file"
+                    type="file"
+                    class="file"
+                    ref="fileInput"
+                    style="display: none"
+                    @change="onFileSelect"
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
           </div>
           <!-- right -->
           <div class="from-left col-span-3">
@@ -599,7 +636,7 @@ const onDrop = (event) => {
                 >
               </label>
               <input
-                @change="countWord('category', newCategory)"
+                @change="checkInput('category', newCategory)"
                 type="text"
                 id="category"
                 class="bg-primaryLight border border-purple100 text-gray-900 text-[18px] rounded-[8px] focus:ring-primaryColor focus:border-primaryColor block w-full px-[24px] py-[16px] overflow-hidden text-overflow-ellipsis"
@@ -624,7 +661,7 @@ const onDrop = (event) => {
                 >
               </label>
               <input
-                @click="countWord('subCategory', newSubCategory)"
+                @click="checkInput('subCategory', newSubCategory)"
                 type="text"
                 id="subCategory"
                 class="bg-primaryLight border border-purple100 text-gray-900 text-[18px] rounded-[8px] focus:ring-primaryColor focus:border-primaryColor block w-full px-[24px] py-[16px] overflow-hidden text-overflow-ellipsis"
@@ -650,7 +687,7 @@ const onDrop = (event) => {
               </label>
               <div class="relative flex items-center w-full">
                 <button
-                  @click="adjustAmount('amountReceied','decrementButton')"
+                  @click="adjustAmount('amountReceied', 'decrementButton')"
                   type="button"
                   id="decrement-button"
                   class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg px-[24px] h-[56px] focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
@@ -672,7 +709,7 @@ const onDrop = (event) => {
                   </svg>
                 </button>
                 <input
-                  @change="countWord('amountReceied', newAmountReceived)"
+                  @change="checkInput('amountReceied', newAmountReceived)"
                   type="number"
                   id="quantity-input"
                   class="bg-primaryLight border-x-0 border-purple100 h-[56px] text-center text-gray-900 text-[18px] focus:ring-primaryColor focus:border-primaryColor block w-full"
@@ -683,7 +720,7 @@ const onDrop = (event) => {
                   required
                 />
                 <button
-                  @click="adjustAmount('amountReceied','incrementButton')"
+                  @click="adjustAmount('amountReceied', 'incrementButton')"
                   type="button"
                   id="increment-button"
                   class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg px-[24px] h-[56px] focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
@@ -720,9 +757,9 @@ const onDrop = (event) => {
                 >
               </label>
               <select
-                @change="countWord('validateType', newValidationType)"
+                @change="checkInput('validateType', newValidationType)"
                 id="countries"
-                class="bg-primaryLight border border-purple100 text-gray-900 text-[18px] rounded-lg focus:ring-primaryColor focus:border-primaryColor block w-full px-[24px] h-[56px] "
+                class="bg-primaryLight border border-purple100 text-gray-900 text-[18px] rounded-lg focus:ring-primaryColor focus:border-primaryColor block w-full px-[24px] h-[56px]"
                 v-model="newValidationType"
               >
                 <option selected value="">Choose validate type</option>
@@ -731,12 +768,12 @@ const onDrop = (event) => {
                 <option value="CURRENT_GPS,QR_CODE">
                   Current GPS and QR Code
                 </option>
-                <option value="DISTANCE_COUNTER">Distance Counter</option>
+                <option value="STEP_COUNTER">Step Counter</option>
               </select>
             </div>
             <!-- validate rule -->
             <div
-              v-if="newValidationType != '' || newValidationType != 'QR_CODE' "
+              v-if="newValidationType != '' || newValidationType == 'CURRENT_GPS' || newValidationType == 'CURRENT_GPS,QR_CODE'"
               class="validate-rule"
             >
               <!-- location name -->
@@ -750,8 +787,7 @@ const onDrop = (event) => {
                     <!-- <span v-if="mesAlertSubCategory != ''">{{
                       mesAlertSubCategory
                     }}</span> -->
-                    </span
-                  >
+                  </span>
                 </label>
                 <div class="relative">
                   <input
@@ -770,77 +806,77 @@ const onDrop = (event) => {
                   </button>
                 </div>
               </div>
-               <!-- validateRule -->
-            <div v-if="newValidationType=='DISTANCE_COUNTER'" class="mb-10">
-              <label
-                for="validateRule"
-                class="block mb-2 text-[16px] font-medium text-gray-900"
-                >ระยะทาง (กิโลเมคร)
-                <span class="text-red-400 text-[14px]"
-                  >*
-                  <span v-if="mesAlertValidateRRule != ''">{{
-                    mesAlertValidateRRule
-                  }}</span></span
-                >
-              </label>
-              <div class="relative flex items-center w-full">
-                <button
-                  @click="adjustAmount('distanceCounter','decrementButton')"
-                  type="button"
-                  id="decrement-button"
-                  class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg px-[24px] h-[56px] focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-                >
-                  <svg
-                    class="w-3 h-3 text-gray-900 dark:text-white"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 18 2"
+              <!-- validateRule -->
+              <div v-if="newValidationType == 'STEP_COUNTER'" class="mb-10">
+                <label
+                  for="validateRule"
+                  class="block mb-2 text-[16px] font-medium text-gray-900"
+                  >ระยะทาง (กิโลเมคร)
+                  <span class="text-red-400 text-[14px]"
+                    >*
+                    <span v-if="mesAlertValidateRRule != ''">{{
+                      mesAlertValidateRRule
+                    }}</span></span
                   >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M1 1h16"
-                    />
-                  </svg>
-                </button>
-                <input
-                  @change="countWord('validateRule', newValidationRules)"
-                  type="number"
-                  id="quantity-input"
-                  class="bg-primaryLight border-x-0 border-purple100 h-[56px] text-center text-gray-900 text-[18px] focus:ring-primaryColor focus:border-primaryColor block w-full"
-                  placeholder="100"
-                  min="1"
-                  max="10"
-                  v-model="newValidationRules"
-                  required
-                />
-                <button
-                  @click="adjustAmount('distanceCounter','incrementButton')"
-                  type="button"
-                  id="increment-button"
-                  class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg px-[24px] h-[56px] focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
-                >
-                  <svg
-                    class="w-3 h-3 text-gray-900 dark:text-white"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 18 18"
+                </label>
+                <div class="relative flex items-center w-full">
+                  <button
+                    @click="adjustAmount('stepCounter', 'decrementButton')"
+                    type="button"
+                    id="decrement-button"
+                    class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-s-lg px-[24px] h-[56px] focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
                   >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 1v16M1 9h16"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      class="w-3 h-3 text-gray-900 dark:text-white"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 18 2"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M1 1h16"
+                      />
+                    </svg>
+                  </button>
+                  <input
+                    @change="checkInput('validateRule', newValidationRules)"
+                    type="number"
+                    id="quantity-input"
+                    class="bg-primaryLight border-x-0 border-purple100 h-[56px] text-center text-gray-900 text-[18px] focus:ring-primaryColor focus:border-primaryColor block w-full"
+                    placeholder="100"
+                    min="1"
+                    max="10"
+                    v-model="newValidationRules"
+                    required
+                  />
+                  <button
+                    @click="adjustAmount('stepCounter', 'incrementButton')"
+                    type="button"
+                    id="increment-button"
+                    class="bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg px-[24px] h-[56px] focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+                  >
+                    <svg
+                      class="w-3 h-3 text-gray-900 dark:text-white"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 18 18"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 1v16M1 9h16"
+                      />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
             </div>
           </div>
         </div>
@@ -850,6 +886,18 @@ const onDrop = (event) => {
 </template>
 
 <style scoped>
+/* .my-picker-class{
+            border: none !important;
+            border-bottom: 1px solid #F26F31 !important;
+            background-color: #4520cc !important;
+           } */
+
+.vpjk-container {
+  background-color: #3a7eb9; /* เปลี่ยนสีพื้นหลังของ datepicker */
+  border: 1px solid #ccc; /* เพิ่มเส้นขอบ */
+  height: 64px;
+}
+
 
 
 .poster-img {
@@ -897,14 +945,14 @@ const onDrop = (event) => {
   border-radius: 4px;
   font-weight: 400;
   width: 100%;
-  background-color: #4520cc; 
+  background-color: #4520cc;
   place-content: center;
 }
 
 .drag-area {
   height: 258.33px;
   border-radius: 8px;
-  border: 2px dashed #DAD2F5;
+  border: 2px dashed #dad2f5;
   color: #d1d1d1;
   /* justify-content: center;
   align-items: center; */
@@ -935,11 +983,10 @@ const onDrop = (event) => {
   /* max-height: 360px; */
   position: relative;
   border-radius: 8px;
-  outline-color: #DAD2F5; /*กรอบ image */
+  outline-color: #dad2f5; /*กรอบ image */
   outline-style: dashed;
   margin-top: 16px;
 }
-
 
 .image img {
   /* margin-top: -8px; */
@@ -949,9 +996,6 @@ const onDrop = (event) => {
   display: flex;
   justify-content: flex-start;
   overflow: hidden;
-
-  
-
 }
 
 .image span {
@@ -963,6 +1007,6 @@ const onDrop = (event) => {
 
 .image span:hover {
   transform: scale(1.2);
-  transition: transform 0.3s ease-in-out; 
+  transition: transform 0.3s ease-in-out;
 }
 </style>

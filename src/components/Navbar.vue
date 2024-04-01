@@ -3,7 +3,7 @@ import { RouterView } from "vue-router";
 </script>
 <template>
   <div
-    class="bar grid grid-cols-3 gap-x-10 col-span-3 h-[100px] drop-shadow-xl"
+    class="bar grid grid-cols-3 gap-x-10 col-span-3 h-[100px] bg-white drop-shadow-xl z-[100]"
   >
     <!-- bar logo -->
     <div class="logo grid cols-start-1 content-center ml-10">

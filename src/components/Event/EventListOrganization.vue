@@ -12,8 +12,9 @@ const props = defineProps({
   },
 });
 
-const eventStatus = ref("");
-const eventStatusCSS = ref("");
+// const eventStatus = ref("");
+// const eventStatusCSS = ref("");
+
 const eventTitle = ref(Array.from(new Set(props.info?.map((event) => event.title))))
 
 const countAll = ref();
@@ -57,6 +58,23 @@ const eventList = computed(() => {
   });
 });
 
+// const filterStatus = ref("allEvent");
+// const filterEvent = (status) => {
+//   filterStatus.value = "";
+//   console.log(status);
+//   filtered.value = allEvents.value.filter((event) => {
+//     if (status == "") {
+//       filterStatus.value = "allEvent";
+//       return event;
+//     } else {
+//       filterStatus.value = "";
+//       return event.eventStatus == status;
+//     }
+//   });
+//   eventTitle.value = filtered.value
+// };
+const filterStatus = ref("allEvent"); //use for css select filter
+
 const filterEvent = (status) => {
   filterStatus.value = "";
   console.log(status);
@@ -69,7 +87,6 @@ const filterEvent = (status) => {
       return event.eventStatus == status;
     }
   });
-  eventTitle.value = filtered.value
 };
 
 const eventDetaildata = ref({});
@@ -98,7 +115,7 @@ const changeState = async (s, id) => {
 <template>
   <div v-if="state == 'eventList'" class="grid justify-items-center">
     <!-- content -->
-    <div class="bg-gray-100 p-10 w-[1080px]">
+    <div class="bg-gray-50 p-10 w-[1080px] drop-shadow-md">
       <!-- header -->
       <div class="header flex justify-between mb-[40px]">
         <!-- header left -->
@@ -124,14 +141,14 @@ const changeState = async (s, id) => {
 
       <!-- filter -->
       <div class="filter mb-[40px]">
-        <div class="filter-list flex justify-between w-[1000px]">
+        <div class="filter-list flex justify-between w-[1000px] drop-shadow-sm">
           <!-- card: all event -->
           <button
             @click="filterEvent('')"
             :class="
               filterStatus == ''
-                ? 'filter-card-allEvent w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white '
-                : 'filter-card-allEvent w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-primaryColor'
+                ? 'filter-card-allEvent w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between  border-2 border-solid border-gray-100 '
+                : 'filter-card-allEvent w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between  border-2 border-solid border-primaryColor'
             "
           >
             <div
@@ -151,7 +168,7 @@ const changeState = async (s, id) => {
           <!-- card: Upcoming -->
           <button
             @click="filterEvent('UP')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-gray-400"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border-2 border-solid border-gray-100 focus:border-2 focus:border-solid focus:border-gray-400"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-gray-100"
@@ -170,7 +187,7 @@ const changeState = async (s, id) => {
           <!-- card:Onging -->
           <button
             @click="filterEvent('ON')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-yellow-400"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between  border-2 border-solid border-gray-100 focus:border focus:border-2 focus:border-solid focus:border-yellow-400"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-yellow-100"
@@ -189,7 +206,7 @@ const changeState = async (s, id) => {
           <!-- card: completed -->
           <button
             @click="filterEvent('CO')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-green-600"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between  border-2 border-solid border-gray-100 focus:border focus:border-2 focus:border-solid focus:border-green-600"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-green-100"
@@ -208,7 +225,7 @@ const changeState = async (s, id) => {
           <!-- card: canceled -->
           <button
             @click="filterEvent('CA')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-red-500"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between  border-2 border-solid border-gray-100 focus:border focus:border-2 focus:border-solid focus:border-red-500"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-red-100"
@@ -228,14 +245,14 @@ const changeState = async (s, id) => {
       </div>
 
       <!-- Event List -->
-      <div v-if="eventList" class="event-list">
+      <div v-if="eventList" class="event-list drop-shadow-sm min-h-[410px] ">
         <!-- header -->
         <div class="header grid grid-flow-col mb-[16px]">
           <div class="title text-[20px] justify-self-start">
-            All Event
+            Event List
             <!-- {{ title }} -->
           </div>
-          <div class="button-search justify-self-end w-[400px]">
+          <div class="button-search justify-self-end w-[400px] ">
             <v-autocomplete
               search
               clearable
@@ -343,18 +360,10 @@ const changeState = async (s, id) => {
               </template>
             </v-dialog>
           </div>
-            <!-- <button class="bin col-start-10 grid justify-items-end">
-              <img
-                src="@/assets/Recycle Bin.png"
-                class="w-[24px] h-[24px]"
-                alt="recycle button"
-              />
-            </button> -->
           </button>
         </div>
-        <div v-if="filtered.length==0" class=" flex justify-center">
+        <div v-if="eventList.length == 0" class=" grid place-content-center h-[320px]">
           <img class="w-[177.8px] h-[155px]" src="@/assets/noEvent-icon.png" />
-
         </div>
       </div>
     </div>

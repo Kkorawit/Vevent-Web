@@ -1,13 +1,10 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import DateTimeFormat from "@/components/DateTimeFormat.vue";
-import { getEventById } from "../../repositories/EventRepo";
-// import EventDetailCard from "@/components/EventDetail_card.vue";
-import EventDetailCard from "@/components/Event/EventDetail_card.vue";
-import CreateEvent from "@/components/Event/CreateEvent.vue";
-
 import { deleteEventById } from '~/restful/Eventapi.js'
 import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
+import EventDetailCard from "@/components/Event/EventDetail_card.vue";
+import CreateEvent from "@/components/Event/CreateEvent.vue";
 const props = defineProps({
   info: {
     type: Array,
@@ -48,14 +45,17 @@ onMounted(() => {
 const allEvents = ref(props.info);
 const searchEvent = ref("");
 
+
 const filtered = ref(props.info);
 const eventList = computed(() => {
+  console.log(filtered.value);
+
   return filtered.value.filter((event) => {
+    console.log(event.title);
+    
     return searchEvent.value ? event.title.includes(searchEvent.value) : true;
   });
 });
-
-const filterStatus = ref("allEvent"); //use for css select filter
 
 const filterEvent = (status) => {
   filterStatus.value = "";
@@ -306,7 +306,44 @@ const changeState = async (s, id) => {
                 Completed
               </div>
             </div>
+            <div class="bin col-start-10 grid justify-items-end">
 
+            
+            <v-dialog>
+              <template v-slot:activator="{props:activatorProps }">
+                <v-btn
+                class="text-gray-500 hover:text-red-500"
+                v-bind="activatorProps"
+                icon
+                >
+                <v-icon >mdi-trash-can</v-icon>
+
+                </v-btn>
+              </template>
+              <template v-slot:default="{ isActive }">
+                <v-card title="Dialog">
+                  <v-card-text>
+                    asdasdasdasdasd
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    
+                    <v-btn
+                    text="Close"
+                    @click="isActive.value = false">
+
+                    </v-btn>
+                    <v-btn
+                    text="Confirm"
+                    @click="(isActive.value = false,deleteEventById(event.id))">
+
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+          </div>
+            <!-- <button class="bin col-start-10 grid justify-items-end">
               <img
                 src="@/assets/Recycle Bin.png"
                 class="w-[24px] h-[24px]"

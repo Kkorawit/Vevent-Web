@@ -14,11 +14,8 @@ const prop = defineProps({
   },
 });
 
-console.log(prop.eventStartTime);
 
 const chooseFormat = prop.format;
-console.log(chooseFormat);
-
 const format = ref(prop.format);
 const dateTime = ref("");
 const date = ref("");
@@ -30,12 +27,9 @@ const dateTImeFormat = () => {
 //   time.value = moment(input).format('LT');
   time.value = moment(input).utcOffset(+'-7*60').format('LT');
 
-  console.log(date.value);
-  console.log(time.value);
   
   if(date.value != null && time.value != null){
       dateTime.value = date.value + ' ' + time.value
-      console.log(dateTime.value);
   }else {
       console.log('datetime is null');
   }

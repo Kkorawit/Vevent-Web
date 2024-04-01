@@ -1,59 +1,81 @@
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import { googleLogout, GoogleLogin, decodeCredential } from "vue3-google-login";
 import EventListOrganization from "@/components/Event/EventListOrganization.vue";
 import EventListParticipants from "@/components/Event/EventListParticipants.vue";
 import Navbar from "@/components/Navbar.vue";
-
+import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
 
 //user information
 const user = ref();
-const role = ref("Participants");
+const role = ref("Organization");
+//variable/function
+///all events
+const allEvents = ref();
+///event status filter
+// const districtStatus = ref([]);
+// const selectedStatus = ref(null);
+///event category
+// const districtCategory = ref([]);
+// const selectedCategory = ref(null);
+///search event
+// const eventTitle = ref([]);
+// const searchEvent = ref("");
 
+// const filterEvent = computed(() => {
 
-// function searchingEvent(text){
-//     return allEvents.value.filter((event)=>{
-//       return event.title.includes(text);
-//     })
-// }
-// const filterEvent = computed(()=> {
-//   allEvents.value.forEach((objEvent) => {
+// return allEvents.value.filter((event) => {
+//     const statusMatch = selectedStatus.value
+//     ? (
+//     selectedStatus.value.includes(event.eventStatus))
+//     : true;
+//     const categoryMatch = selectedCategory.value
+//     ? (
+//     selectedCategory.value.includes(event.category))
+//     : true;
+//     const titleMatch =
+//   searchEvent.value
+//   ? (event.title.includes(searchEvent.value))
+//   : true;
 
-//     if (selectedStatus.value.includes(objEvent.eventStatus) && selectedCategory.value.includes(objEvent.category)) {
-//       return events.value.push(objEvent);
-//     }
-//     return events.value.sort((a, b) => {
-//       return parseInt(a.id) - parseInt(b.id);
-//     });
+  
+//     return statusMatch&&categoryMatch&&titleMatch
 //   });
-// });
 
-// onMounted(async () => {
-//   let response = await getAllEvent();
-//   allEvents.value = response.findAllEventCreatedByUEmail;
-//   console.log();
-//   console.log(allEvents.value);
-//   // let dist = allEvents.value.map((event) => event.eventStatus);
-//   districtStatus.value = Array.from(
-//     new Set(allEvents.value.map((event) => event.eventStatus))
-//   );
-//   districtCategory.value = Array.from(
-//     new Set(allEvents.value.map((event) => event.category))
-//   );
-//   eventTitle.value = Array.from(
-//     new Set(allEvents.value.map((event) => event.title))
-//   );
-//   console.log(districtCategory.value);
-//   console.log(districtStatus.value);
-//   console.log(eventTitle.value);
 // });
+const re = ref()
+
+onMounted(async () => {
+  let response = await getAllEventCreatedByUEmail("Organization.032301@gmail.com");
+  console.log(response);
+  // console.log(re.value);
+  allEvents.value = response;
+  console.log(import.meta.env);
+  console.log(import.meta.env.VITE_API_ENV);
+  console.log(import.meta.env.VITE_GL_ENV);
+  console.log(import.meta.env.APP_GL_ENV);
+  // console.log(allEvents.value);
+  // let dist = allEvents.value.map((event) => event.eventStatus);
+  // districtStatus.value = Array.from(
+  //   new Set(allEvents.value.map((event) => event.eventStatus))
+  // );
+  // districtCategory.value = Array.from(
+  //   new Set(allEvents.value.map((event) => event.category))
+  // );
+  // eventTitle.value = Array.from(
+  //   new Set(allEvents.value.map((event) => event.title))
+  // );
+  // console.log(districtCategory.value);
+  // console.log(districtStatus.value);
+  // console.log(eventTitle.value);
+});
+
 
 const logIn = (response) => {
   console.log(response);
   user.value = decodeCredential(response.credential);
   console.log(user.value);
 };
-
 
 
 const logOut = () => {
@@ -64,14 +86,15 @@ const logOut = () => {
 <template>
   <Navbar></Navbar>
   <div v-if="role == 'Participants'">
-    <EventListParticipants></EventListParticipants>
-    
+    <EventListParticipants v-if="allEvents" :allEvents="allEvents"></EventListParticipants>
+    <!-- {{ eventList }} -->
+    <!-- <EventCard></EventCard> -->
   </div>
   <!-- organization -->
   <div v-if="role == 'Organization'">
     <!-- content event list -->
-    <div v-if="events != ''" class="event-list">
-      <EventListOrganization :info="events"></EventListOrganization>
+    <div class="event-list">
+      <EventListOrganization v-if="allEvents" :info="allEvents"></EventListOrganization>
     </div>
   </div>
 </template>

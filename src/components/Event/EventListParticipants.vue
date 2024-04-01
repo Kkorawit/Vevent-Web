@@ -1,33 +1,47 @@
 <script setup>
 //import section
 ///vue
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, defineProps, watch, reactive } from "vue";
 ///service
-import getAllEvent from "@/repositories/EventRepo";
+
+///components
+import EventCard from "@/components/Event/EventCard.vue";
 ///swiper
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css/bundle";
-import EventCard from "./EventCard.vue";
-// import moment from 'moment-timezone'
+// const emits = defineEmits(['filter-event'])
+const props = defineProps({
+  allEvents: {
+    type: Object,
+    require: true,
+  },
+});
 
+const allEvents = reactive(props.allEvents)
+
+watch(() => allEvents, (newValue) => {
+  console.log('allEvents updated:', newValue);
+});
 //variable/function
 ///all events
-const allEvents = ref([]);
+// const allEvents = ref(props.allEvents);
+// console.log(props.allEvents);
+// console.log(allEvents.value);
 ///event status filter
-const districtStatus = ref([]);
+const districtStatus = ref(Array.from(new Set(allEvents.map((event) => event.eventStatus))));
 const selectedStatus = ref(null);
 ///event category
-const districtCategory = ref([]);
+const districtCategory = ref(Array.from(new Set(allEvents.map((event) => event.category))));
 const selectedCategory = ref(null);
 ///search event
-const eventTitle = ref([]);
+const eventTitle = ref(Array.from(new Set(allEvents.map((event) => event.title))));
 const searchEvent = ref("");
 
 
 const filterEvent = computed(() => {
-  
-      return allEvents.value.filter((event) => {
+
+      return allEvents.filter((event) => {
           const statusMatch = selectedStatus.value
           ? (
           selectedStatus.value.includes(event.eventStatus))
@@ -43,54 +57,46 @@ const filterEvent = computed(() => {
 
         
           return statusMatch&&categoryMatch&&titleMatch
-        });
-    
-          // if(selectedStatus.value!=null && selectedCategory.value!=null){
-              //     searchEvent.value=''
-              //     return selectedStatus.value?.includes(event.eventStatus) && selectedCategory.value?.includes(event.category)
-              // }else if(selectedCategory.value!=null || selectedStatus.value!=null){
-                  //     searchEvent.value=''
-                  //     return selectedCategory.value?.includes(event.category) || selectedStatus.value?.includes(event.eventStatus)
-                  // }else{
-                      //     return event.title.includes(searchEvent.value)
-                      // }
-                    
-  
+        });                 
 });
 
-const eventStartDate = ref();
+// watch(filterEvent,(value) => {
+//   emits('filter-event',value)
+// })
+
+
+// const eventStartDate = ref();
 //Hook section
 ///on mounted for get all events and assign value
-onMounted(async () => {
-  let response = await getAllEvent();
-  allEvents.value = response.findAllEventCreatedByUEmail;
-  console.log();
-  console.log(allEvents.value);
-  // let dist = allEvents.value.map((event) => event.eventStatus);
-  districtStatus.value = Array.from(
-    new Set(allEvents.value.map((event) => event.eventStatus))
-  );
-  districtCategory.value = Array.from(
-    new Set(allEvents.value.map((event) => event.category))
-  );
-  eventTitle.value = Array.from(
-    new Set(allEvents.value.map((event) => event.title))
-  );
-  eventStartDate.value = Array.from(
-    new Set(allEvents.value.map((event) => event.startDate))
-  );
-  console.log(districtCategory.value);
-  console.log(districtStatus.value);
-  console.log(eventTitle.value);
+// onMounted(async () => {
+//   let response = await getAllEvent();
+//   allEvents.value = response.findAllEventCreatedByUEmail;
+//   console.log(allEvents.value);
+//   // let dist = allEvents.value.map((event) => event.eventStatus);
+//   districtStatus.value = Array.from(
+//     new Set(allEvents.value.map((event) => event.eventStatus))
+//   );
+//   districtCategory.value = Array.from(
+//     new Set(allEvents.value.map((event) => event.category))
+//   );
+//   eventTitle.value = Array.from(
+//     new Set(allEvents.value.map((event) => event.title))
+//   );
+//   eventStartDate.value = Array.from(
+//     new Set(allEvents.value.map((event) => event.startDate))
+//   );
+//   console.log(districtCategory.value);
+//   console.log(districtStatus.value);
+//   console.log(eventTitle.value);
   
-});
+// });
 
-const onSwiper = (swiper) => {
-  console.log(swiper);
-};
-const onSlideChange = () => {
-  console.log("slide change");
-};
+// const onSwiper = (swiper) => {
+//   console.log(swiper);
+// };
+// const onSlideChange = () => {
+//   console.log("slide change");
+// };
 </script>
 
 <template>
@@ -120,8 +126,6 @@ const onSlideChange = () => {
         navigation
         :autoplay="{ delay: 5000 }"
         class="my-swiper"
-        @swiper="onSwiper"
-        @slideChange="onSlideChange"
         :modules="[Pagination, Navigation, Autoplay]"
       >
         <swiper-slide v-for="event in allEvents" :key="event.id" class="pb-12">
@@ -187,16 +191,18 @@ const onSlideChange = () => {
     </div>
   </div>
   <!-- List of Events (Card) -->
-  {{ selectedCategory }} {{ selectedStatus }}
-  <div class="contain-card grid grid-cols-12 col-span-12" v-if="filterEvent">
+  <!-- {{ props.allEvents }} -->
+  <!-- {{ selectedCategory }} {{ selectedStatus }} {{ searchEvent }}  -->
+  <!-- {{ filterEvent }} -->
+  <!-- <div class="contain-card grid grid-cols-12 col-span-12" v-if="filterEvent"> -->
     <!-- {{ filterEvent }} -->
-    <EventCard :allEvents="filterEvent"></EventCard>
+    <EventCard :eventList="filterEvent"></EventCard>
     <!-- <div v-for="event in filterEvent" :key="event.id">
       {{ event.eventStatus }}
       {{ event.category }}
       {{ event.title }}
     </div> -->
-  </div>
+  <!-- </div> -->
 </template>
 
 <style>

@@ -22,10 +22,12 @@ const vuetify = createVuetify({
 })
 
 //apollo client
-import { createHttpLink, ApolloClient, InMemoryCache } from '@apollo/client/core';
+import { ApolloClient, InMemoryCache } from '@apollo/client/core';
+import { createHttpLink } from '@apollo/client/link/http';
 import { DefaultApolloClient} from '@vue/apollo-composable';
 const httpLink = createHttpLink({
-    uri: 'https://capstone23.sit.kmutt.ac.th/kw1/dev/graphql',
+    // uri: 'https://capstone23.sit.kmutt.ac.th/kw1/dev/graphql',
+    uri: `http://localhost:8080${import.meta.env.VITE_GL_ENV}`,
 });
 
 const apolloClient = new ApolloClient({

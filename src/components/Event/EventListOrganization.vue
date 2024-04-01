@@ -6,12 +6,18 @@ import { getEventById } from "../../repositories/EventRepo";
 import EventDetailCard from "@/components/Event/EventDetail_card.vue";
 import CreateEvent from "@/components/Event/CreateEvent.vue";
 
+import { deleteEventById } from '~/restful/Eventapi.js'
+import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
 const props = defineProps({
   info: {
     type: Array,
     request: true,
   },
 });
+
+const eventStatus = ref("");
+const eventStatusCSS = ref("");
+const eventTitle = ref(Array.from(new Set(props.info?.map((event) => event.title))))
 
 const countAll = ref();
 const countUP = ref();
@@ -42,9 +48,14 @@ onMounted(() => {
 const allEvents = ref(props.info);
 const searchEvent = ref("");
 
+
 const filtered = ref(props.info);
 const eventList = computed(() => {
+  console.log(filtered.value);
+
   return filtered.value.filter((event) => {
+    console.log(event.title);
+    
     return searchEvent.value ? event.title.includes(searchEvent.value) : true;
   });
 });
@@ -63,6 +74,7 @@ const filterEvent = (status) => {
       return event.eventStatus == status;
     }
   });
+  eventTitle.value = filtered.value
 };
 
 const eventDetaildata = ref({});
@@ -121,11 +133,7 @@ const changeState = async (s, id) => {
           <!-- card: all event -->
           <button
             @click="filterEvent('')"
-            :class="
-              filterStatus == ''
-                ? 'filter-card-allEvent w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white '
-                : 'filter-card-allEvent w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-primaryColor'
-            "
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border focus:border-2 focus:border-solid focus:border-purple-700"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-purple100"
@@ -144,7 +152,7 @@ const changeState = async (s, id) => {
           <!-- card: Upcoming -->
           <button
             @click="filterEvent('UP')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-gray-400"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border focus:border-2 focus:border-solid focus:border-gray-400"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-gray-100"
@@ -163,7 +171,7 @@ const changeState = async (s, id) => {
           <!-- card:Onging -->
           <button
             @click="filterEvent('ON')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-yellow-400"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border focus:border-2 focus:border-solid focus:border-yellow-400"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-yellow-100"
@@ -182,7 +190,7 @@ const changeState = async (s, id) => {
           <!-- card: completed -->
           <button
             @click="filterEvent('CO')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-green-600"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border focus:border-2 focus:border-solid focus:border-green-600"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-green-100"
@@ -201,7 +209,7 @@ const changeState = async (s, id) => {
           <!-- card: canceled -->
           <button
             @click="filterEvent('CA')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-red-500"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border focus:border-2 focus:border-solid focus:border-red-500"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-red-100"
@@ -221,29 +229,32 @@ const changeState = async (s, id) => {
       </div>
 
       <!-- Event List -->
-      <div class="event-list">
+      <div v-if="eventList" class="event-list">
         <!-- header -->
-        <div class="header flex justify-between mb-[16px]">
-          <div class="title text-[20px]">Event List</div>
-          <!-- <div class="button-search">
-            <button
-              class="h-[48px] w-[340px] px-[16px] bg-white rounded-[16px] text-gray-300 flex items-center justify-between"
+        <div class="header grid grid-flow-col mb-[16px]">
+          <div class="title text-[20px] justify-self-start">
+            All Event
+            <!-- {{ title }} -->
+          </div>
+          <div class="button-search justify-self-end w-[400px]">
+            <v-autocomplete
+              search
+              clearable
+              label="Search Event"
+              variant="outlined"
+              menu-icon=""
+              append-inner-icon="mdi-magnify"
+              :items="eventTitle"
+              v-model="searchEvent"
             >
-              <span>Search Event</span>
-              <img
-                src="@/assets/search.png"
-                class="w-[24px] h-[24px] mr-[16px]"
-                alt="create button"
-              />
-            </button>
-          </div> -->
+            </v-autocomplete>
+          </div>
         </div>
         <!-- card -->
-        <div v-if="eventList" class="event-list">
+        <div v-if="eventList">
           <button
             v-for="(event, index) in eventList"
             :key="index"
-            @click="changeState('eventDetail', event.id)"
             class="event-card w-full h-[96px] bg-white rounded-[16px] grid items-center grid-cols-10 mb-[16px] p-[24px]"
           >
             <!-- event name -->
@@ -273,7 +284,7 @@ const changeState = async (s, id) => {
             >
               <div
                 v-if="event.eventStatus == 'ON'"
-                class="eventStatus-button box-content h-[40px] w-[100px] rounded-[16px] bg-yellow-100 text-[14px] text-yellow font-medium grid place-content-center"
+                class="eventStatus-button box-content h-[40px] w-[100px] rounded-[16px] bg-yellow-100 text-[14px] text-[#EFB008] font-medium grid place-content-center"
               >
                 Ongoing
               </div>
@@ -296,15 +307,55 @@ const changeState = async (s, id) => {
                 Completed
               </div>
             </div>
+            <div class="bin col-start-10 grid justify-items-end">
 
-            <button class="bin col-start-10 grid justify-items-end">
+            
+            <v-dialog>
+              <template v-slot:activator="{props:activatorProps }">
+                <v-btn
+                class="text-gray-500 hover:text-red-500"
+                v-bind="activatorProps"
+                icon
+                >
+                <v-icon >mdi-trash-can</v-icon>
+
+                </v-btn>
+              </template>
+              <template v-slot:default="{ isActive }">
+                <v-card title="Dialog">
+                  <v-card-text>
+                    asdasdasdasdasd
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    
+                    <v-btn
+                    text="Close"
+                    @click="isActive.value = false">
+
+                    </v-btn>
+                    <v-btn
+                    text="Confirm"
+                    @click="(isActive.value = false,deleteEventById(event.id))">
+
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+          </div>
+            <!-- <button class="bin col-start-10 grid justify-items-end">
               <img
                 src="@/assets/Recycle Bin.png"
                 class="w-[24px] h-[24px]"
                 alt="recycle button"
               />
-            </button>
+            </button> -->
           </button>
+        </div>
+        <div v-if="filtered.length==0" class=" flex justify-center">
+          <img class="w-[177.8px] h-[155px]" src="@/assets/noEvent-icon.png" />
+
         </div>
       </div>
     </div>
@@ -319,4 +370,7 @@ const changeState = async (s, id) => {
   </div>
 </template>
 
-<style></style>
+<style scoped>
+
+
+</style>

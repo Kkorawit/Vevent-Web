@@ -1,59 +1,75 @@
 <script setup>
-import "vue3-carousel/dist/carousel.css";
-import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
-import { getAllEventCreatedByUEmail }  from "../repositories/EventRepo";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
+import { googleLogout, GoogleLogin, decodeCredential } from "vue3-google-login";
 import EventListOrganization from "@/components/Event/EventListOrganization.vue";
+import EventListParticipants from "@/components/Event/EventListParticipants.vue";
+import Navbar from "@/components/Navbar.vue";
+import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
 
+//user information
+const user = ref();
+const role = ref("Organization");
+//variable/function
+///all events
+const allEvents = ref();
+///event status filter
+// const districtStatus = ref([]);
+// const selectedStatus = ref(null);
+///event category
+// const districtCategory = ref([]);
+// const selectedCategory = ref(null);
+///search event
+// const eventTitle = ref([]);
+// const searchEvent = ref("");
 
-const events = ref([]);
-const emailUser = ref("Organization.032301@gmail.com");
+// const filterEvent = computed(() => {
 
-onMounted(async () => {
-  let allEvents = await getAllEventCreatedByUEmail(emailUser.value);
-  events.value = allEvents.findAllEventCreatedByUEmail;
-  console.log(events.value.findAllEventCreatedByUEmail);
-  console.log(events.value[0]);
-});
+// return allEvents.value.filter((event) => {
+//     const statusMatch = selectedStatus.value
+//     ? (
+//     selectedStatus.value.includes(event.eventStatus))
+//     : true;
+//     const categoryMatch = selectedCategory.value
+//     ? (
+//     selectedCategory.value.includes(event.category))
+//     : true;
+//     const titleMatch =
+//   searchEvent.value
+//   ? (event.title.includes(searchEvent.value))
+//   : true;
 
-// function searchingEvent(text){
-//     return allEvents.value.filter((event)=>{
-//       return event.title.includes(text);
-//     })  
-// }
-// const filterEvent = computed(()=> {
-//   allEvents.value.forEach((objEvent) => {
-
-//     if (selectedStatus.value.includes(objEvent.eventStatus) && selectedCategory.value.includes(objEvent.category)) {
-//       return events.value.push(objEvent);
-//     }
-//     return events.value.sort((a, b) => {
-//       return parseInt(a.id) - parseInt(b.id);
-//     });
-//   });
-// });
-
-
-onMounted(async () => {
-  let response = await getAllEvent();
-  allEvents.value = response.findAllEventCreatedByUEmail;
-  console.log();
-  console.log(allEvents.value);
-  // let dist = allEvents.value.map((event) => event.eventStatus);
-  districtStatus.value = Array.from(
-    new Set(allEvents.value.map((event) => event.eventStatus))
-  );
-  districtCategory.value = Array.from(
-    new Set(allEvents.value.map((event) => event.category))
-  );
-  eventTitle.value = Array.from(
-    new Set(allEvents.value.map((event) => event.title))
-  );
-  console.log(districtCategory.value);
-  console.log(districtStatus.value);
-  console.log(eventTitle.value);
   
+//     return statusMatch&&categoryMatch&&titleMatch
+//   });
+
+// });
+const re = ref()
+
+onMounted(async () => {
+  let response = await getAllEventCreatedByUEmail("Organization.032301@gmail.com");
+  console.log(response);
+  // console.log(re.value);
+  allEvents.value = response;
+  console.log(import.meta.env);
+  console.log(import.meta.env.VITE_API_ENV);
+  console.log(import.meta.env.VITE_GL_ENV);
+  console.log(import.meta.env.APP_GL_ENV);
+  // console.log(allEvents.value);
+  // let dist = allEvents.value.map((event) => event.eventStatus);
+  // districtStatus.value = Array.from(
+  //   new Set(allEvents.value.map((event) => event.eventStatus))
+  // );
+  // districtCategory.value = Array.from(
+  //   new Set(allEvents.value.map((event) => event.category))
+  // );
+  // eventTitle.value = Array.from(
+  //   new Set(allEvents.value.map((event) => event.title))
+  // );
+  // console.log(districtCategory.value);
+  // console.log(districtStatus.value);
+  // console.log(eventTitle.value);
 });
+
 
 const logIn = (response) => {
   console.log(response);
@@ -61,260 +77,25 @@ const logIn = (response) => {
   console.log(user.value);
 };
 
-const onSwiper = (swiper) => {
-  console.log(swiper);
-};
-const onSlideChange = () => {
-  console.log("slide change");
-};
 
 const logOut = () => {
   googleLogout();
 };
-
 </script>
 
 <template>
-  <div
-    class="bar grid grid-cols-3 gap-x-10 col-span-3 bg-white h-[100px] drop-shadow-xl"
-  >
-    <!-- bar logo -->
-    <div class="logo grid cols-start-1 content-center ml-10">
-      <img src="@/assets/LOGO-web.png" class="w-[148px] h-[37px]" alt="logo" />
-    </div>
-    <!-- bar menu -->
-    <div class="menu cols-start-2 flex justify-center">
-      <div class="flex flex-row items-center">
-        <button
-          class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
-        >
-          Home
-        </button>
-        <button
-          class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 mr-10"
-        >
-          About us
-        </button>
-      </div>
-    </div>
-    <!-- bar profile -->
-    <div class="profile-user col-start-3 flex justify-end mr-10">
-      <div class="flex flex-row items-center">
-        <button
-          class="box-content h-[43px] w-[240px] border border-1 border-solid border-gray-200 rounded-[16px] bg-white focus:bg-purple-900"
-          @click="logIn"
-        >
-          Sign in with Google
-        </button>
-        <GoogleLogin :callback="logIn" />
-      </div>
-    </div>
+  <Navbar></Navbar>
+  <div v-if="role == 'Participants'">
+    <EventListParticipants v-if="allEvents" :allEvents="allEvents"></EventListParticipants>
+    <!-- {{ eventList }} -->
+    <!-- <EventCard></EventCard> -->
   </div>
-  <div
-    class="content-slid grid grid-cols-12 gap-x-10 col-span-12 bg-[#4520CC] h-[540px] drop-shadow-xl"
-  >
-    <div
-      class="col-start-1 col-span-3 flex flex-col justify-start items-start pt-[100px] pl-[80px] space-y-4"
-    >
-      <div class="text-white text-topic">
-        Upcoming<br /><a class="underline underline-offset-[10px]">Eve</a>nts
-      </div>
-      <!-- <hr width=""/> -->
-      <div class="text-white text-[16px]">
-        กิจกรรมที่กำลังจะเกิดขึ้น<br />และเราไม่อยากให้คุณพลาด!!
-      </div>
-    </div>
-    <div class="col-start-4 col-span-9 py-20">
-      <swiper
-        :slides-per-view="2.2"
-        :space-between="-400"
-        :pagination="{
-          clickable: true,
-          dynamicBullets: true,
-          dynamicMainBullets: 1,
-        }"
-        navigation
-        :loop="true"
-        :autoplay="{ delay: 5000 }"
-        class="my-swiper"
-        @swiper="onSwiper"
-        @slideChange="onSlideChange"
-        :modules="[Pagination, Navigation, Autoplay]"
-      >
-        <swiper-slide v-for="event in allEvents" :key="event.id" class="pb-12">
-          <img
-            :src="event.posterImg"
-            alt="poster"
-            class="w-[420px] h-[380px] rounded-[16px]"
-          />
-        </swiper-slide>
-      </swiper>
-      <!-- <Carousel :items-to-show="2.3" 
-       :touch-drag="true" 
-       :wrap-around="true" 
-       snap-align="start">
-       
-        <Slide v-for="event in events" :key="event" slide-width="30">
-          <img :src="event.posterImg" alt="poster_img" 
-          class="w-[480px] h-[380px] rounded-[16px]">
-        </Slide>
-        <template #addons>
-          <Navigation/>
-        </template>
-       </Carousel> -->
-    </div>
-  </div>
-  <!-- Menu bar/ filter&search -->
-  < class="event-list grid grid-cols-12 mx-10 gap-x-10 col-span-12">
-    <div class="col-span-12 grid grid-cols-12">
-      <div
-        class="col-start-1 col-end-3 pt-[58px] pl-[80px] flex justify-center text-main text-topic"
-      >
-        All Events
-      </div>
-      <div
-        class="pt-[60px] col-start-3 col-span-12 flex space-x-12 justify-end pr-[80px]"
-        v-if="allEvents != []"
-      >
-        <div class="w-[200px]">
-          <v-autocomplete
-            clearable
-            chips
-            multiple
-            variant="outlined"
-            label="Event Status"
-            :items="districtStatus"
-            v-model="selectedStatus"
-          ></v-autocomplete>
-        </div>
-        <div class="w-[200px]">
-          <v-autocomplete
-            clearable
-            chips
-            multiple
-            variant="outlined"
-            label="Category"
-            :items="districtCategory"
-            v-model="selectedCategory"
-          ></v-autocomplete>
-          {{ filterEvent.title  }}
-          {{ filterEvent.category }}
-        </div>
-        <div class="w-[400px]">
-          <v-text-field
-          label="Search Event"
-          variant="outlined"
-          menu-icon=""
-          append-inner-icon="mdi-magnify"
-          v-model="searchEvent"
-          >
-          </v-text-field>
-          <!-- <v-autocomplete
-            search
-            variant="outlined"
-            label="Search Event"
-            :items="eventTitle"
-            v-model="searchEvent"
-            menu-icon=""
-            append-inner-icon="mdi-magnify"
-          ></v-autocomplete> -->
-          
-        </div>
-      </div>
-      {{filterEvent}}
-    </div>
-  
-
-
-<template>
   <!-- organization -->
-  <div v-if="role == 'organization'">
-    <div
-      class="bar grid grid-cols-3 gap-x-10 bg-white h-[100px] drop-shadow-xl"
-    >
-      <!-- bar logo -->
-      <div class="logo grid cols-start-1 content-center ml-10">
-        <img
-          src="@/assets/LOGO-web.png"
-          class="w-[148px] h-[37px]"
-          alt="logo"
-        />
-      </div>
-      <!-- bar menu -->
-      <div class="menu cols-start-2 flex justify-center">
-        <div class="flex flex-row items-center">
-          <button
-            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
-          >
-            Dashboard
-          </button>
-          <button
-            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 mr-10"
-          >
-            Event
-          </button>
-        </div>
-      </div>
-      <!-- bar profile -->
-      <div class="profile-user col-start-3 flex justify-end mr-10">
-        <div class="flex flex-row items-center">
-          <button
-            class="box-content h-[43px] w-[240px] border border-1 border-solid border-gray-200 rounded-[16px] bg-white focus:bg-purple-900"
-          >
-            Sign in with Google
-          </button>
-        </div>
-      </div>
-    </div>
-
+  <div v-if="role == 'Organization'">
     <!-- content event list -->
-    <div v-if="events != '' " class="event-list">
-      <EventListOrganization :info="events"></EventListOrganization>
+    <div class="event-list">
+      <EventListOrganization v-if="allEvents" :info="allEvents"></EventListOrganization>
     </div>
-  </div>
-
-
-  <!-- participant -->
-  <div v-if="role == 'participant'">
-    <div
-      class="bar grid grid-cols-3 gap-x-10 bg-white h-[100px] drop-shadow-xl"
-    >
-      <!-- bar logo -->
-      <div class="logo grid cols-start-1 content-center ml-10">
-        <img
-          src="@/assets/LOGO-web.png"
-          class="w-[148px] h-[37px]"
-          alt="logo"
-        />
-      </div>
-      <!-- bar menu -->
-      <div class="menu cols-start-2 flex justify-center">
-        <div class="flex flex-row items-center">
-          <button
-            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
-          >
-            Home
-          </button>
-          <button
-            class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 mr-10"
-          >
-            About us
-          </button>
-        </div>
-      </div>
-      <!-- bar profile -->
-      <div class="profile-user col-start-3 flex justify-end mr-10">
-        <div class="flex flex-row items-center">
-          <button
-            class="box-content h-[43px] w-[240px] border border-1 border-solid border-gray-200 rounded-[16px] bg-white focus:bg-purple-900"
-          >
-            Sign in with Google
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="content-slid"></div>
-    <div class="event-list"></div>
   </div>
 </template>
 <!-- google information -->

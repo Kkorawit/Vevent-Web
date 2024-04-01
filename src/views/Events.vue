@@ -1,5 +1,4 @@
 <script setup>
-import Sidebar from "../components/Sidebar.vue";
 import gql from "graphql-tag";
 import { onBeforeMount, onMounted } from "vue";
 import { ref } from "vue";
@@ -7,7 +6,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 // import router from "../plugins/router";
 import EventDetailCard from "@/components/Event/EventDetail_card.vue";
 import CreateEvent from "@/components/Event/CreateEvent.vue";
-import getAllEvent from "../repositories/EventRepo";
+import getAllEvent from "../repositories/gql/Eventql.js";
 
 // const uEmail = "Organization.032301@gmail.com";
 

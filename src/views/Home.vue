@@ -1,39 +1,19 @@
 <script setup>
-import getAllEvent from "../repositories/EventRepo";
-import { onMounted, ref, computed } from "vue";
-import { googleLogout, GoogleLogin, decodeCredential } from "vue3-google-login";
-import { Swiper, SwiperSlide } from "swiper/vue";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import "swiper/css/bundle";
-import EventListOrganization from "@/components/Event/EventListOrganization.vue"
+import "vue3-carousel/dist/carousel.css";
+import { Carousel, Slide, Pagination, Navigation } from "vue3-carousel";
+import { getAllEventCreatedByUEmail }  from "../repositories/EventRepo";
+import { onMounted, ref } from "vue";
+import EventListOrganization from "@/components/Event/EventListOrganization.vue";
 
 
-//all events
-const allEvents = ref([]);
-//event status filter
-const districtStatus = ref([]);
-const selectedStatus = ref([]);
-//event category
-const districtCategory = ref([]);
-const selectedCategory = ref([]);
-//search event
-const eventTitle = ref('');
-const searchEvent = ref('');
-//user information
-const user = ref();
-const role = ref("organization");
+const events = ref([]);
+const emailUser = ref("Organization.032301@gmail.com");
 
-//event filterd
-const filterEvent = computed(() => {
-  return allEvents.value.filter((event) => {
-    return (
-      selectedCategory.value === 0 ||
-      selectedCategory.value.includes(event.category) ||
-      selectedStatus.value === 0 ||
-      selectedStatus.value.includes(event.eventStatus) ||
-      event.title.includes(searchEvent.value)
-    );
-  });
+onMounted(async () => {
+  let allEvents = await getAllEventCreatedByUEmail(emailUser.value);
+  events.value = allEvents.findAllEventCreatedByUEmail;
+  console.log(events.value.findAllEventCreatedByUEmail);
+  console.log(events.value[0]);
 });
 
 // function searchingEvent(text){

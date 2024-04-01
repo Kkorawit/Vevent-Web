@@ -13,6 +13,14 @@ module.exports = {
         
       },
       colors: {
+        primaryColor:'#4520CC',
+        purple400:'#6A4DD6',
+        purple300:'#8F79E0',
+        purple200:'#B5A6EB',
+        purple100:'#DAD2F5',
+        primaryLight:'#ECE9FA',
+      },
+      colors: {
       'main' : '#4520CC',
       },
       fontSize: {

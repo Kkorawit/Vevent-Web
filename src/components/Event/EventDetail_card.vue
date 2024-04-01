@@ -1,22 +1,30 @@
 <script setup>
 import DateTimeFormat from "@/components/DateTimeFormat.vue";
 import EditEvent from "@/components/Event/EditEvent.vue";
+
 import { ref } from "vue";
 
 const emits = defineEmits(["isShow", "close"]);
 const props = defineProps({
   info: {
     type: Object,
-    request: true,
+    request: false,
   },
   state: {
     type: String,
-    request: true,
-  },
+    request: false,
+  }
 });
 
-console.log(props.info);
+
+
+
+
+
 console.log(props.state);
+
+
+
 
 const state = ref(props.state);
 const changeState = (s) => {
@@ -29,10 +37,11 @@ const changeState = (s) => {
 };
 </script>
 <template>
-  <div v-if="state == 'eventDetail'">
+  <div v-if="state == 'props.info'">
     <div class="header">
       <div>Events > Event Detail</div>
       <h2>{{props.info.title}}</h2>
+      <!-- <h2>{{props.info.title}}</h2> -->
       <hr />
     </div>
     <br />

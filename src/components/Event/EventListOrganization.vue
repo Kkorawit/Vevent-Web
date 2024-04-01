@@ -5,6 +5,9 @@ import { deleteEventById } from '~/restful/Eventapi.js'
 import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
 import EventDetailCard from "@/components/Event/EventDetail_card.vue";
 import CreateEvent from "@/components/Event/CreateEvent.vue";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import '@vuepic/vue-datepicker/dist/main.css'
+
 const props = defineProps({
   info: {
     type: Array,
@@ -12,8 +15,7 @@ const props = defineProps({
   },
 });
 
-const eventStatus = ref("");
-const eventStatusCSS = ref("");
+const filterStatus = ref('allEvents');
 const eventTitle = ref(Array.from(new Set(props.info?.map((event) => event.title))))
 
 const countAll = ref();
@@ -108,6 +110,7 @@ const changeState = async (s, id) => {
         </div>
         <!-- button create -->
         <div class="button-create-newEvent">
+          <VueDatePicker v-model="date" class=""></VueDatePicker>
           <button
             @click="changeState('createEvent', null)"
             class="h-[64px] px-[16px] bg-primaryColor rounded-[16px] text-white flex items-center"
@@ -151,7 +154,7 @@ const changeState = async (s, id) => {
           <!-- card: Upcoming -->
           <button
             @click="filterEvent('UP')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-gray-400"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid focus:border-2 focus:border-solid focus:border-gray-400"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-gray-100"
@@ -170,7 +173,7 @@ const changeState = async (s, id) => {
           <!-- card:Onging -->
           <button
             @click="filterEvent('ON')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-yellow-400"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border focus:border-2 focus:border-solid focus:border-yellow-400"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-yellow-100"
@@ -189,7 +192,7 @@ const changeState = async (s, id) => {
           <!-- card: completed -->
           <button
             @click="filterEvent('CO')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-green-600"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border focus:border-2 focus:border-solid focus:border-green-600"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-green-100"
@@ -208,7 +211,7 @@ const changeState = async (s, id) => {
           <!-- card: canceled -->
           <button
             @click="filterEvent('CA')"
-            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border-2 focus:border-solid focus:border-red-500"
+            class="filter-card w-[168px] h-[163px] p-[16px] bg-white rounded-[16px] grid place-items-between border border-2 border-solid border-white focus:border focus:border-2 focus:border-solid focus:border-red-500"
           >
             <div
               class="icon w-[54px] h-[54px] rounded-[8px] grid place-content-center bg-red-100"
@@ -370,6 +373,7 @@ const changeState = async (s, id) => {
 </template>
 
 <style scoped>
-
-
+.dp__input {
+  background-color: red !important;
+}
 </style>

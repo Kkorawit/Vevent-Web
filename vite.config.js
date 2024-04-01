@@ -7,18 +7,20 @@ dotenv.config();
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  proxy:{
-    '/api':{
-      target: 'https://capstone23.sit.kmutt.ac.th/kw1',
-      // target: 'http://localhost:8080',
-      changeOrigin: true,
-      secure: false
+  server:{
+    proxy:{
+      '/api':{
+        // target: 'https://capstone23.sit.kmutt.ac.th/kw1',
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false
+      },
+      '/graphl':{
+        target: 'https://capstone23.sit.kmutt.ac.th/kw1',
+        changeOrigin:true,
+        secure:false
+      }
     },
-    '/graphl':{
-      target: 'https://capstone23.sit.kmutt.ac.th/kw1',
-      changeOrigin:true,
-      secure:false
-    }
   },
   plugins: [vue()],
   resolve:{

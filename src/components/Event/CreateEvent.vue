@@ -1,8 +1,11 @@
 <script setup>
 // import { from, gql, useApolloClient } from "@apollo/client";
 import DateTimeFormat from "@/components/DateTimeFormat.vue";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import '@vuepic/vue-datepicker'
 import { ref } from "vue";
 
+const date = ref()
 const newTitle = ref(""); //from user
 // const newEventDescription = ref(''); //from user
 const newAmountReceived = ref(10); //from user
@@ -839,6 +842,7 @@ const onDrop = (event) => {
                     />
                   </svg>
                 </button>
+                <VueDatePicker v-model="date"></VueDatePicker>
               </div>
             </div>
             </div>

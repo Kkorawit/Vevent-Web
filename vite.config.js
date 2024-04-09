@@ -10,8 +10,8 @@ export default defineConfig({
   server:{
     proxy:{
       '/api':{
-        // target: 'https://capstone23.sit.kmutt.ac.th/kw1',
-        target: 'http://localhost:8080',
+        target: 'https://capstone23.sit.kmutt.ac.th/kw1',
+        // target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false
       },

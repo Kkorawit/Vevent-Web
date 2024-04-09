@@ -1,5 +1,40 @@
-<script>
+<script setup>
 import { RouterView } from "vue-router";
+import { ref,reactive } from 'vue'
+import { googleLogout, GoogleLogin, decodeCredential } from "vue3-google-login";
+import { auth } from '~/restful/Auth.js'
+
+
+const role = ref("Guest")
+const user = ref({})
+
+async function callback(response) {
+  console.log("Login",response);
+  user.value = decodeCredential(response.credential)
+
+  let doAuth = auth(user.value.email,role.value,user.value.name,user.value.picture)
+  if(doAuth=='Signup'){
+    
+  }
+  console.log(user.value);
+  console.log(user.value.email);
+  if(role.value){
+    console.log("have role");
+  }
+}
+
+// const logIn = (response) => {
+//   console.log("login response:"+response);
+//   user.value = decodeCredential(response.credential);
+//   console.log(user.value);
+// };
+
+
+const logOut = () => {
+  googleLogout();
+};
+
+
 </script>
 <template>
   <div
@@ -25,15 +60,12 @@ import { RouterView } from "vue-router";
       </div>
     </div>
     <!-- bar profile -->
-    <div class="profile-user col-start-3 flex justify-end mr-10">
+    <div class="profile-user col-start-3 flex justify-end mr-10" v-if="role=='Guest'">
       <div class="flex flex-row items-center">
-        <button
-          class="box-content h-[43px] w-[240px] border border-1 border-solid border-gray-200 rounded-[16px] bg-white focus:bg-purple-900"
-          @click=""
-        >
-          Sign in with Google
-        </button>
-        <!-- <GoogleLogin :callback="logIn" /> -->
+        <GoogleLogin :callback="callback" />
+      </div>
+      <div class="profile-user col-start-3 flex justify-end mr-10" v-if="role">
+
       </div>
     </div>
   </div>

@@ -6,45 +6,11 @@ import EventListParticipants from "@/components/Event/EventListParticipants.vue"
 import Navbar from "@/components/Navbar.vue";
 import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
 
-//user information
+
 const user = ref();
-// const role = ref("Participants");
-const role = ref("Organization");
-//variable/function
-///all events
+const role = ref("Participants");
 const allEvents = ref();
-///event status filter
-// const districtStatus = ref([]);
-// const selectedStatus = ref(null);
-///event category
-// const districtCategory = ref([]);
-// const selectedCategory = ref(null);
-///search event
-// const eventTitle = ref([]);
-// const searchEvent = ref("");
 
-// const filterEvent = computed(() => {
-
-// return allEvents.value.filter((event) => {
-//     const statusMatch = selectedStatus.value
-//     ? (
-//     selectedStatus.value.includes(event.eventStatus))
-//     : true;
-//     const categoryMatch = selectedCategory.value
-//     ? (
-//     selectedCategory.value.includes(event.category))
-//     : true;
-//     const titleMatch =
-//   searchEvent.value
-//   ? (event.title.includes(searchEvent.value))
-//   : true;
-
-  
-//     return statusMatch&&categoryMatch&&titleMatch
-//   });
-
-// });
-const re = ref()
 
 onMounted(async () => {
   let response = await getAllEventCreatedByUEmail("Organization.032301@gmail.com");
@@ -55,20 +21,6 @@ onMounted(async () => {
   console.log(import.meta.env.VITE_API_ENV);
   console.log(import.meta.env.VITE_GL_ENV);
   console.log(import.meta.env.APP_GL_ENV);
-  // console.log(allEvents.value);
-  // let dist = allEvents.value.map((event) => event.eventStatus);
-  // districtStatus.value = Array.from(
-  //   new Set(allEvents.value.map((event) => event.eventStatus))
-  // );
-  // districtCategory.value = Array.from(
-  //   new Set(allEvents.value.map((event) => event.category))
-  // );
-  // eventTitle.value = Array.from(
-  //   new Set(allEvents.value.map((event) => event.title))
-  // );
-  // console.log(districtCategory.value);
-  // console.log(districtStatus.value);
-  // console.log(eventTitle.value);
 });
 
 

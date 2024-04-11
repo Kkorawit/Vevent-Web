@@ -10,12 +10,12 @@ pipeline {
                     }
                 }
             }
-            // stage('Down Container') {
-            //     steps{
-            //     sh"docker stop web-vevent"
-            //     sh"docker rm web-vevent"
-            //     }
-            // }
+            stage('Down Container') {
+                steps{
+                sh"docker stop web-vevent"
+                sh"docker rm web-vevent"
+                }
+            }
             stage('Build Container') {
                 steps{
                 sh"docker build --build-arg ENV_FILE=.env -t web-vevent-image ."
@@ -23,7 +23,7 @@ pipeline {
             }
             stage('Run Container') {
                 steps{
-                    sh"docker run -d --name web-vevent web-vevent-image"
+                    sh"docker run -d -p 3000:3000 --name web-vevent web-vevent-image"
                 }
             }
         }

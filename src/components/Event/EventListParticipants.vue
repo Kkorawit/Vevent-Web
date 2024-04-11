@@ -60,36 +60,6 @@ const filterEvent = computed(() => {
         });                 
 });
 
-// watch(filterEvent,(value) => {
-//   emits('filter-event',value)
-// })
-
-
-// const eventStartDate = ref();
-//Hook section
-///on mounted for get all events and assign value
-// onMounted(async () => {
-//   let response = await getAllEvent();
-//   allEvents.value = response.findAllEventCreatedByUEmail;
-//   console.log(allEvents.value);
-//   // let dist = allEvents.value.map((event) => event.eventStatus);
-//   districtStatus.value = Array.from(
-//     new Set(allEvents.value.map((event) => event.eventStatus))
-//   );
-//   districtCategory.value = Array.from(
-//     new Set(allEvents.value.map((event) => event.category))
-//   );
-//   eventTitle.value = Array.from(
-//     new Set(allEvents.value.map((event) => event.title))
-//   );
-//   eventStartDate.value = Array.from(
-//     new Set(allEvents.value.map((event) => event.startDate))
-//   );
-//   console.log(districtCategory.value);
-//   console.log(districtStatus.value);
-//   console.log(eventTitle.value);
-  
-// });
 
 // const onSwiper = (swiper) => {
 //   console.log(swiper);

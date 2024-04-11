@@ -1,10 +1,10 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import DateTimeFormat from "@/components/DateTimeFormat.vue";
+import DateTimeFormat from "@/extend/DateTimeFormat.vue";
 import { deleteEventById } from '~/restful/Eventapi.js'
 import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
-import EventDetailCard from "@/components/Event/EventDetail_card.vue";
-import CreateEvent from "@/components/Event/CreateEvent.vue";
+import EventDetailCard from "@/pages/EventDetail_card.vue";
+import CreateEvent from "@/pages/CreateEvent.vue";
 // import VueDatePicker from "@vuepic/vue-datepicker";
 // import '@vuepic/vue-datepicker/dist/main.css'
 

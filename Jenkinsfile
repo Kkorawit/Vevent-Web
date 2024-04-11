@@ -18,7 +18,7 @@ pipeline {
             }
             stage('Build Container') {
                 steps{
-                sh"docker build --build-arg ENV_FILE=.env -t web-vevent-image ."
+                sh"docker build --build-arg ENV_FILE=.env.development -t web-vevent-image ."
                 }
             }
             stage('Run Container') {

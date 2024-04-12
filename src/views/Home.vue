@@ -8,7 +8,7 @@ import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
 
 
 const user = ref();
-const role = ref("Organization");
+const role = ref("Participants");
 const allEvents = ref();
 
 
@@ -34,6 +34,7 @@ const logIn = (response) => {
 const logOut = () => {
   googleLogout();
 };
+
 </script>
 
 <template>
@@ -58,7 +59,7 @@ const logOut = () => {
   {{ user.picture}}
   <img :src="user.picture" />
 </div>  -->
-<style>
+<style scoped>
 /* .swiper-pagination {
   --swiper-pagination-color: var(--swiper-theme-color);
   --swiper-pagination-left: auto;
@@ -89,7 +90,7 @@ const logOut = () => {
   bottom: auto;
   top: 15px;
 } */
-.swiper-pagination-bullet {
+/* .swiper-pagination-bullet {
   width: 8px;
   height: 8px;
   background-color: white;
@@ -97,7 +98,7 @@ const logOut = () => {
 }
 .swiper-pagination-bullet-active {
   background-color: #8f79e0;
-}
+} */
 /* .container {
   background-color: aquamarine;
   display: grid;

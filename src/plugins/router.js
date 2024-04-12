@@ -1,4 +1,5 @@
 import { createRouter,createWebHistory } from "vue-router";
+import { components } from "vuetify/dist/vuetify-labs.js";
 
 const routes = [
     {path:'/',name:'home',component:()=>import(/* webpackChunkName: "home" */ '@/views/Home.vue')},
@@ -9,8 +10,7 @@ const routes = [
     {path:'/edit',name:'edit',component:()=>import(/* webpackChunkName: "Edit" */'@/pages/EditEvent.vue')},
     {path:'/organization',name:'organize',component:()=>import(/* webpackChunkName: "Organize" */'@/components/Event/EventListOrganization.vue')},
     {path:'/participants',name:'participants',component:()=>import(/* webpackChunkName: "Participants" */'@/components/Event/EventListParticipants.vue')},
-    // {path:'/organize',name:'organize',component:()=>import(/* webpackChunkName: "Create" */'@/components/Event/EventListOrganization.vue')},
-    // {path:'/eventDetail',name:'eventDetail',component:()=>import(/* webpackChunkName: "home" */'@/components/EventDetail.vue')},
+    {path:'/signup',name:'signup',component:()=>import(/* webpackChuckName: "Signup" */'@/pages/Signup.vue')},
 ]
 
 

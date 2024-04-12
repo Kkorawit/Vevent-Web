@@ -1,17 +1,55 @@
 <script setup>
 import { rules } from "@/extend/utils.ts";
 import { ref, computed } from "vue";
+import { createEvent } from '~/restful/Eventapi.js'
 
-const startDate = ref("2024-04-10T14:30:00");
+const title = ref("")
+const description = ref("")
+const amountReceived = ref(0)
+const category = ref("")
+const subCategory = ref("")
+const startDate = ref(new Date())
+const endDate = ref(new Date())
+const registerStartDate = ref(new Date())
+const registerEndDate = ref(new Date())
+const validationType = ref("")
+const validationRules = ref("")
+const posterImg = ref("")
+const locationName = ref("")
+const locationLatitude = ref("")
+const locationLongitude = ref("")
+
+const event = {
+      "title": title.value,
+      "description": description.value,
+      "amountReceived": amountReceived.value,
+      "category": category.value,
+      "subCategory": subCategory.value,
+      "startDate": startDate.value,
+      "endDate": endDate.value,
+      "registerStartDate": registerStartDate.value,
+      "registerEndDate": registerEndDate.value,
+      "validationType": validationType.value,
+      "validationRules": validationRules.value,
+      "posterImg": posterImg.value,
+      "locationName": locationName.value,
+      "locationLatitude": locationLatitude.value,
+      "locationLongitude": locationLongitude.value
+}
+
+// form validation
+const valid = ref(true)
+// const handleForm = () => {
+//   if(valid.value){
+
+//   }
+
+// }
 
 const posterStatus = ref("");
 const newPoster = ref("");
 const images = ref([]);
 const isDraging = ref(false);
-
-
-
-
 const selectFile = () => {
   const fileInput = document.getElementById("fileInput");
   if (fileInput) {
@@ -99,20 +137,19 @@ const onDrop = (event) => {
     >
       <div class="p-[40px] space-y-[50px]">
         <!-- header -->
-        <div>
-          <div>asdasd</div>
-          <div>asdasd</div>
-          <div>asdasd</div>
+        <div class="flex flex-col justify-start">
+          <div class="text-[16px]" >Event > Crate Event</div>
+          <div class="font-bold text-[32px]">สร้างโพสกิจกรรม</div>
         </div>
         <hr />
         <!-- form -->
-        <v-form fast-fail @submit.prevent>
+        <v-form v-model="valid" fast-fail @submit.prevent>
           <div class="flex justify-between py-8">
-          <div>
+          <div class="text-primaryColor font-bold text-[24px]">
             รายละเอียดกิจกรรม
           </div>
           <div>
-            <v-btn class="" type="submit" block>Submit</v-btn>
+            <v-btn @click="createEvent(event)" :disabled="!valid" class="rounded-[15px] text-white" color="#4520CC" type="submit" block>Done</v-btn>
           </div>
         </div>
         <!-- fill -->
@@ -146,6 +183,7 @@ const onDrop = (event) => {
               <div class="flex justify-center space-x-2">
                 <div class="w-[290px] ">
                   <VueDatePicker
+                  :rules="rules.require"
                     placeholder="วันเปิดรับสมัคร"
                     dark="true"
                   ></VueDatePicker>
@@ -266,6 +304,7 @@ const onDrop = (event) => {
                   class="w-[334px] h-[56px] bg-[primaryLight]"
                   label="จำนวนผู้เข้าร่วม"
                   append-inner
+                  :rules="rules.require"
                   hide-spin-buttons
                 >
                   <template #append-inner>
@@ -276,23 +315,26 @@ const onDrop = (event) => {
               </div>
               <div class="pt-2 rounded-[8px]">
                 <v-select
+                v-model="validationType"
                   class="w-[334px] h-[56px] rounded-[6px]"
                   variant="outlined"
                   label="ตรวจสอบการเข้าร่วมโดย"
+                  :rules="rules.require"
                   :items="['QR Code', 'Step Counter', 'GPS', 'QR Code&GPS']"
                   bg-color="#ECE9FA"
                 >
                 </v-select>
               </div>
-              <div>
+              <!-- <div>
                 <v-select
                   class="w-[334px] h-[56px] rounded-[6px]"
                   variant="outlined"
+                  :rules="rules.require"
                   label="ตรวจสอบการเข้าร่วมโดย"
                   bg-color="#ECE9FA"
                 >
                 </v-select>
-              </div>
+              </div> -->
             </div>
           </div>
         </v-form>

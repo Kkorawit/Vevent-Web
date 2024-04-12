@@ -20,19 +20,19 @@ export async function auth(email, role, displayName, profileImg) {
     data.displayName = displayName
   }
 
-  try {
-    const response = await axios.post(
+    let response = await axios.post(
       `${import.meta.env.VITE_API_ENV}/auth`,
+      // `http://localhost:8080/local/api/auth`,
       data
-    );
-
+    ).then(response => {
+      console.log(response.data);
+      return response.data
+    }).catch(error => {
+      console.log(error);
+    });
     // Handle successful deletion response here
-    console.log(response.data);
-    
-  } catch (error) {
     // Handle error with informative message
-    console.error("Error deleting event:", error.message);
-  }
+    return response
 }
 
 export const getRefreshToken = async () => {

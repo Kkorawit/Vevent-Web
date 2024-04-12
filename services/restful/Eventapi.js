@@ -1,5 +1,46 @@
+import { data } from "autoprefixer";
 import axios from "axios";
 import moment from "moment";
+
+export async function createEvent(event){
+  console.log(event);
+  const data = {
+      "title": event.title,
+      "description": event.description,
+      "amountReceived": event.amountReceived,
+      "category": event.category,
+      "subCategory": event.subCategory,
+      "startDate": event.startDate,
+      "endDate": event.endDate,
+      "registerStartDate": event.registerStartDate,
+      "registerEndDate": event.registerEndDate,
+      "validationType": event.validationType,
+      "validationRules": event.validationRules,
+      "posterImg": event.posterImg,
+      "createBy": localStorage.getItem("email"),
+      "updateBy": localStorage.getItem("email"),
+      "locationName": event.locationName,
+      "locationLatitude": event.locationLatitude,
+      "locationLongitude": event.locationLongitude
+  }
+
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_ENV}/create-event`,
+      data,
+      {
+        headers:{
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`
+        },
+      
+      }
+    ).then(response => {
+      console.log(response.data);
+    }).catch(error => {
+      console.log(error.data);
+    })
+
+    return response.data
+}
 
 
 export async function deleteEventById (eid){
@@ -36,6 +77,8 @@ export async function editEventById (){
 export async function bookEventById (){
     
 }
+
+
 
 export default ({deleteEventById,editEventById,bookEventById})
 

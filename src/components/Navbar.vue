@@ -3,8 +3,10 @@ import { RouterView } from "vue-router";
 import { ref,reactive } from 'vue'
 import { googleLogout, GoogleLogin, decodeCredential } from "vue3-google-login";
 import { auth } from '~/restful/Auth.js'
+import { useRouter } from 'vue-router'
 
-
+let router = useRouter()
+const currentRoute = ref(router.currentRoute);
 const role = ref("Guest")
 const user = ref({})
 
@@ -12,9 +14,11 @@ async function callback(response) {
   console.log("Login",response);
   user.value = decodeCredential(response.credential)
 
-  let doAuth = auth(user.value.email,role.value,user.value.name,user.value.picture)
+  let doAuth = await auth(user.value.email,role.value,user.value.name,user.value.picture)
+  console.log(doAuth);
   if(doAuth=='Signup'){
-    
+    console.log("log signup navbar");
+    router.push('/events')
   }
   console.log(user.value);
   console.log(user.value.email);
@@ -38,8 +42,9 @@ const logOut = () => {
 </script>
 <template>
   <div
-    class="bar grid grid-cols-3 gap-x-10 col-span-3 h-[100px] bg-white drop-shadow-xl z-[100]"
-  >
+    :class="['bar grid grid-cols-3 gap-x-10 col-span-3 w-screen h-[100px] bg-white drop-shadow-xl z-[100] ',currentRoute.path=='/signup'? 'absolute top-0' : 'sticky top-0'  ]"
+
+    >
     <!-- bar logo -->
     <div class="logo grid cols-start-1 content-center ml-10">
       <img src="@/assets/LOGO-web.png" class="w-[148px] h-[37px]" alt="logo" />
@@ -62,7 +67,7 @@ const logOut = () => {
     <!-- bar profile -->
     <div class="profile-user col-start-3 flex justify-end mr-10" v-if="role=='Guest'">
       <div class="flex flex-row items-center">
-        <GoogleLogin :callback="callback" />
+        <GoogleLogin :callback="callback" client-id="403895376917-4c0smnvq340orrujns9s26emtsaq8s1c.apps.googleusercontent.com"/>
       </div>
       <div class="profile-user col-start-3 flex justify-end mr-10" v-if="role">
 

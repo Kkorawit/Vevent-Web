@@ -15,7 +15,6 @@ const allEvents = ref();
 onMounted(async () => {
   let response = await getAllEventCreatedByUEmail("Organization.032301@gmail.com");
   console.log(response);
-  // console.log(re.value);
   allEvents.value = response;
   console.log(import.meta.env);
   console.log(import.meta.env.VITE_API_ENV);
@@ -24,16 +23,16 @@ onMounted(async () => {
 });
 
 
-const logIn = (response) => {
-  console.log(response);
-  user.value = decodeCredential(response.credential);
-  console.log(user.value);
-};
+// const logIn = (response) => {
+//   console.log(response);
+//   user.value = decodeCredential(response.credential);
+//   console.log(user.value);
+// };
 
 
-const logOut = () => {
-  googleLogout();
-};
+// const logOut = () => {
+//   googleLogout();
+// };
 
 </script>
 

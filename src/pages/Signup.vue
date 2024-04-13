@@ -8,8 +8,16 @@ import photo2 from "@/assets/signup_preview_2.png";
 import photo3 from "@/assets/signup_preview_3.png";
 import "swiper/css/bundle";
 import { rules } from "@/extend/utils.ts";
-import CustomBtn from "../components/common/CustomBtn.vue";
-import kuy from "@/assets/kuy.png";
+import CustomRolesBtn from "@/components/common/CustomRolesBtn.vue";
+import participantImg from "@/assets/participant.png";
+import organizationImg from "@/assets/organization.png";
+import CustomvBtnPrimary from "@/components/common/CustomvBtn.primary.vue";
+import { useRoute,useRouter } from "vue-router";
+import TermAndCondition from '@/components/common/TermAndCondition.vue'
+import { auth } from '~/restful/Auth.js'
+
+const route = useRoute();
+const router = useRouter();
 
 const posters = ref([
   {
@@ -31,21 +39,43 @@ const posters = ref([
     alt: "Preview 3",
   },
 ]);
+// user information
+const userEmail = ref(route.params.email);
+const username = ref(route.params.username);
+const profileImg = ref(route.params.profileImg)
+const role = ref('');
+const displayName = ref('')
 
+const updatedRole = (value) => {
+  role.value = value;
+};
+
+// validate form
 const valid = ref(true);
+const isAgreePolicy = ref(false)
 
-// const posters = [
-//   { id:1, src: '@/assets/signup_preview_1.png', alt: 'Image 1 description' },
-//   { id:2, src: '@/assets/signup_preview_2.png', alt: 'Image 2 description' },
-//   { id:3, src: '@/assets/signup_preview_3.png', alt: 'Image 3 description' },
-// ];
+const confirmPolicy = (Boolean) => {
+  isAgreePolicy.value = Boolean
+}
+
+const signup = async () => {
+  let doAuth = await auth(userEmail.value,role.value,displayName.value,profileImg.value)
+  console.log(doAuth);
+  if(doAuth){
+    alert('Your Can Sign In Now')
+    router.push({name:'home'})
+  }
+}
+
 </script>
 
 <template>
   <Navbar></Navbar>
   <div class="w-full grid grid-cols-2">
     <!-- Poster -->
-    <div class="slide-info bg-gradient-to-b from-[#4520CC] to-[#6A4DD6] mt-[100px]">
+    <div
+      class="slide-info bg-gradient-to-b from-[#4520CC] to-[#6A4DD6] mt-[100px]"
+    >
       <!-- <img class="h-full w-auto" src="@/assets/Recycle-Bin-red.png" alt=""> -->
       <div>
         <swiper
@@ -61,7 +91,11 @@ const valid = ref(true);
           class="my-swiper"
           :modules="[Pagination, Navigation, Autoplay]"
         >
-          <swiper-slide v-for="poster in posters" :key="poster.id" class="pb-[16px]">
+          <swiper-slide
+            v-for="poster in posters"
+            :key="poster.id"
+            class="pb-[16px]"
+          >
             <div class="grid justify-items-center">
               <img :src="poster.photo" alt="" class="" />
             </div>
@@ -71,7 +105,7 @@ const valid = ref(true);
     </div>
     <!-- Form -->
     <div
-      class="signup-form grid justify-items-center content-start px-[70px] py-[40px] h-screen overflow-auto pt-[140px]"
+      class="signup-form grid justify-items-center px-[70px] py-[40px] h-screen overflow-auto pt-[140px]"
     >
       <!-- Form Header -->
       <div class="grid justify-items-center gap-[16px] pb-[50px]">
@@ -79,41 +113,43 @@ const valid = ref(true);
         <div class="text-[24px] text-primaryColor">Sign up Your Account</div>
       </div>
       <!-- Form Body -->
-      <div>
+      <div class="">
         <v-form
           v-model="valid"
           fast-fail
           @submit.prevent
-          class="space-y-[50px]"
+          class="space-y-[30px]"
         >
-          <div class="w-full">
+          <div class="w-full grid justify-items-center">
             <v-text-field
-              class="w-[540px] h-[56px]"
-              variant="outlined"
-              label="User Name"
-              :rules="rules.require"
-            >
-            </v-text-field>
-          </div>
-          <div class="w-full">
-            <v-text-field
-              class="w-[540px] h-[56px]"
-              variant="outlined"
-              label="Email"
-              :rules="rules.require"
-            >
-            </v-text-field>
-          </div>
-          <div class="w-full">
-            <v-text-field
-              class="w-[540px] h-[56px]"
-              variant="outlined"
-              label="Display name"
-              :rules="rules.require"
+              class="w-[540px] h-[56px] bg-primaryLight text-[18px] text-primaryColor pl-4 rounded-[8px]"
+              variant="plain"
+              :label="username"
+              disabled
             >
             </v-text-field>
           </div>
 
+          <div class="w-full grid justify-items-center">
+            <v-text-field
+              class="w-[540px] h-[56px] bg-primaryLight text-[18px] text-primaryColor pl-4 rounded-[8px]"
+              variant="plain"
+              :label="userEmail"
+              readonly
+            >
+            </v-text-field>
+          </div>
+          <div class="w-full grid justify-items-center">
+            <v-text-field
+              class="w-[540px] h-[56px]"
+              v-model="displayName"
+              variant="outlined"
+              label="Display name"
+              placeholder="Somsri Jaidee..."
+              :rules="rules.require"
+            >
+            </v-text-field>
+          </div>
 
           <!-- Role Section -->
           <div class="role-section grid justify-items-center">
@@ -124,21 +160,115 @@ const valid = ref(true);
               </div>
             </div>
             <!-- Role Choosen -->
-            <div class="grid grid-cols-2 gap-16">
+            <div class="grid grid-cols-2 gap-16 pt-[40px]">
               <div class="">
-                <CustomBtn :img="kuy" :img-text="'Participants'"></CustomBtn>
-                <!-- <img src="@/assets/kuy.png"/> -->
-                <!-- <v-img
-                  src="@/assets/participants_role.png"></v-img> -->
-                <!-- <img style="border:1px solid black;border-radius: 15px;" src="//www.html.am/images/image-codes/milford_sound_t.jpg" width="225" height="151" alt="Photo of Milford Sound in New Zealand" /> -->
-                <!-- <div>
-                    <img src="@/assets/key.png" alt="">
-                  </div> -->
+                <CustomRolesBtn
+                  @click="updatedRole('Participants')"
+                  v-model="role"
+                  :img="participantImg"
+                  :img-text="'Participants'"
+                ></CustomRolesBtn>
               </div>
-              <div class="">as</div>
+              <div class="">
+                <CustomRolesBtn
+                  @click="updatedRole('Organization')"
+                  v-model="role"
+                  :img="organizationImg"
+                  :img-text="'Organization'"
+                ></CustomRolesBtn>
+              </div>
+            </div>
+            <div class="pt-8">
+              <div
+                v-if="role == 'Participants'"
+                class="w-[540px] h-[135px] bg-primaryLight rounded-[16px]"
+              >
+                <div class="pt-4 space-y-2">
+                  <div class="px-8 text-primaryColor text-[14px] font-medium">
+                    Participants role
+                  </div>
+                  <ul
+                    class="px-12 list-image-checkmark text-purple400 text-[14px] space-y-[4px]"
+                  >
+                    <li>
+                      เรียกดูกิจกรรมทั้งหมดที่เปิดให้ลงทะเบียน
+                      ค้นหากิจกรรมที่คุณสนใจ
+                    </li>
+                    <li>ลงทะเบียนร่วมกิจกรรมที่ใช่สำหรับคุณ</li>
+                    <li>-</li>
+                  </ul>
+                </div>
+              </div>
+              <div
+                v-else-if="role=='Organization'"
+                class="w-[540px] h-[135px] bg-primaryLight rounded-[16px]"
+              >
+              
+                <div class="pt-4 space-y-2">
+                  <div class="px-8 text-primaryColor text-[14px] font-medium">
+                    Organization role
+                  </div>
+                  <ul
+                    class="px-12 list-image-checkmark text-purple400 text-[14px] space-y-[4px]"
+                  >
+                    <li>สร้างกิจกรรมในแบบของคุณ เชิญชวนทุกคนเข้าร่วม!</li>
+                    <li>อัปเดทข้อมูลกิจกรรมของคุณให้สมบูรณ์แบบ</li>
+                    <li>ตรวจสอบรายชื่อผู้ร่วม'กิจกรรม'ของคุณ</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
-          <v-btn :disabled="!valid" type="submit"></v-btn>
+          <!-- term and condition -->
+          <div class="flex justify-center">
+            <div>
+                <v-checkbox class="" v-model="isAgreePolicy"> </v-checkbox>
+            </div>
+            <div class="flex pt-5 space-x-1">
+              <div class="text-[14px]">
+                You have read and agree to the
+              </div>
+              <div>
+                <v-dialog class="w-2/5">
+                      <template v-slot:activator="{ props: activatorProps }">
+                        <div v-bind="activatorProps" variant="text" class="cursor-pointer text-primaryColor text-[14px] font-medium">
+                          Terms of Use and Privacy Policy.
+                        </div>
+                      </template>
+                      <template v-slot:default="{ isActive }">
+                        <v-card title="TERM AND CONDITION">
+                          <v-card-text> <TermAndCondition/></v-card-text>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn text="Close" @click="(isActive.value = false),confirmPolicy(false)">
+                            </v-btn>
+                            <v-btn
+                            text="Confirm"
+                            @click="
+                            (isActive.value = false),
+                            confirmPolicy(true)
+                            "
+                            >
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </template>
+                  </v-dialog>
+              </div>
+            </div>
+            
+          </div>
+          <!-- Craete Button -->
+          <div class="">
+            <CustomvBtnPrimary
+              :is-valid="valid"
+              :isAllowPolicy="isAgreePolicy"
+              :selectedRole="role"
+              :label="'Create Account'"
+              @click="signup()"
+            ></CustomvBtnPrimary>
+            <!-- <v-btn :disabled="!valid" type="submit" class="w-[540px] h-[56px] text-white font-medium text-[18px]" color="#4520CC">Create Account</v-btn> -->
+          </div>
         </v-form>
       </div>
     </div>
@@ -163,5 +293,15 @@ const valid = ref(true);
 .image-role:hover {
   border: 2px solid;
   border-color: #b5a6eb;
+}
+
+.v-field--disabled {
+  opacity: 100%;
+  font-weight: medium;
+  pointer-events: none;
+}
+
+.v-text-field.v-input_outlined .v-input__slot {
+  border: none !important;
 }
 </style>

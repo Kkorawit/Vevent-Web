@@ -5,6 +5,7 @@ import { googleLogout, GoogleLogin, decodeCredential } from "vue3-google-login";
 import { auth } from '~/restful/Auth.js'
 import { useRouter } from 'vue-router'
 
+
 let router = useRouter()
 const currentRoute = ref(router.currentRoute);
 const role = ref("Guest")
@@ -15,14 +16,22 @@ async function callback(response) {
   user.value = decodeCredential(response.credential)
 
   let doAuth = await auth(user.value.email,role.value,user.value.name,user.value.picture)
-  console.log(doAuth);
   if(doAuth=='Signup'){
     console.log("log signup navbar");
-    router.push('/events')
+    router.push({name:'signup',
+    params:{
+      email:user.value.email,
+      username:user.value.name,
+      profileImg:user.value.picture,
+    }})
   }
   console.log(user.value);
   console.log(user.value.email);
+  console.log(doAuth);
   if(role.value){
+    localStorage.setItem("access_token",doAuth.access_token)
+    localStorage.setItem("refresh_token",doAuth.refresh_token)
+    
     console.log("have role");
   }
 }
@@ -42,7 +51,7 @@ const logOut = () => {
 </script>
 <template>
   <div
-    :class="['bar grid grid-cols-3 gap-x-10 col-span-3 w-screen h-[100px] bg-white drop-shadow-xl z-[100] ',currentRoute.path=='/signup'? 'absolute top-0' : 'sticky top-0'  ]"
+    :class="['bar grid grid-cols-3 gap-x-10 col-span-3 w-screen h-[100px] bg-white drop-shadow-xl z-[100] ',currentRoute.name=='signup'? 'absolute top-0' : 'sticky top-0'  ]"
 
     >
     <!-- bar logo -->

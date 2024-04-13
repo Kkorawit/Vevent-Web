@@ -28,8 +28,8 @@ import { DefaultApolloClient} from '@vue/apollo-composable';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 const httpLink = createHttpLink({
-    // uri: 'https://capstone23.sit.kmutt.ac.th/kw1/dev/graphql',
-    uri: `http://localhost:8080/local/graphql`,
+    uri: 'https://capstone23.sit.kmutt.ac.th/kw1/dev/graphql',
+    // uri: `http://localhost:8080/local/graphql`,
 });
 
 const apolloClient = new ApolloClient({

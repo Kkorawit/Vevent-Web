@@ -43,7 +43,7 @@ async function callback(response) {
       },
     });
   } else {
-    window.location.reload();
+    // window.location.reload();
   }
 }
 

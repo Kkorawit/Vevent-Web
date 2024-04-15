@@ -22,8 +22,8 @@ export async function auth(email, role, displayName, profileImg) {
   }
 
     let response = await axios.post(
-      // `${import.meta.env.VITE_API_ENV}/auth`,
-      `http://localhost:8080/local/api/auth`,
+      `${import.meta.env.VITE_API_ENV}/auth`,
+      // `http://localhost:8080/local/api/auth`,
       data
     ).then(response => {
       console.log(response.data);

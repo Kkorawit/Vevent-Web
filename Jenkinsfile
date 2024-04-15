@@ -23,7 +23,7 @@ pipeline {
             }
             stage('Run Container') {
                 steps{
-                    sh"docker run -d --name web-vevent web-vevent-image"
+                    sh"docker run -d --network capstone-dev-vevent --name web-vevent web-vevent-image"
                 }
             }
         }

@@ -12,8 +12,8 @@ pipeline {
             }
             stage('Down Container') {
                 steps{
-                sh"docker stop web-vevent"
-                sh"docker rm web-vevent"
+                sh"docker stop web-vevent || true"
+                sh"docker rm web-vevent || true"
                 }
             }
             stage('Build Container') {

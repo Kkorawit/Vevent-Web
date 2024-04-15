@@ -147,6 +147,7 @@ const signup = async () => {
               label="Display name"
               placeholder="Somsri Jaidee..."
               :rules="rules.require"
+              hint="คุณสามารถเปลี่ยนได้ในภายหลัง"
             >
             </v-text-field>
           </div>

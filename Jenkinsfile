@@ -23,7 +23,7 @@ pipeline {
             }
             stage('Run Container') {
                 steps{
-                    sh"docker run -d --name web-vevent -p 80:80 web-vevent-image"
+                    sh"docker run -d --name web-vevent -p 3000:3000 web-vevent-image"
                 }
             }
         }

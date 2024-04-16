@@ -47,12 +47,13 @@ export async function deleteEventById (eid){
     // 2024-01-20T15:27:54.378693Z
     console.log(eid);
     const currentDT = moment().format()
+    console.log(currentDT)
     try {
         const response = await axios.delete(
           `${import.meta.env.VITE_API_ENV}/delete-event`,
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJPcmdhbml6YXRpb24uMDMyMzAxQGdtYWlsLmNvbSIsInJvbGUiOlsiT3JnYW5pemF0aW9uIl0sImV4cCI6MTcxMTk5MTAxMywiaWF0IjoxNzExOTg5MjEzfQ.v12byI4DkHVHym79js9NqFxwQlB7wn2-HCc2K1azp3GUs-i_OROiTICw4es3iKYC8F9ZdhAYovJ249UgUkuCBQ`
+              'Authorization': `Bearer ${localStorage.getItem("access_token")}`
             },
             params: {
               eid: eid,

@@ -24,15 +24,17 @@ export async function updateDisplayName(displayName) {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
         },
       }
     )
     .then((response) => {
+      console.log("thennnnnnnnnnnnnnnnnnnn");
       console.log(response.data);
       return response.data;
     })
     .catch((error) => {
+      console.log("erorrrrrrrrrrrrrrrrrr");
       console.log(error);
     });
 

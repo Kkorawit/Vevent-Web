@@ -19,7 +19,7 @@ export async function updateDisplayName(displayName) {
   console.log("display: "+displayName);
   await axios
     .post(
-      `${import.meta.env.VITE_API_ENV}/edit-account?dname=${displayName}`,
+      `${import.meta.env.VITE_API_ENV}/edit-account?dname=${displayName}`,{},
       // `http://localhost:8080/local/api/edit-account?dname=${displayName}`,
       {
         headers: {

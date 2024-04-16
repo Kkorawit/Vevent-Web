@@ -15,8 +15,9 @@ import axios from "axios";
 // }
 
 export async function updateDisplayName(displayName) {
-  console.log(displayName);
-  let response = await axios
+  console.log("In axios");
+  console.log("display: "+displayName);
+  await axios
     .post(
       `${import.meta.env.VITE_API_ENV}/edit-account?dname=${displayName}`,
       // `http://localhost:8080/local/api/edit-account?dname=${displayName}`,
@@ -34,6 +35,7 @@ export async function updateDisplayName(displayName) {
     .catch((error) => {
       console.log(error);
     });
+
   // Handle successful deletion response here
   // Handle error with informative message
 }

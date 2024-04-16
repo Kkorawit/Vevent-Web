@@ -9,6 +9,7 @@ const displayName = ref(localStorage.getItem("displayName"));
 const isReadonly = ref(true)
 const toggleReadonly = () => {
   if(!isReadonly.value && displayName.value!=localStorage.getItem("displayName")){
+    console.log("before axios");
     updateDisplayName(displayName.value)
   }
   console.log(isReadonly.value);

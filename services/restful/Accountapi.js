@@ -18,15 +18,14 @@ export async function updateDisplayName(displayName) {
   console.log(displayName);
   let response = await axios
     .post(
-      `${import.meta.env.VITE_API_ENV}/edit-account?dname=${displayName}`,
-      // `http://localhost:8080/local/api/edit-account?dname=${displayName}`,
-      {
-        headers: {
-          'Access-Control-Allow-Origin': "*",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      }
+      // `${import.meta.env.VITE_API_ENV}/edit-account?dname=${displayName}`,
+      `http://localhost:8080/local/api/edit-account?dname=${displayName}`,
+      // {
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      //   },
+      // }
     )
     .then((response) => {
       console.log(response.data);

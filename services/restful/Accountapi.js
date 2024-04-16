@@ -20,9 +20,12 @@ export async function updateDisplayName(displayName) {
   console.log(localStorage.getItem("access_token"));
   await axios
     .post(
-      `${import.meta.env.VITE_API_ENV}/edit-account?dname=${displayName}`,null,
-      // `http://localhost:8080/local/api/edit-account?dname=${displayName}`,
+      `${import.meta.env.VITE_API_ENV}/edit-account`,null,
+      // `http://cp23kw1.sit.kmutt.ac.th/dev/api/edit-account?dname=${displayName}`,
       {
+        params:{
+          dname:displayName
+        },
         headers: {
           'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
         },

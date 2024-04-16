@@ -5,6 +5,7 @@ import { deleteEventById } from '~/restful/Eventapi.js'
 import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
 import EventDetailCard from "@/pages/EventDetail_card.vue";
 import CreateEvent from "@/pages/CreateEvent.vue";
+import router from "@/plugins/router";
 // import VueDatePicker from "@vuepic/vue-datepicker";
 // import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -99,15 +100,20 @@ const changeState = async (s, id) => {
   console.log(s);
   state.value = "";
   if (s == "eventDetail") {
-    let result = await getEventById(id);
-    console.log(result);
-    eventDetaildata.value = result;
-    console.log(eventDetaildata.value);
-    state.value = s;
+    // let result = await getEventById(id);
+    // console.log(result);
+    // eventDetaildata.value = result;
+    // console.log(eventDetaildata.value);
+    // state.value = s;
+    // router.push({name: 'eventDetail', params: id} );
+    router.push({name: "eventDetail" , params:{id:id}});
+
   } else if (s == "editEvent") {
     state.value = s;
   } else if (s == "createEvent") {
-    state.value = s;
+    // state.value = s;
+    router.push({name: 'create'});
+
   } else {
     state.value = "eventList";
   }
@@ -269,11 +275,12 @@ const changeState = async (s, id) => {
           </div>
         </div>
         <!-- card -->
-        <div v-if="eventList">
-          <button
-            v-for="(event, index) in eventList"
+        <div v-if="eventList" >
+          <button   @click="changeState('eventDetail', event.id)" 
+          v-for="(event, index) in eventList"
             :key="index"
             class="event-card w-full h-[96px] bg-white rounded-[16px] grid items-center grid-cols-10 mb-[16px] p-[24px]"
+           
           >
             <!-- event name -->
             <div class="grid col-span-4 col-start-1 place-items-start">
@@ -375,9 +382,9 @@ const changeState = async (s, id) => {
     <EventDetailCard :info="eventDetaildata" :state="state"></EventDetailCard>
   </div>
   <!-- create event -->
-  <div v-if="state == 'createEvent'">
+  <!-- <div v-if="state == 'createEvent'">
     <CreateEvent></CreateEvent>
-  </div>
+  </div> -->
 </template>
 
 <style scoped>

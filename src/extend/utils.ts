@@ -3,7 +3,8 @@ export const rules = {
   title: [
     [(v: any) => v.split().length > 100 || "จำเป็นต้องมีมากกว่า 100 ตัวอักษร"],
   ],
-  description:[],
+  description:[[(v: any) => v.split().length > 300 || "จำเป็นต้องมีมากกว่า 300 ตัวอักษร"]],
+  amountReceived:[(v: any) => v < 10 ],
   name: [(v: any) => !!v || "กรุณากรอกชื่อ"],
   fullName: [(v: any) => !!v || "กรุณากรอกชื่อ-นามสกุล"],
   username: [(v: any) => !!v || "กรุณากรอกชื่อผู้ใช้"],

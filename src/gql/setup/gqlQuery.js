@@ -161,8 +161,8 @@ export const GET_ONE_EVENT_UEID = gql`
 `;
 
 export const GET_ONE_EVENT_ID = gql`
-  query FindEventDetailsByEventId($eid: ID!) {
-    findEventDetailsByEventId(id: $eid) {
+  query FindEventDetailsByEventId {
+    findEventDetailsByEventId(id: $id) {
       id
       title
       description

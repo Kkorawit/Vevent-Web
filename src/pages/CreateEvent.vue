@@ -1,8 +1,10 @@
 <script setup>
 import { rules } from "@/extend/utils.ts";
 import { ref, computed } from "vue";
+import Navbar from "@/components/Navbar.vue";
+import router from "@/plugins/router";
 
-const startDate = ref("2024-04-10T14:30:00");
+
 
 const posterStatus = ref("");
 const newPoster = ref("");
@@ -90,35 +92,58 @@ const onDrop = (event) => {
     console.log(images.value);
   }
 };
+
+const changePage = () => {
+  router.push({name: 'home'});
+}
 </script>
 
 <template>
+  <Navbar></Navbar>
   <div class="grid grid-cols-12 justify-items-center">
     <div
-      class="col-span-8 col-start-3 w-[1080px] h-[1336px] bg-white shadow-xl rounded-b-[16px]"
+      class="col-span-8 col-start-3 w-[1080px] bg-white shadow-xl rounded-b-[16px]"
     >
-      <div class="p-[40px] space-y-[50px]">
+      <div class="p-[40px] space-y-[40px]">
         <!-- header -->
         <div>
-          <div>asdasd</div>
-          <div>asdasd</div>
-          <div>asdasd</div>
+          <span class="text-[14px]">
+            <button
+              @click="changePage('home')"
+              class="hover:text-primaryColor hover:underline hover:underline-offset-4"
+            >
+              Event
+            </button>
+            > <span>Create Event</span></span
+          >
+          <div class="text-[32px]">สร้างโพสกิจกรรม</div>
         </div>
         <hr />
         <!-- form -->
-        <v-form fast-fail @submit.prevent>
-          <div class="flex justify-between py-8">
-          <div>
-            รายละเอียดกิจกรรม
+        <v-form
+          fast-fail
+          @submit.prevent
+          class="mt-0"
+        >
+          <div class="flex justify-between items-center py-[40px]">
+            <div class="text-[24px] font-bold ">
+              รายละเอียดกิจกรรม
+            </div>
+            <div>
+              <v-btn @click="updateEventDetail"
+                class="custom-rounded-btn"
+                color="#4520CC"
+                type="submit"
+                style="height: 56px;"
+              >
+                Submit
+              </v-btn>
+            </div>
           </div>
-          <div>
-            <v-btn class="" type="submit" block>Submit</v-btn>
-          </div>
-        </div>
         <!-- fill -->
           <div class="grid grid-cols-2 justify-items-stretch pb-36">
             <!-- left form -->
-            <div class="justify-self-start space-y-[60px]">
+            <div class="justify-self-start space-y-[24px]">
               <!-- หัวข้อกิจกรรม -->
               <div>
                 <v-text-field
@@ -143,35 +168,47 @@ const onDrop = (event) => {
                 ></v-textarea>
               </div>
               <!-- วันที่เปิด - ปิด รับสมัคร -->
-              <div class="flex justify-center space-x-2">
-                <div class="w-[290px] ">
-                  <VueDatePicker
-                    placeholder="วันเปิดรับสมัคร"
-                    dark="true"
-                  ></VueDatePicker>
+              <div class="flex justify-center mt-[8px] space-x-2 pb-[8px]">
+                <div>
+                  <label>วันที่เปิดรับสมัคร </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      placeholder="วันเปิดรับสมัคร"
+                      dark="true"            
+                    ></VueDatePicker>
+                  </div>
                 </div>
-                <div class="pt-2">-</div>
-                <div class="w-[290px] h-[56px]">
-                  <VueDatePicker
-                    placeholder="วันปิดรับสมัคร"
-                    dark="true"
-                  ></VueDatePicker>
+                <div class="pt-[50px]">-</div>
+                <div>
+                  <label>วันที่ปิดรับสมัคร </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      placeholder="วันปิดรับสมัคร"
+                      dark="true"
+                    ></VueDatePicker>
+                  </div>
                 </div>
               </div>
-                <!-- วันที่เปิด - ปิด กิจกรรม -->
-              <div class="flex justify-center space-x-2">
-                <div class="w-[290px] h-[56px]">
-                  <VueDatePicker
-                    placeholder="วันเริ่มกิจกรรม"
-                    dark="true"
-                  ></VueDatePicker>
+              <!-- วันที่เปิด - ปิด กิจกรรม -->
+              <div class="flex justify-center mt-[8px] space-x-2 pb-[8px]">
+                <div>
+                  <label>วันเริ่มกิจกรรม </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      placeholder="วันเปิดรับสมัคร"
+                      dark="true"
+                    ></VueDatePicker>
+                  </div>
                 </div>
-                <div class="pt-2">-</div>
-                <div class="w-[290px] h-[56px]">
-                  <VueDatePicker
-                    placeholder="วันจบกิจกรรม"
-                    dark="true"
-                  ></VueDatePicker>
+                <div class="pt-[50px]">-</div>
+                <div>
+                  <label>วันจบกิจกรรม </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      placeholder="วันปิดรับสมัคร"
+                      dark="true"
+                    ></VueDatePicker>
+                  </div>
                 </div>
               </div>
               <!-- Drag & Drop Images -->
@@ -229,7 +266,7 @@ const onDrop = (event) => {
               </div>
             </div>
             <!-- right form -->
-            <div class="justify-self-end space-y-[60px]">
+            <div class="justify-self-end space-y-[48px]">
               <!-- หมวดหมู่ -->
               <div>
                 <v-text-field
@@ -302,7 +339,12 @@ const onDrop = (event) => {
 </template>
 
 <style scoped>
+.custom-rounded-btn {
+  border-radius: 16px;
+}
+
 .dp__theme_dark {
+  --dp-input-padding: 16px; /*input high*/
   --dp-background-color: #ece9fa;
   --dp-text-color: #1b1717;
   --dp-hover-color: #484848;

@@ -3,7 +3,7 @@ import { RouterView } from "vue-router";
 import { ref,reactive } from 'vue'
 import { googleLogout, GoogleLogin, decodeCredential } from "vue3-google-login";
 import { auth } from '~/restful/Auth.js'
-
+import router from "@/plugins/router";
 
 const role = ref("Guest")
 const user = ref({})
@@ -34,6 +34,12 @@ const logOut = () => {
   googleLogout();
 };
 
+const menu = (page) => {
+  if(page == 'home'){
+    router.push({name:'home'});
+  }
+}
+
 
 </script>
 <template>
@@ -41,11 +47,13 @@ const logOut = () => {
     class="bar grid grid-cols-3 gap-x-10 col-span-3 h-[100px] bg-white drop-shadow-xl z-[100]"
   >
     <!-- bar logo -->
-    <div class="logo grid cols-start-1 content-center ml-10">
-      <img src="@/assets/LOGO-web.png" class="w-[148px] h-[37px]" alt="logo" />
-    </div>
+    <button @click="menu('home')">
+      <div class="logo grid cols-start-1  ml-10 grid content-center">
+        <img src="@/assets/LOGO-web.png" class="w-[148px] h-[37px]" alt="logo" />
+      </div>
+    </button>
     <!-- bar menu -->
-    <div class="menu cols-start-2 flex justify-center">
+    <!-- <div class="menu cols-start-2 flex justify-center">
       <div class="flex flex-row items-center">
         <button
           class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
@@ -58,7 +66,7 @@ const logOut = () => {
           About us
         </button>
       </div>
-    </div>
+    </div> -->
     <!-- bar profile -->
     <div class="profile-user col-start-3 flex justify-end mr-10" v-if="role=='Guest'">
       <div class="flex flex-row items-center">
@@ -72,10 +80,10 @@ const logOut = () => {
 </template>
 
 <style scoped>
-.logo {
+/* .logo {
     margin-top: 40px;
     margin-bottom: 40px;
-}
+} */
 .sidebar {
       width: 280px; /* Adjust width as needed */
       height: 100vh; /* Full viewport height */

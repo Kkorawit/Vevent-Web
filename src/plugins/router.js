@@ -6,9 +6,10 @@ const routes = [
     {path:'/events',name:'events',component:()=>import(/* webpackChunkName: "Event" */'@/views/Events.vue')},
     {path:'/participants',name:'participants',component:()=>import(/* webpackChunkName: "Participants" */'@/views/Participants.vue')},
     {path:'/create',name:'create',component:()=>import(/* webpackChunkName: "Create" */'@/pages/CreateEvent.vue')},
-    {path:'/edit',name:'edit',component:()=>import(/* webpackChunkName: "Edit" */'@/pages/EditEvent.vue')},
+    {path:'/editEvent/:id',name:'editEvent',component:()=>import(/* webpackChunkName: "Edit" */'@/pages/EditEvent.vue')},
+    {path:'/eventDetail',name:'eventDetail',component:()=>import(/* webpackChunkName: "Edit" */'@/pages/EventDetail_card.vue')},
     {path:'/organization',name:'organize',component:()=>import(/* webpackChunkName: "Organize" */'@/components/Event/EventListOrganization.vue')},
-    {path:'/participants',name:'participants',component:()=>import(/* webpackChunkName: "Participants" */'@/components/Event/EventListParticipants.vue')},
+    {path:'/participants',name:'participants',component:()=>import(/* webpackChunkName: "Participants" */'@/pages/Participants.vue')},
     // {path:'/organize',name:'organize',component:()=>import(/* webpackChunkName: "Create" */'@/components/Event/EventListOrganization.vue')},
     // {path:'/eventDetail',name:'eventDetail',component:()=>import(/* webpackChunkName: "home" */'@/components/EventDetail.vue')},
 ]

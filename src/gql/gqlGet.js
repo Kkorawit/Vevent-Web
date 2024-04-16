@@ -1,7 +1,8 @@
 import gql from "graphql-tag";
 import { ref } from "vue";
 import { useApolloClient, useQuery } from "@vue/apollo-composable";
-import { GET_ALL_CREATEDBY_QUERY } from '@/gql/setup/gqlQuery.js';
+import { GET_ALL_CREATEDBY_QUERY,GET_ONE_EVENT_ID } from '@/gql/setup/gqlQuery.js';
+import { id } from "vuetify/locale";
 
 export async function getAllEventCreatedByUEmail (email) {
   let query = gql`
@@ -54,6 +55,61 @@ export async function getAllEventCreatedByUEmail (email) {
   return data?.findAllEventCreatedByUEmail || []
 
 }
+
+
+
+export async function getEventDetailById (eid) {
+  console.log("get event detail gql")
+  let query = gql`
+  query FindEventDetailsByEventId {
+    findEventDetailsByEventId(id: ${eid}) {
+      id
+      title
+      description
+      amountReceived
+      category
+      subCategory
+      startDate
+      endDate
+      registerStartDate
+      registerEndDate
+      validationType
+      validationRules
+      posterImg
+      createBy
+      createDate
+      updateBy
+      updateDate
+      locationName
+      locationLatitude
+      locationLongitude
+      validate_times
+      eventStatus
+    }
+  }
+`;
+    console.log(eid);
+    const { resolveClient } = useApolloClient();
+    const client = resolveClient();
+    const { data,error } = await client.query({
+    // query:  GET_ONE_EVENT_ID,
+    query:  query,
+    // variables: {
+    //   id: eid, // Use the reactive email value
+    // },
+  });
+  console.log(data.findEventDetailsByEventId);
+  if(error){
+    console.error('GraphQL error:',error.value)
+    return { error: true}
+  }
+  
+  return data?.findEventDetailsByEventId || []
+
+}
+
+
+
 
 
 // export async function getAllEventCreatedByUEmail (email) {
@@ -166,7 +222,7 @@ export async function getAllEventCreatedByUEmail (email) {
 // }
 
 
-export default ({getAllEventCreatedByUEmail})
+export default ({getAllEventCreatedByUEmail , getEventDetailById})
 
 
 

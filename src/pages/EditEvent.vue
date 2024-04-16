@@ -1,118 +1,79 @@
 <script setup>
 import DateTimeFormat from "@/extend/DateTimeFormat.vue";
-import { ref } from "vue";
-// import { load } from '@google/maps';
+import { onBeforeMount, onMounted, ref } from "vue";
+import router from "@/plugins/router";
+import { rules } from "@/extend/utils.ts";
+import Navbar from "@/components/Navbar.vue";
+import { useRoute } from 'vue-router';
+import { getEventDetailById } from "@/gql/gqlGet.js";
 
 const props = defineProps({
-  info: {
-    type: Object,
-    request: true,
+  id: {
+    type: String
+    // required:true
   },
 });
 
-console.log(props.info);
+//get event id from router
+const id= ref("");
+const route = useRoute()
 
-const newTitle = ref(props.info.title);
-const newDescription = ref(props.info.description);
-const newCategory = ref(props.info.category);
-const newAmountReceived = ref(props.info.amountReceived);
-const newPoster = ref(props.info.posterImg);
-const newValidationType = ref(props.info.validationType);
-const newSubCategory = ref(props.info.subCategory);
+//get event detail
+// const eventDetail = ref([]);
+// onMounted(async () => {
+//   id.value = route.params.id;
+//   console.log(id.value);
+//   let response = await getEventDetailById(id.value);
+//   console.log(response);
+//   eventDetail.value = response;
+//   console.log(eventDetail.value.title);
+  
+// });
 
-// check input length have to more than min (not null)
-const checklengthTitle = ref(false);
-const checklengthDescription = ref(false);
-const checklengthCategory = ref(false);
-const checkAmountReceived = ref(false);
-const checkSubCategory = ref(false);
+// demo เพราะ function ข้างบนมัน get eventDetail ค่ามาได้ แต่เอามาโชวน์ไม่ได้
+const eventDetail = ref({
+  id: "1",
+  title: "อาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย นครปฐม",
+  description:
+    "We Volunteer Spirit Thailand ขอเชิญน้องๆร่วมโครงการจิตอาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม กิจกรรมสร้างสรรค์ดีๆ สำหรับน้องๆ ระดับชั้นมัธยมที่สนใจร่วมกิจกรรมเพื่อเก็บชั่วโมงอาสาและสะสมในแฟ้มประวัติผลงาน (Portfolio)",
+  amountReceived: "100",
+  category: "Volunteers",
+  subCategory: "Social Services",
+  startDate: "2023-11-11T09:30:00Z",
+  endDate: "2023-11-11T16:30:00Z",
+  registerStartDate: "2023-10-10T00:00:00Z",
+  registerEndDate: "2023-11-10T23:59:00Z",
+  validationType: "CURRENT_GPS",
+  validationRules: 10,
+  posterImg:
+    "https://firebasestorage.googleapis.com/v0/b/vevent-capstone.appspot.com/o/NK-2%2FPoster_image%2Fevent01.png?alt=media&token=6222c4f1-bc33-4246-91e7-59cdda885784",
+  createBy: "Organization.032301@gmail.com",
+  createDate: "2023-10-09T16:48:00Z",
+  updateBy: "Organization.032301@gmail.com",
+  updateDate: "2023-10-09T16:48:00Z",
+  locationName: "โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม",
+  locationLatitude: 14.1423399808249,
+  locationLongitude: 100.116024883473,
+  validate_times: null,
+  eventStatus: "CO",
+});
 
-// ยังทำไม่ได้
-const checkRegisStartDate = ref(true);
-const checkRegisEndDate = ref(true);
-const checkStartDate = ref(true);
-const checkEndDate = ref(true);
-const checkMep = ref(true);
 
-class UpdateEvent {
-  constructor(id, title, eventDescription, amountReceived, category) {}
-}
+const newTitle = ref(eventDetail.value.title);
+const newDescription = ref(eventDetail.value.description);
+const newCategory = ref(eventDetail.value.category);
+const newAmountReceived = ref(eventDetail.value.amountReceived);
+const newPoster = ref(eventDetail.value.posterImg);
+const newValidationType = ref(eventDetail.value.validationType);
+const newSubCategory = ref(eventDetail.value.subCategory);
+const newRegisStartDate = ref(eventDetail.value.registerStartDate)
+const newRegisEndtDate = ref(eventDetail.value.registerEndDate)
+const newStartDate = ref(eventDetail.value.startDate)
+const newEndate = ref(eventDetail.value.endDate)
 
-// show messager in forrm
-const mesAlertTitle = ref("");
-const mesAlertDescription = ref("");
-const mesAlertCategory = ref("");
-const mesAlertAmountRe = ref("");
-const mesAlertSubCategory = ref("");
 
-const countWord = (type, input) => {
-  console.log(input);
-  console.log(input);
-  // const char = input.trim();
-  // console.log(char.length)
-  if (type == "title") {
-    checklengthTitle.value = false;
-    mesAlertTitle.value = "";
-    if (input.trim().length == 0) {
-      checklengthTitle.value = false;
-      mesAlertTitle.value = "กรุณาใส่ข้อมูลให้ครบถ้วน";
-    } else if (input.trim().length >= 1 && input.trim().length < 10) {
-      checklengthTitle.value = false;
-      mesAlertTitle.value = "กรุณาใส่ข้อมูลอย่าางน้อย 10 อักษร";
-    } else {
-      checklengthTitle.value = true;
-      mesAlertTitle.value = "";
-    }
-  } else if (type == "desciption") {
-    console.log("func des");
-    checklengthDescription.value = false;
-    mesAlertDescription.value = "";
-    if (input.trim().length == 0) {
-      checklengthDescription.value = false;
-      mesAlertDescription.value = "กรุณาใส่ข้อมูลให้ครบถ้วน";
-    } else if (input.trim().length >= 1 && input.trim().length < 20) {
-      checklengthDescription.value = false;
-      mesAlertDescription.value = "กรุณาใส่ข้อมูลอย่าางน้อย 20 อักษร";
-    } else if (input.trim().length >= 20) {
-      checklengthDescription.value = true;
-      mesAlertDescription.value = "";
-    }
-  } else if (type == "category") {
-    checklengthCategory.value = false;
-    mesAlertCategory.value = "";
-    if (input.trim().length == 0) {
-      checklengthCategory.value = false;
-      mesAlertCategory.value = "กรุณาใส่ข้อมูลให้ครบถ้วน";
-    } else if (input.trim().length >= 1) {
-      checklengthCategory.value = true;
-      mesAlertCategory.value = "";
-    }
-  } else if (type == "amountReceied") {
-    checkAmountReceived.value = false;
-    mesAlertAmountRe.value = "";
-    if (input == 0 || input < 10) {
-      checkAmountReceived.value = false;
-      mesAlertAmountRe.value = "กรุณาใส่ข้อมูลให้ครบถ้วน";
-    } else if (input >= 10) {
-      checkAmountReceived.value = true;
-      mesAlertAmountRe.value = "";
-    }
-  } else if (type == "subCategory") {
-    checkSubCategory.value = false;
-    mesAlertSubCategory.value = "";
-    console.log(input.length);
-    if (input.trim().length == 0) {
-      checkSubCategory.value = false;
-      mesAlertSubCategory.value = "กรุณาใส่ข้อมูลให้ครบถ้วน";
-    } else if (input.trim().length >= 1) {
-      checkSubCategory.value = true;
-      mesAlertSubCategory.value = "";
-    }
-  }
-};
-
+//poster image input
 const posterStatus = ref("");
-
 const images = ref([]);
 const isDraging = ref(false);
 
@@ -137,16 +98,12 @@ const onFileSelect = (event) => {
       if (isImage == "image") {
         //check type
         console.log("check type");
-        if (images.value.some((e) => e.name === file.name)) {
-          // Skip adding duplicate files
-          console.warn("A file with the same name already exists:", file.name);
-        } else {
-          const imageUrl = URL.createObjectURL(file);
-          images.value.push({ name: file.name, url: imageUrl });
-          newPoster.value = imageUrl;
-          console.log(newPoster.value);
-          posterStatus.value = "addImg";
-        }
+
+        const imageUrl = URL.createObjectURL(file);
+        images.value.push({ name: file.name, url: imageUrl });
+        newPoster.value = imageUrl;
+        console.log(newPoster.value);
+        posterStatus.value = "addImg";
       } else if (isImage != "image") {
         console.error("Only image files are allowed!");
       }
@@ -163,483 +120,357 @@ const deleteImage = () => {
 const onDragover = (event) => {
   event.preventDefault();
   isDraging.value = true;
-  event.dataTransfer.dropEffect = "copy"
-}
+  event.dataTransfer.dropEffect = "copy";
+};
 
 const onDragleave = (event) => {
   event.preventDefault();
   isDraging.value = false;
-}
+};
 
 const onDrop = (event) => {
   event.preventDefault();
   isDraging.value = false;
   const files = event.dataTransfer.files;
   for (let i = 0; i < files.length; i++) {
-      console.log("loop file");
-      const file = files[i];
-      const isImage = files[i].type.split("/")[0];
-      if (isImage == "image") {
-        //check type
-        console.log("check type");
-        if (images.value.some((e) => e.name === file.name)) {
-          // Skip adding duplicate files
-          console.warn("A file with the same name already exists:", file.name);
-        } else {
-          const imageUrl = URL.createObjectURL(file);
-          images.value.push({ name: file.name, url: imageUrl });
-          newPoster.value = imageUrl;
-          console.log(newPoster.value);
-          posterStatus.value = "addImg";
-        }
-      } else if (isImage != "image") {
-        console.error("Only image files are allowed!");
+    console.log("loop file");
+    const file = files[i];
+    const isImage = files[i].type.split("/")[0];
+    if (isImage == "image") {
+      //check type
+      console.log("check type");
+      if (images.value.some((e) => e.name === file.name)) {
+        // Skip adding duplicate files
+        console.warn("A file with the same name already exists:", file.name);
+      } else {
+        const imageUrl = URL.createObjectURL(file);
+        images.value.push({ name: file.name, url: imageUrl });
+        newPoster.value = imageUrl;
+        console.log(newPoster.value);
+        posterStatus.value = "addImg";
       }
-      console.log(images.value);
+    } else if (isImage != "image") {
+      console.error("Only image files are allowed!");
     }
-
-}
-
-// const selectFile = () => {
-//   // this.$refs.fileInput.click();
-
-// }
-// const fileChooser = document.getElementById('file-chooser');
-// const fileInput = document.getElementById('file-input');
-
-// function selectFile() {
-//   const fileInput = document.getElementById("file-input");
-//   if (fileInput) {
-//     fileInput.click();
-//     newPoster.value = file.target.file[0];
-//   } else {
-//     console.error('File input element with ID "file-input" not found.');
-//   }
-// }
-
-// const inputFile = (file) => {
-//   file.click();
-//   console.log(file);
-//   newPoster.value = file.target.file[0];
-// };
-
-// get Location
-// function getLocationOnClick() {
-//   navigator.geolocation.getCurrentPosition(
-//     (position) => {
-//       const latitude = position.coords.latitude;
-//       const longitude = position.coords.longitude;
-//       console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-
-//       // Update your UI or store lat/long (e.g., using Vue data properties)
-//       // ...
-//     },
-//     (error) => {
-//       console.error("Error getting location:", error.message);
-//       // Handle errors gracefully (e.g., display an error message to the user)
-//     }
-//   );
-// }
-
-// // Button click event listener
-// const getLocation = () => {
-//   const button = document.getElementById("getLocationButton");
-//   button.addEventListener("click", getLocationOnClick);
-// };
-
-// const showUserLocationOnTheMap = (la , long) => {
-
-// }
-// showUserLocationOnTheMap( la, long) {
-//   let map = new google.map.Map(document.getElementById("map"), {
-//     zoom: 15,
-//     center: new google.maps.LatLng(la , long) ,
-//     mapTypeId:google.maps.mapTypeId.RoadMap
-//   })
-
-// }
-const map = ref(null); // Ref to hold the map instance
-const mapCenter = ref({ lat: 0, lng: 0 }); // Initial center coordinates
-const newLatitude = ref(0);
-const newLongitude = ref(0);
-
-const createMap = async () => {
-  await load();
-  map.value = new google.maps.Map(document.getElementById("map-container"), {
-    zoom: 15,
-    center: mapCenter.value,
-    mapTypeId: google.maps.mapTypeId.ROADMAP,
-  });
-};
-
-const updateMapCenter = async () => {
-  mapCenter.value = { lat: newLatitude.value, lng: newLongitude.value };
-  if (map.value) {
-    map.value.setCenter(mapCenter.value);
-  } else {
-    await createMap(); // Create the map if it doesn't exist yet
+    console.log(images.value);
   }
 };
 
-// Function to show user location on the map
-// const showUserLocationOnTheMap =  async (latitude, longitude) => {
-//   await load()
-//   mapCenter.value = { lat: latitude, lng: longitude };
-//   if (!map.value) {
-//     // Create the map only if it hasn't been created yet
-//     // map.value = new google.maps.Map(document.getElementById("map-container"), {
-//     map.value = new google.maps.Map(document.getElementById("map-container"), {
-//       zoom: 15,
-//       center: mapCenter.value,
-//       mapTypeId: google.maps.mapTypeId.ROADMAP, // Corrected map type
-//     });
-//   } else {
-//     // If map exists, update its center
-//     map.value.setCenter(mapCenter.value);
-//   }
-// }
-// const selectLocation = async () => {
-//   try {
-//     // Get user location (replace with your actual geolocation code)
-//     const location = await navigator.geolocation.getCurrentPosition(
-//       (position) => {
-//         const lat = position.coords.latitude;
-//         const long = position.coords.longitude;
-//         showUserLocationOnTheMap(lat, long);
-//       }
-//     );
 
-//     // Handle errors (optional)
-//   } catch (error) {
-//     console.error("Error getting user location:", error);
-//     // Handle location access denied or unavailable (e.g., display an error message)
-//   }
-// };
+const updateEventDetail = () =>{
+  // code update event detail
 
-// onMounted(async () => {
-//   try {
-//     // Get user location (replace with your actual geolocation code)
-//     const location = await navigator.geolocation.getCurrentPosition(
-//       (position) => {
-//         const lat = position.coords.latitude;
-//         const long = position.coords.longitude;
-//         showUserLocationOnTheMap(lat, long);
-//       }
-//     );
+}
 
-//     // Handle errors (optional)
-//   } catch (error) {
-//     console.error("Error getting user location:", error);
-//     // Handle location access denied or unavailable (e.g., display an error message)
-//   }
-// });
+const changePage = (p) => {
+  console.log(p);
+  if (p == "home") {
+    router.push({ name: "home" });
+  } else if (p == "eventDetail") {
+    router.push({name: "eventDetail" , params:{id:id.value}});
+  } 
+};
 
-// return {
-//   showUserLocationOnTheMap,
-// };
 </script>
 <template>
-  <div>
-    <div class="header">
-      <div>Events > Event Detail > Edit Event</div>
-      <h2>{{ newTitle }}</h2>
-      <hr />
-      <br />
-    </div>
-    <div class="container">
-      <div class="header-component">
-        <h2>Edit Event Detail</h2>
-        <label>รายละเอียดกิจกรรม</label>
-      </div>
-      <div class="confirm-button">
-        <button @click="changeState('editEvent')">
-          <div>ยืนยันการแก้ไข</div>
-        </button>
-      </div>
-      <div class="main">
-        <div class="detail-section">
-          <label for="title"
-            >หัวข้อกิจกรรม
-            <span
-              >*
-              <span v-if="mesAlertTitle != ''">{{ mesAlertTitle }}</span></span
-            ></label
-          >
-          <input
-            @change="countWord('title', newTitle)"
-            type="text"
-            id="title"
-            v-model="newTitle"
-            minlength="10"
-            maxlength="80"
-            placeholder="กรุณาเพิ่มข้อมูลไม่น้อยกว่า 10 ตัวอักษร"
-          />
-        </div>
-        <div class="detail-section">
-          <label for="description"
-            >รายละเอียดกิจกรรม
-            <span
-              >*<span v-if="mesAlertDescription != ''">{{
-                mesAlertDescription
-              }}</span></span
-            ></label
-          >
-          <textarea
-            @change="countWord('desciption', newDescription)"
-            id="description"
-            cols="3"
-            rows="10"
-            v-model="newDescription"
-            style="width: 100%"
-            minlength="20"
-            maxlength="500"
-            placeholder="กรุณาเพิ่มข้อมูลไม่น้อยกว่า 20 ตัวอักษร"
-          ></textarea>
-        </div>
-        <div class="two-column">
-          <div class="detail-section">
-            <label for="registerStartDate"
-              >วันเปิดลงทะเบียน <span>*</span></label
+  <Navbar></Navbar>
+  <div class="grid grid-cols-12 justify-items-center">
+    <div
+      class="col-span-8 col-start-3 w-[1080px] bg-white shadow-xl rounded-b-[16px]"
+    >
+      <div class="p-[40px] space-y-[40px]">
+        <!-- header -->
+        <div>
+          <span class="text-[14px]">
+            <button
+              @click="changePage('home')"
+              class="hover:text-primaryColor hover:underline hover:underline-offset-4"
             >
-            <DateTimeFormat
-              :eventStartTime="props.info.registerStartDate"
-              :format="1"
-            />
-          </div>
-          <div class="detail-section">
-            <label for="registerEndDate">วันปิดลงทะเบียน <span>*</span></label>
-            <DateTimeFormat
-              :eventStartTime="props.info.registerEndDate"
-              :format="1"
-            />
-          </div>
-          <div class="detail-section">
-            <label for="startDate">วันที่จัดกิจกรรม <span>*</span></label>
-
-            <DateTimeFormat
-              :eventStartTime="props.info.startDate"
-              :format="1"
-            />
-          </div>
-          <div class="detail-section">
-            <label for="endDate">วันที่จบกิจกรรม <span>*</span></label>
-
-            <DateTimeFormat :eventStartTime="props.info.endDate" :format="1" />
-          </div>
-        </div>
-        <div class="detail-section">
-          <label for="description">รูปภาพกิจกรรม <span>*</span></label>
-          <div class="container-poster" v-if="newPoster != ''">
-            <div class="image" >
-              <span class="delete" @click="deleteImage" style="cursor: pointer"
-                >&times;</span
-              >
-              <img :src="newPoster" alt="choose image" />
-            </div>
-          </div>
-          <div v-if="posterStatus == 'delete'" class="card">
-            <div class="drag-area" @dragover.prevent="onDragover" @dragleave.prevent="onDragleave" @drop.prevent="onDrop">
-              <span v-if="isDraging != true">
-                Drag & drop image here or
-                <span class="select" role="button" @click="selectFile"
-                  ><b><u>choose </u> </b></span
-                >
-              </span>
-              <div v-else class="select">Drop image here</div>
-              <input
-                id="fileInput"
-                name="file"
-                type="file"
-                class="file"
-                ref="fileInput"
-                style="display: none"
-                @change="onFileSelect"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="second">
-        <div class="detail-section">
-          <label for="category"
-            >หมวดหมู่
-            <span
-              >*<span v-if="mesAlertCategory != ''">{{
-                mesAlertCategory
-              }}</span></span
-            ></label
+              Event
+            </button>
+            >
+            <button
+              @click="changePage('eventDetail')"
+              class="hover:text-primaryColor hover:underline hover:underline-offset-4"
+            >
+              Event Deatail
+            </button>
+            > <span >Edit Event</span></span
           >
-          <input
-            @change="countWord('category', newCategory)"
-            type="text"
-            id="category"
-            v-model="newCategory"
-            minlength="1"
-            maxlength="40"
-            placeholder="กรุณาเพิ่มข้อมูลไม่น้อยกว่า 1 ตัวอักษร"
-          />
+          <div class="text-[32px]">แก้ไขข้อมูลกิจกรรม</div>
         </div>
-        <div class="detail-section">
-          <label for="subCategory"
-            >หมวดหมู่ย่อย<span
-              >*<span v-if="mesAlertSubCategory != ''">{{
-                mesAlertSubCategory
-              }}</span></span
-            ></label
-          >
-          <input
-            @change="countWord('subCategory', newSubCategory)"
-            type="text"
-            id="subCategory"
-            v-model="newSubCategory"
-            minlength="1"
-            maxlength="40"
-            placeholder="กรุณาเพิ่มข้อมูลไม่น้อยกว่า 1 ตัวอักษร"
-          />
-        </div>
-        <div class="detail-section">
-          <label for="amountReceived"
-            >จำนวนผู้เข้าร่วม
-            <span
-              >*<span v-if="mesAlertAmountRe != ''">{{
-                mesAlertAmountRe
-              }}</span></span
-            ></label
-          >
-          <input
-            @change="countWord('amountReceied', newAmountReceived)"
-            type="number"
-            id="amountReceived"
-            v-model="newAmountReceived"
-            value="10"
-            min="10"
-            max="100"
-            placeholder="กรุณาระบุระหว่าง 10 - 100 คน"
-          />
-        </div>
-        <div class="detail-section">
-          <label for="validationType"
-            >ตรวจสอบการเข้าร่วมกิจกรรม <span>*</span></label
-          >
-          <select
-            id="validationType"
-            name="validationType"
-            v-model="newValidationType"
-          >
-            <option value="CURRENT_GPS">Current GPS</option>
-            <option value="QR_CODE">QR Code</option>
-            <option value="CURRENT_GPS,QR_CODE">Current GPS and QR Code</option>
-          </select>
-        </div>
-        <div
-          v-if="
-            newValidationType == 'CURRENT_GPS' ||
-            newValidationType == 'CURRENT_GPS,QR_CODE'
-          "
-          class="detail-section"
+        <hr />
+        <!-- form -->
+        <v-form
+          fast-fail
+          @submit.prevent
+          class="mt-0"
         >
-          <label for="description">สถานที่ <span>*</span></label>
-          <input
-            type="dropdown-content"
-            id="description"
-            disabled
-            v-model="props.info.locationName"
-          />
-          <button id="getLocation" @click="updateMapCenter()">map</button>
-        </div>
+          <div class="flex justify-between items-center py-[40px]">
+            <div class="text-[24px] font-bold ">
+              รายละเอียดกิจกรรม
+            </div>
+            <div>
+              <v-btn @click="updateEventDetail"
+                class="custom-rounded-btn"
+                color="#4520CC"
+                type="submit"
+                style="height: 56px;"
+              >
+                Update
+              </v-btn>
+            </div>
+          </div>
+          <!-- fill -->
+          <div class="grid grid-cols-2 justify-items-stretch">
+            <!-- left form -->
+            <div class="justify-self-start space-y-[24px]">
+              <!-- หัวข้อกิจกรรม -->
+              <div>
+                <v-text-field clearable
+                  class="custom-outline-border w-[620px]"
+                  variant="outlined"
+                  color="#4520CC"
+                  bg-color="#ECE9FA"
+                  :label="`หัวข้อกิจกรรม`"
+                  v-model="newTitle"
+                  :rules="rules.require"
+                  :width="`20px`"
+                ></v-text-field>
+              </div>
+              <!-- รายละเอียด -->
+              <div>
+                <v-textarea clearable
+                bg-color="#ECE9FA"
+                  variant="outlined"
+                  color="#4520CC"
+                  class="w-[ุ620px] h-[166px]"
+                  label="รายละเอียดกิจกรรม"
+                  v-model="newDescription"
+                  :rules="rules.description"
+                ></v-textarea>
+              </div>
+              <!-- วันที่เปิด - ปิด รับสมัคร -->
+              <div class="flex justify-center mt-[8px] space-x-2 pb-[8px]">
+                <div>
+                  <label>วันที่เปิดรับสมัคร </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      placeholder="วันเปิดรับสมัคร"
+                      dark="true"
+                      v-model="newRegisStartDate"               
+                    ></VueDatePicker>
+                  </div>
+                </div>
+                <div class="pt-[50px]">-</div>
+                <div>
+                  <label>วันที่ปิดรับสมัคร </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      placeholder="วันปิดรับสมัคร"
+                      dark="true"
+                      v-model="newRegisEndtDate"
+                    ></VueDatePicker>
+                  </div>
+                </div>
+              </div>
+              <!-- วันที่เปิด - ปิด กิจกรรม -->
+              <div class="flex justify-center mt-[8px] space-x-2 pb-[8px]">
+                <div>
+                  <label>วันเริ่มกิจกรรม </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      placeholder="วันเปิดรับสมัคร"
+                      dark="true"
+                      v-model="newStartDate"
+                    ></VueDatePicker>
+                  </div>
+                </div>
+                <div class="pt-[50px]">-</div>
+                <div>
+                  <label>วันจบกิจกรรม </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      placeholder="วันปิดรับสมัคร"
+                      dark="true"
+                      v-model="newEndate"
+                    ></VueDatePicker>
+                  </div>
+                </div>
+              </div>
+              <!-- Drag & Drop Images -->
+              <div class="detail-section">
+                <label for="description">รูปภาพกิจกรรม <span>*</span></label>
+                <div class="container-poster" v-if="newPoster != ''">
+                  <div class="image">
+                    <span
+                      class="delete bg-red-200 opacity-80 text-red-900 w-[46px] h-[46px] rounded-[16px] grid place-content-center"
+                      @click="deleteImage"
+                      style="cursor: pointer"
+                      >&times;</span
+                    >
+                    <img :src="newPoster" alt="choose image" />
+                  </div>
+                </div>
+                <div v-else class="card bg-primaryLight">
+                  <div
+                    class="drag-area"
+                    @dragover.prevent="onDragover"
+                    @dragleave.prevent="onDragleave"
+                    @drop.prevent="onDrop"
+                  >
+                    <span
+                      v-if="isDraging != true"
+                      class="grid justify-items-center"
+                    >
+                      <img
+                        src="@/assets/gallery.png"
+                        class="w-[96x] h-[96px] mb-4"
+                        alt="image"
+                      />
+                      <div class="flex text-primaryColor">
+                        Drag & drop image here or
+                        <span
+                          class="select text-primaryColor"
+                          role="button"
+                          @click="selectFile"
+                          ><b><u>choose </u> </b></span
+                        >
+                      </div>
+                    </span>
+                    <div v-else class="select">Drop image here</div>
+                    <input
+                      id="fileInput"
+                      name="file"
+                      type="file"
+                      class="file"
+                      ref="fileInput"
+                      style="display: none"
+                      @change="onFileSelect"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- right form -->
+            <div class="justify-self-end space-y-[48px]">
+              <!-- หมวดหมู่ -->
+              <div>
+                <v-text-field clearable 
+                bg-color="#ECE9FA"
+                  variant="outlined"
+                  color="#4520CC"
+                  class="w-[334px] h-[56px]"
+                  :label="`หมวดหมู่`"
+                  :width="`20px`"
+                  :rules="rules.require"
+                  v-model="newCategory"
+                ></v-text-field>
+              </div>
+              <!-- หมวดหมู่ย่อย -->
+              <div>
+                <v-text-field clearable 
+                bg-color="#ECE9FA"
+                  variant="outlined"
+                  color="#4520CC"
+                  class="w-[334px] h-[56px]"
+                  :label="`หมวดหมู่ย่อย`"
+                  :prepend-inner-icon="`mdi-magnify`"
+                  :width="`20px`"
+                  :rules="rules.require"
+                  v-model="newSubCategory"
+
+                ></v-text-field>
+              </div>
+              <!-- จำนวนผู้เข้าร่วม -->
+              <div>
+                <v-text-field
+                variant="outlined"
+                  bg-color="#ECE9FA"
+                  color="#4520CC"
+                  type="number"
+                  class="w-[334px] h-[56px] bg-[primaryLight]"
+                  label="จำนวนผู้เข้าร่วม"
+                  :rules="rules.require"
+                  v-model="eventDetail.amountReceived"
+                  append-inner
+                  hide-spin-buttons
+                >
+                  <template #append-inner>
+                    <v-icon class="text-primaryColor">mdi-minus</v-icon>
+                    <v-icon class="text-primaryColor">mdi-plus</v-icon>
+                  </template>
+                </v-text-field>
+              </div>
+              <div class="pt-2 rounded-[8px]">
+                <v-select
+                  class="w-[334px] h-[56px] rounded-[6px]"
+                  variant="outlined"
+                  color="#4520CC"
+                  label="ตรวจสอบการเข้าร่วมโดย"
+                  :items="['QR Code', 'Step Counter', 'GPS', 'QR Code&GPS']"
+                  bg-color="#ECE9FA"
+                  :rules="rules.require"
+                  v-model="newValidationType"
+                >
+                </v-select>
+              </div>
+              <!-- <div>
+                <v-select
+                  class="w-[334px] h-[56px] rounded-[6px]"
+                  variant="outlined"
+                  label="ตรวจสอบการเข้าร่วมโดย"
+                  bg-color="#ECE9FA"
+                >
+                </v-select>
+              </div> -->
+            </div>
+          </div>
+        </v-form>
       </div>
     </div>
   </div>
+  
 </template>
 <style scoped>
-.detail-section span {
-  color: red;
+.custom-rounded-btn {
+  border-radius: 16px;
 }
 
-.confirm-button {
-  display: grid;
-  place-items: end;
+.dp__theme_dark {
+  --dp-input-padding: 16px; /*input high*/
+  --dp-background-color: #ece9fa;
+  --dp-text-color: #1b1717;
+  --dp-hover-color: #484848;
+  --dp-hover-text-color: #fff;
+  --dp-hover-icon-color: #959595;
+  --dp-primary-color: #005cb2;
+  --dp-primary-disabled-color: #61a8ea;
+  --dp-primary-text-color: #fff;
+  --dp-secondary-color: #a9a9a9;
+  --dp-border-color: #2d2d2d;
+  --dp-menu-border-color: #ffffff;
+  --dp-disabled-color: #737373;
+  --dp-disabled-color-text: #d0d0d0;
+  --dp-scroll-bar-background: #212121;
+  --dp-scroll-bar-color: #484848;
+  --dp-success-color: #00701a;
+  --dp-success-color-disabled: #428f59;
+  --dp-icon-color: #959595;
+  --dp-danger-color: #e53935;
+  --dp-marker-color: #e53935;
+  --dp-tooltip-color: #3e3e3e;
+  --dp-highlight-color: rgb(0 92 178 / 20%);
+  --dp-range-between-dates-background-color: var(--dp-hover-color, #484848);
+  --dp-range-between-dates-text-color: var(--dp-hover-text-color, #fff);
+  --dp-range-between-border-color: var(--dp-hover-color, #fff);
 }
-
-.confirm-button button {
-  height: 54px;
-  width: fit-content;
-  padding-left: 16px;
-  padding-right: 16px;
-  color: #ffffff;
-  background-color: #4520cc;
+.dp__input {
+    /* line-height: 50px; */
+    height: 100%;
 }
-
-.container {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 40px;
-  border-radius: 15px;
-  background-color: #ffffff;
-  padding: 40px;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  width: 100%;
-}
-
-.main {
-  display: grid;
-  grid-template-rows: auto 5fr;
-  grid-column-start: 1;
-}
-
-.two-column {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 24px;
-}
-
-input,
-select {
-  width: 100%;
-  height: 64px;
-  background-color: #f2f2f2;
-  margin: 8px 0;
-  /* border-color: #D9D9D9; */
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-sizing: border-box;
-  padding: 14px 20px;
-}
-
-textarea {
-  width: 100%;
-  height: 200px;
-  background-color: #f2f2f2;
-  margin: 8px 0;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-sizing: border-box;
-  padding: 24px 24px;
-  word-wrap: break-word;
-  line-height: 1.5rem;
-}
-
-.second {
-  display: block;
-  grid-column: 2;
-}
-
-.event-detail {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.detail-section {
-  text-align: start;
-  width: 100%;
-  margin-bottom: 24px;
-  /* background-color: blueviolet; */
+.v-field {
+  border-radius: 8px !important;
 }
 
 .poster-img {
@@ -659,15 +490,15 @@ textarea {
   padding-left: 8px;
   padding-right: 8px;
   height: 40px;
-  border: 1.5px solid #d1d1d1;
+  border: 1.5px solid #d1d1d1; /*กรอบ image */
   background-color: #ffffff;
 }
 
 .card {
   width: 100%;
-  padding: 0 0 0 0;
   border-radius: 8px;
   overflow: hidden;
+  margin-top: 16px;
 }
 
 .card,
@@ -692,9 +523,9 @@ textarea {
 }
 
 .drag-area {
-  height: 210px;
+  height: 258.33px;
   border-radius: 8px;
-  border: 2px dashed #d1d1d1;
+  border: 2px dashed #dad2f5;
   color: #d1d1d1;
   /* justify-content: center;
   align-items: center; */
@@ -714,9 +545,10 @@ textarea {
   opacity: 0.6;
 }
 
+
 .container-poster {
   width: 100%;
-  height: 210px;
+  height: 258.33px;
   overflow: hidden;
   /* display: flex;
   justify-content: flex-start; */
@@ -725,11 +557,10 @@ textarea {
   /* max-height: 360px; */
   position: relative;
   border-radius: 8px;
-  outline-color: #d1d1d1;
+  outline-color: #dad2f5; /*กรอบ image */
   outline-style: dashed;
   margin-top: 16px;
 }
-
 
 .image img {
   /* margin-top: -8px; */
@@ -739,20 +570,17 @@ textarea {
   display: flex;
   justify-content: flex-start;
   overflow: hidden;
-
-  
-
 }
 
 .image span {
   position: absolute;
-  top: 2px;
-  right: 9px;
+  top: 16px;
+  right: 16px;
   font-size: 20px;
 }
 
 .image span:hover {
   transform: scale(1.2);
-  transition: transform 0.3s ease-in-out; 
+  transition: transform 0.3s ease-in-out;
 }
 </style>

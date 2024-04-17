@@ -20,7 +20,7 @@ export async function updateDisplayName(displayName) {
   console.log(localStorage.getItem("access_token"));
   await axios
     .post(
-      `${import.meta.env.VITE_API_ENV}/edit-account`,null,
+      `${import.meta.env.VITE_API_ENV}/edit-account`,{},
       // `http://cp23kw1.sit.kmutt.ac.th/dev/api/edit-account?dname=${displayName}`,
       {
         params:{

@@ -177,7 +177,7 @@ const filterEvent = computed(() => {
 
 <style>
 .v-field {
-  border-radius: 15px;
+  border-radius: 8px;
 }
 
 .swiper-pagination-bullet {

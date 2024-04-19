@@ -9,17 +9,12 @@ dotenv.config();
 export default defineConfig({
   server:{
     proxy:{
-      '/api':{
-        target: 'https://capstone23.sit.kmutt.ac.th/kw1',
-        // target: 'http://localhost:8080',
+      '/local/api': {
+        // target: 'https://capstone23.sit.kmutt.ac.th/kw1',
+        target: 'http://localhost:8080',
         changeOrigin: true,
-        secure: false
-      },
-      '/graphl':{
-        target: 'https://capstone23.sit.kmutt.ac.th/kw1',
-        changeOrigin:true,
         secure:false
-      }
+      },
     },
   },
   plugins: [vue()],
@@ -30,3 +25,4 @@ export default defineConfig({
     }
   }
 })
+

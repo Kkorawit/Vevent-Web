@@ -1,19 +1,66 @@
 <script setup>
 import { rules } from "@/extend/utils.ts";
 import { ref, computed } from "vue";
+import { createEvent } from '~/restful/Eventapi.js'
+
+// event
+const title = ref("")
+const description = ref("")
+const amountReceived = ref(0)
+const category = ref("")
+const subCategory = ref("")
+const startDate = ref(new Date())
+const endDate = ref(new Date())
+const registerStartDate = ref(new Date())
+const registerEndDate = ref(new Date())
+const validationType = ref("")
+const validationRules = ref("")
+const posterImg = ref("")
+const locationName = ref("")
+const locationLatitude = ref("")
+const locationLongitude = ref("")
+const isOnline = ref(false)
+// const allValidateType = [
+//   {name:'QR Code',online:true,onsite:false},
+//   {name:'Step Counter',online:true,onsite:true},
+//   {name:'GPS',online:false,onsite:true},
+//   {name:'GPS + QR Code',online:false,onsite:true},
+// ] 
+const onlineValidate = ['Qr Code','Step Counter']
+const onsiteValidate = ['GPS','Qr Code + GPS','Step Counter']
 import Navbar from "@/components/Navbar.vue";
 import router from "@/plugins/router";
 
 
 
+
+const event = {
+      "title": title.value,
+      "description": description.value,
+      "amountReceived": amountReceived.value,
+      "category": category.value,
+      "subCategory": subCategory.value,
+      "startDate": startDate.value,
+      "endDate": endDate.value,
+      "registerStartDate": registerStartDate.value,
+      "registerEndDate": registerEndDate.value,
+      "validationType": validationType.value,
+      "validationRules": validationRules.value,
+      "posterImg": posterImg.value,
+      "locationName": locationName.value,
+      "locationLatitude": locationLatitude.value,
+      "locationLongitude": locationLongitude.value
+}
+
+// form validation
+const valid = ref(true)
+
+
+// Drag&Drop
 const posterStatus = ref("");
 const newPoster = ref("");
 const images = ref([]);
 const isDraging = ref(false);
-
-
-
-
 const selectFile = () => {
   const fileInput = document.getElementById("fileInput");
   if (fileInput) {
@@ -148,6 +195,7 @@ const changePage = () => {
               <div>
                 <v-text-field
                   class="w-[620px] h-[80px] rounded-full"
+                  v-model="title"
                   bg-color="#ECE9FA"
                   variant="outlined"
                   :label="`หัวข้อกิจกรรม`"
@@ -159,8 +207,9 @@ const changePage = () => {
               <!-- รายละเอียด -->
               <div>
                 <v-textarea
+                class="w-[ุ620px] h-[166px]"
+                v-model="description"
                 variant="outlined"
-                  class="w-[ุ620px] h-[166px]"
                   bg-color="#ECE9FA"
                   label="รายละเอียดกิจกรรม"
                   :rules="rules.require"
@@ -168,47 +217,40 @@ const changePage = () => {
                 ></v-textarea>
               </div>
               <!-- วันที่เปิด - ปิด รับสมัคร -->
-              <div class="flex justify-center mt-[8px] space-x-2 pb-[8px]">
-                <div>
-                  <label>วันที่เปิดรับสมัคร </label>
-                  <div class="w-[300px] mt-[8px]">
-                    <VueDatePicker
-                      placeholder="วันเปิดรับสมัคร"
-                      dark="true"            
-                    ></VueDatePicker>
-                  </div>
+              <div class="flex justify-center space-x-2">
+                <div class="w-[300px] mt-[8px]">
+                  <VueDatePicker
+                  v-model="registerStartDate"
+                  :rules="rules.require"
+                    placeholder="วันเปิดรับสมัคร"
+                    dark="true"
+                  ></VueDatePicker>
                 </div>
-                <div class="pt-[50px]">-</div>
-                <div>
-                  <label>วันที่ปิดรับสมัคร </label>
-                  <div class="w-[300px] mt-[8px]">
-                    <VueDatePicker
-                      placeholder="วันปิดรับสมัคร"
-                      dark="true"
-                    ></VueDatePicker>
-                  </div>
+                <div class="pt-2">-</div>
+                <div class="w-[300px] mt-[8px]">
+                  <VueDatePicker
+                  v-model="registerEndDate"
+                    placeholder="วันปิดรับสมัคร"
+                    dark="true"
+                  ></VueDatePicker>
                 </div>
               </div>
-              <!-- วันที่เปิด - ปิด กิจกรรม -->
-              <div class="flex justify-center mt-[8px] space-x-2 pb-[8px]">
-                <div>
-                  <label>วันเริ่มกิจกรรม </label>
-                  <div class="w-[300px] mt-[8px]">
-                    <VueDatePicker
-                      placeholder="วันเปิดรับสมัคร"
-                      dark="true"
-                    ></VueDatePicker>
-                  </div>
+                <!-- วันที่เปิด - ปิด กิจกรรม -->
+              <div class="flex justify-center space-x-2 mt-[8px] pb-[8px]">
+                <div class="w-[300px] mt-[8px]">
+                  <VueDatePicker
+                  v-model="startDate"
+                    placeholder="วันเริ่มกิจกรรม"
+                    dark="true"
+                  ></VueDatePicker>
                 </div>
-                <div class="pt-[50px]">-</div>
-                <div>
-                  <label>วันจบกิจกรรม </label>
-                  <div class="w-[300px] mt-[8px]">
-                    <VueDatePicker
-                      placeholder="วันปิดรับสมัคร"
-                      dark="true"
-                    ></VueDatePicker>
-                  </div>
+                <div class="pt-2">-</div>
+                <div class="w-[300px] mt-[8px]">
+                  <VueDatePicker
+                  v-model="endDate"
+                    placeholder="วันจบกิจกรรม"
+                    dark="true"
+                  ></VueDatePicker>
                 </div>
               </div>
               <!-- Drag & Drop Images -->
@@ -270,6 +312,7 @@ const changePage = () => {
               <!-- หมวดหมู่ -->
               <div>
                 <v-text-field
+                v-model="category"
                   bg-color="#ECE9FA"
                   variant="outlined"
                   class="w-[334px] h-[56px]"
@@ -283,6 +326,7 @@ const changePage = () => {
               <!-- หมวดหมู่ย่อย -->
               <div>
                 <v-text-field
+                v-model="subCategory"
                   bg-color="#ECE9FA"
                   variant="outlined"
                   color="#4520CC"
@@ -297,12 +341,14 @@ const changePage = () => {
               <!-- จำนวนผู้เข้าร่วม -->
               <div>
                 <v-text-field
+                v-model="amountReceived"
                 variant="outlined"
                   bg-color="#ECE9FA"
                   type="number"
                   class="w-[334px] h-[56px] bg-[primaryLight]"
                   label="จำนวนผู้เข้าร่วม"
                   append-inner
+                  :rules="rules.require"
                   hide-spin-buttons
                 >
                   <template #append-inner>
@@ -311,26 +357,78 @@ const changePage = () => {
                   </template>
                 </v-text-field>
               </div>
-              <div class="pt-2 rounded-[8px]">
+              <div class="pt-2">
+                <div class="">
+                    <v-switch
+                    :label="isOnline ? 'Online' : 'Onsite'"
+                    v-model="isOnline">
+                    </v-switch>
+                </div>
+                <div v-if="isOnline" class="pt-8 w-full">
+                    <v-text-field
+                    class=""
+                    bg-color="#ECE9FA"
+                    variant="outlined"
+                      label="ลิ้งค์ห้องประชุม"
+                      placeholder="ลิ้งค์ห้องประชุม ex.https:/meet.google..."
+                    >
+
+                    </v-text-field>
+                </div>
+                <!-- <div v-if="">
+
+                </div> -->
+              </div>
+              <div class="pt-2">
+                  <v-select
+                  label="ตรวจสอบการเข้าร่วมโดย"
+                  variant="outlined"
+                  bg-color="#ECE9FA"
+                  v-model="validationType"
+                  :items="isOnline ? onlineValidate : onsiteValidate">
+                  </v-select>
+              </div>
+              <div class="pt-2" v-if="validationType!='Qr Code'&&validationType!=''">
+                <v-text-field
+                :v-model="amountReceived"
+                variant="outlined"
+                  bg-color="#ECE9FA"
+                  type="number"
+                  class="w-[334px] h-[56px] bg-[primaryLight]"
+                  :label="validationType=='Step Counter' ? 'จำนวนก้าว' : 'รัศมีจากจุดกิจกรรม (เมตร)' "
+                  append-inner
+                  :rules="rules.require"  
+                  hide-spin-buttons>
+                  <template #append-inner>
+                    <v-icon class="text-primaryColor">mdi-minus</v-icon>
+                    <v-icon class="text-primaryColor">mdi-plus</v-icon>
+                  </template>
+                </v-text-field>
+              </div>
+              <!-- <div class="pt-2 rounded-[8px]">
                 <v-select
+                v-model="validationType"
                   class="w-[334px] h-[56px] rounded-[6px]"
                   variant="outlined"
                   label="ตรวจสอบการเข้าร่วมโดย"
+                  :rules="rules.require"
                   :items="['QR Code', 'Step Counter', 'GPS', 'QR Code&GPS']"
                   bg-color="#ECE9FA"
                 >
                 </v-select>
-              </div>
-              <div>
+              </div> -->
+              <!-- <div>
                 <v-select
                   class="w-[334px] h-[56px] rounded-[6px]"
                   variant="outlined"
+                  :rules="rules.require"
                   label="ตรวจสอบการเข้าร่วมโดย"
                   bg-color="#ECE9FA"
                 >
                 </v-select>
-              </div>
+              </div> -->
             </div>
+            
           </div>
         </v-form>
       </div>
@@ -339,9 +437,6 @@ const changePage = () => {
 </template>
 
 <style scoped>
-.custom-rounded-btn {
-  border-radius: 16px;
-}
 
 .dp__theme_dark {
   --dp-input-padding: 16px; /*input high*/

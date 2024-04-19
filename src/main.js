@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 import App from '@/App.vue';
 //router
-import router from '@/plugins/router';
+import router from '@/plugins/router.js';
 //axios
 import axios from 'axios';
 //vue3 google login
@@ -29,7 +29,7 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 const httpLink = createHttpLink({
     uri: 'https://capstone23.sit.kmutt.ac.th/kw1/dev/graphql',
-    // uri: `http://localhost:8080${import.meta.env.VITE_GL_ENV}`,
+    // uri: `http://localhost:8080/local/graphql`,
 });
 
 const apolloClient = new ApolloClient({

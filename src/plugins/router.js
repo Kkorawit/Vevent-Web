@@ -1,4 +1,5 @@
 import { createRouter,createWebHistory } from "vue-router";
+import { components } from "vuetify/dist/vuetify-labs.js";
 
 const routes = [
     {path:'/',name:'home',component:()=>import(/* webpackChunkName: "home" */ '@/views/Home.vue')},
@@ -9,9 +10,8 @@ const routes = [
     {path:'/editEvent/:id',name:'editEvent',component:()=>import(/* webpackChunkName: "Edit" */'@/pages/EditEvent.vue')},
     {path:'/eventDetail',name:'eventDetail',component:()=>import(/* webpackChunkName: "Edit" */'@/pages/EventDetail_card.vue')},
     {path:'/organization',name:'organize',component:()=>import(/* webpackChunkName: "Organize" */'@/components/Event/EventListOrganization.vue')},
-    {path:'/participants',name:'participants',component:()=>import(/* webpackChunkName: "Participants" */'@/pages/Participants.vue')},
-    // {path:'/organize',name:'organize',component:()=>import(/* webpackChunkName: "Create" */'@/components/Event/EventListOrganization.vue')},
-    // {path:'/eventDetail',name:'eventDetail',component:()=>import(/* webpackChunkName: "home" */'@/components/EventDetail.vue')},
+    {path:'/participants',name:'participants',component:()=>import(/* webpackChunkName: "Participants" */'@/components/Event/EventListParticipants.vue')},
+    {path:'/signup/:email/:username/:profileImg',name:'signup',component:()=>import(/* webpackChuckName: "Signup" */'@/pages/Signup.vue')},
 ]
 
 

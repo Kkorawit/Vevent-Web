@@ -205,7 +205,7 @@ function checkRole(role) {
                   <div>
                     <button @click="changeState(event.id, 'deleteEvent')">
                       <img
-                        src="../assets/Recycle Bin red.png"
+                        src="../assets/Recycle-Bin-red.png"
                         alt="bin"
                         style="width: 24px; height: 24px; opacity: 60%"
                       />

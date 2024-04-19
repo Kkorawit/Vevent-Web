@@ -48,7 +48,7 @@ export async function deleteEventById (eid){
     console.log(eid);
     const currentDT = moment().format()
     console.log(currentDT)
-    try {
+
         const response = await axios.delete(
           `${import.meta.env.VITE_API_ENV}/delete-event`,
           {
@@ -61,13 +61,10 @@ export async function deleteEventById (eid){
             }
           }
         );
-    
+
         // Handle successful deletion response here
         console.log(response.data);
-      } catch (error) {
-        // Handle error with informative message
-        console.error("Error deleting event:", error.message);
-      }
+
 
 }
 
@@ -81,6 +78,6 @@ export async function bookEventById (){
 
 
 
-export default ({deleteEventById,editEventById,bookEventById})
+export default ({createEvent,deleteEventById,editEventById,bookEventById})
 
 

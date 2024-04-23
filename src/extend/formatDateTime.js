@@ -4,7 +4,7 @@ import momentTimezone from 'moment-timezone'; // Import moment-timezone
 
 
 
-export default function formatDateTime(dateTime){
+export function formatDateTime(dateTime){
     // const dateTimeString = "Thu Apr 25 2024 21:38:00 GMT+0700 (Indochina Time)";
 
 // Parse the string using moment (assuming moment-timezone is loaded)
@@ -16,3 +16,7 @@ const formattedDateTime = originalMoment.format("YYYY-MM-DDTHH:mm:ssZ");
 console.log(formattedDateTime); // Output: 2024-04-26T00:00:00Z
 return formattedDateTime;
 }
+
+export default { 
+    formatDateTime
+};

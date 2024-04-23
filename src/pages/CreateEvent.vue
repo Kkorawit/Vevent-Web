@@ -1,60 +1,63 @@
 <script setup>
 import { rules } from "@/extend/utils.ts";
-import { ref, computed } from "vue";
-import { createEvent } from '~/restful/Eventapi.js'
+import { ref, computed, watchEffect } from "vue";
+import CustomvBtnPrimary from "../components/common/CustomvBtn.primary.vue";
+import Map from "@/components/common/Map.vue";
+import { nearbyMarkers } from "@/extend/mapStore";
+import { createEvent } from "~/restful/Eventapi.js";
+
 
 // event
-const title = ref("")
-const description = ref("")
-const amountReceived = ref(0)
-const category = ref("")
-const subCategory = ref("")
-const startDate = ref(new Date())
-const endDate = ref(new Date())
-const registerStartDate = ref(new Date())
-const registerEndDate = ref(new Date())
-const validationType = ref("")
-const validationRules = ref("")
-const posterImg = ref("")
-const locationName = ref("")
-const locationLatitude = ref("")
-const locationLongitude = ref("")
-const isOnline = ref(false)
-// const allValidateType = [
-//   {name:'QR Code',online:true,onsite:false},
-//   {name:'Step Counter',online:true,onsite:true},
-//   {name:'GPS',online:false,onsite:true},
-//   {name:'GPS + QR Code',online:false,onsite:true},
-// ] 
-const onlineValidate = ['Qr Code','Step Counter']
-const onsiteValidate = ['GPS','Qr Code + GPS','Step Counter']
+const title = ref("");
+const description = ref("");
+const amountReceived = ref(0);
+const category = ref("");
+const subCategory = ref("");
+const startDate = ref(new Date());
+const endDate = ref(new Date());
+const registerStartDate = ref(new Date());
+const registerEndDate = ref(new Date());
+const validationType = ref("");
+const validationRules = ref("");
+const posterImg = ref("");
+// const locationName = ref("");
+const location = ref({
+  locationName:'MOCK LOCATION NAME',
+  locationLatitude:null,
+  locationLongitude:null,
+})
+
+watchEffect(()=>{
+  location.value.locationLatitude = nearbyMarkers.value[0]?.latitude,
+  location.value.locationLongitude = nearbyMarkers.value[0]?.longitude
+})
+
+const isOnline = ref(false);
+const onlineValidate = ["Qr Code", "Step Counter"];
+const onsiteValidate = ["GPS", "Qr Code + GPS", "Step Counter"];
 import Navbar from "@/components/Navbar.vue";
 import router from "@/plugins/router";
 
-
-
-
 const event = {
-      "title": title.value,
-      "description": description.value,
-      "amountReceived": amountReceived.value,
-      "category": category.value,
-      "subCategory": subCategory.value,
-      "startDate": startDate.value,
-      "endDate": endDate.value,
-      "registerStartDate": registerStartDate.value,
-      "registerEndDate": registerEndDate.value,
-      "validationType": validationType.value,
-      "validationRules": validationRules.value,
-      "posterImg": posterImg.value,
-      "locationName": locationName.value,
-      "locationLatitude": locationLatitude.value,
-      "locationLongitude": locationLongitude.value
-}
+  title: title.value,
+  description: description.value,
+  amountReceived: amountReceived.value,
+  category: category.value,
+  subCategory: subCategory.value,
+  startDate: startDate.value,
+  endDate: endDate.value,
+  registerStartDate: registerStartDate.value,
+  registerEndDate: registerEndDate.value,
+  validationType: validationType.value,
+  validationRules: validationRules.value,
+  posterImg: posterImg.value,
+  locationName: location.value.locationName,
+  locationLatitude: location.value.locationLatitude,
+  locationLongitude: location.value.locationLongitude,
+};
 
 // form validation
-const valid = ref(true)
-
+const valid = ref(false);
 
 // Drag&Drop
 const posterStatus = ref("");
@@ -141,12 +144,36 @@ const onDrop = (event) => {
 };
 
 const changePage = () => {
-  router.push({name: 'home'});
+  router.push({ name: "home" });
+};
+
+const typeSwitch = (type) => {
+  isOnline.value = type;
+};
+
+const updateValue = (rules,action) => {
+    if(rules=='validationRules'){
+      
+      switch(action){
+        case 'minus': validationRules.value >0 ? validationRules.value-- : alert("Can't fill least than 0"); break;
+        case 'plus': validationRules.value++; break;
+      }
+
+    }else if(rules == 'amountReceived'){
+      switch(action){
+        case 'minus': amountReceived.value>0 ? amountReceived.value-- : alert("Can't fill least than 0"); break;
+        case 'plus': amountReceived.value++; break;
+      }
+    }
 }
+
+
+
 </script>
 
 <template>
   <Navbar></Navbar>
+  {{ location }}
   <div class="grid grid-cols-12 justify-items-center">
     <div
       class="col-span-8 col-start-3 w-[1080px] bg-white shadow-xl rounded-b-[16px]"
@@ -167,27 +194,21 @@ const changePage = () => {
         </div>
         <hr />
         <!-- form -->
-        <v-form
-          fast-fail
-          @submit.prevent
-          class="mt-0"
-        >
+        <v-form v-model="valid" fast-fail @submit.prevent class="mt-0">
           <div class="flex justify-between items-center py-[40px]">
-            <div class="text-[24px] font-bold ">
-              รายละเอียดกิจกรรม
-            </div>
+            <div class="text-[24px] font-bold">รายละเอียดกิจกรรม</div>
             <div>
-              <v-btn @click="updateEventDetail"
-                class="custom-rounded-btn"
+              
+              <v-btn @click="createEvent(event)"
+                :disabled="!valid"
                 color="#4520CC"
                 type="submit"
-                style="height: 56px;"
               >
-                Submit
+                Done
               </v-btn>
             </div>
           </div>
-        <!-- fill -->
+          <!-- fill -->
           <div class="grid grid-cols-2 justify-items-stretch pb-36">
             <!-- left form -->
             <div class="justify-self-start space-y-[24px]">
@@ -207,9 +228,9 @@ const changePage = () => {
               <!-- รายละเอียด -->
               <div>
                 <v-textarea
-                class="w-[ุ620px] h-[166px]"
-                v-model="description"
-                variant="outlined"
+                  class="w-[ุ620px] h-[166px]"
+                  v-model="description"
+                  variant="outlined"
                   bg-color="#ECE9FA"
                   label="รายละเอียดกิจกรรม"
                   :rules="rules.require"
@@ -220,8 +241,7 @@ const changePage = () => {
               <div class="flex justify-center space-x-2">
                 <div class="w-[300px] mt-[8px]">
                   <VueDatePicker
-                  v-model="registerStartDate"
-                  :rules="rules.require"
+                    v-model="registerStartDate"
                     placeholder="วันเปิดรับสมัคร"
                     dark="true"
                   ></VueDatePicker>
@@ -229,17 +249,17 @@ const changePage = () => {
                 <div class="pt-2">-</div>
                 <div class="w-[300px] mt-[8px]">
                   <VueDatePicker
-                  v-model="registerEndDate"
+                    v-model="registerEndDate"
                     placeholder="วันปิดรับสมัคร"
                     dark="true"
                   ></VueDatePicker>
+                  {{ registerEndDate }}
                 </div>
               </div>
-                <!-- วันที่เปิด - ปิด กิจกรรม -->
+              <!-- วันที่เปิด - ปิด กิจกรรม -->
               <div class="flex justify-center space-x-2 mt-[8px] pb-[8px]">
                 <div class="w-[300px] mt-[8px]">
                   <VueDatePicker
-                  v-model="startDate"
                     placeholder="วันเริ่มกิจกรรม"
                     dark="true"
                   ></VueDatePicker>
@@ -247,7 +267,6 @@ const changePage = () => {
                 <div class="pt-2">-</div>
                 <div class="w-[300px] mt-[8px]">
                   <VueDatePicker
-                  v-model="endDate"
                     placeholder="วันจบกิจกรรม"
                     dark="true"
                   ></VueDatePicker>
@@ -308,11 +327,11 @@ const changePage = () => {
               </div>
             </div>
             <!-- right form -->
-            <div class="justify-self-end space-y-[48px]">
+            <div class="justify-self-end space-y-[44px]">
               <!-- หมวดหมู่ -->
               <div>
                 <v-text-field
-                v-model="category"
+                  v-model="category"
                   bg-color="#ECE9FA"
                   variant="outlined"
                   class="w-[334px] h-[56px]"
@@ -326,7 +345,7 @@ const changePage = () => {
               <!-- หมวดหมู่ย่อย -->
               <div>
                 <v-text-field
-                v-model="subCategory"
+                  v-model="subCategory"
                   bg-color="#ECE9FA"
                   variant="outlined"
                   color="#4520CC"
@@ -338,7 +357,6 @@ const changePage = () => {
                   :width="`20px`"
                 ></v-text-field>
               </div>
-              <!-- จำนวนผู้เข้าร่วม -->
               <div>
                 <v-text-field
                 v-model="amountReceived"
@@ -352,34 +370,57 @@ const changePage = () => {
                   hide-spin-buttons
                 >
                   <template #append-inner>
-                    <v-icon class="text-primaryColor">mdi-minus</v-icon>
-                    <v-icon class="text-primaryColor">mdi-plus</v-icon>
+                    <v-icon @click="updateValue('amountReceived','minus')" class="text-primaryColor">mdi-minus</v-icon>
+                    <v-icon @click="updateValue('amountReceived','plus')" class="text-primaryColor">mdi-plus</v-icon>
                   </template>
                 </v-text-field>
               </div>
-              <div class="pt-2">
-                <div class="">
-                    <v-switch
-                    :label="isOnline ? 'Online' : 'Onsite'"
-                    v-model="isOnline">
-                    </v-switch>
+            
+              <div>
+                <!-- ประเภทกิจกรรม -->
+                <div class="grid justify-items-center space-y-12 mb-12">
+                  <!-- switch -->
+                  <div class="flex space-x-5">
+                    <div>
+                      <button
+                        @click="typeSwitch(true)"
+                        :class="['w-[159px] h-[56px] rounded-[8px]', isOnline ? 'bg-[#4520CC] text-white hover:bg-[#4520CC]' : 'bg-primaryLight text-primaryColor hover:bg-purple100' ] "
+                      >
+                        Online
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        @click="typeSwitch(false)"
+                        :class="['w-[159px] h-[56px] rounded-[8px]', !isOnline ? 'bg-[#4520CC] text-white hover:bg-[#4520CC]' : 'bg-primaryLight text-primaryColor hover:bg-purple100' ] "
+                      >
+                        Offline
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Map || Meeting Link -->
+                  <div class="">
+                    <!-- Map -->
+                    <div v-if="!isOnline">
+                      <Map></Map>
+                    </div>
+                    <!-- Meeting Link -->
+                    <div v-else-if="isOnline">
+                      <v-text-field
+                        bg-color="#ECE9FA"
+                        variant="outlined"
+                        color="#4520CC"
+                        class="w-[334px] h-[56px]"
+                        
+                        :rules="rules.require"
+                        label="ลิงค์ห้องประชุม ex.http://meet.google...."
+                      >
+                      </v-text-field>
+                    </div>
+                  </div>
                 </div>
-                <div v-if="isOnline" class="pt-8 w-full">
-                    <v-text-field
-                    class=""
-                    bg-color="#ECE9FA"
-                    variant="outlined"
-                      label="ลิ้งค์ห้องประชุม"
-                      placeholder="ลิ้งค์ห้องประชุม ex.https:/meet.google..."
-                    >
-
-                    </v-text-field>
-                </div>
-                <!-- <div v-if="">
-
-                </div> -->
-              </div>
-              <div class="pt-2">
+                <!-- ตรวจสอบโดย.... -->
+                <div class="mb-4">
                   <v-select
                   label="ตรวจสอบการเข้าร่วมโดย"
                   variant="outlined"
@@ -387,48 +428,29 @@ const changePage = () => {
                   v-model="validationType"
                   :items="isOnline ? onlineValidate : onsiteValidate">
                   </v-select>
-              </div>
-              <div class="pt-2" v-if="validationType!='Qr Code'&&validationType!=''">
-                <v-text-field
-                :v-model="amountReceived"
+                </div>
+                <!-- rules -->
+                <div>
+                  <v-text-field
+                v-model="validationRules"
                 variant="outlined"
                   bg-color="#ECE9FA"
                   type="number"
                   class="w-[334px] h-[56px] bg-[primaryLight]"
                   :label="validationType=='Step Counter' ? 'จำนวนก้าว' : 'รัศมีจากจุดกิจกรรม (เมตร)' "
                   append-inner
-                  :rules="rules.require"  
-                  hide-spin-buttons>
+                  :rules="rules.require"
+                  hide-spin-buttons
+                >
                   <template #append-inner>
-                    <v-icon class="text-primaryColor">mdi-minus</v-icon>
-                    <v-icon class="text-primaryColor">mdi-plus</v-icon>
+                    <v-icon @click="updateValue('validationRules','minus')" class="text-primaryColor">mdi-minus</v-icon>
+                    <v-icon @click="updateValue('validationRules','plus')" class="text-primaryColor">mdi-plus</v-icon>
                   </template>
                 </v-text-field>
+                </div>
               </div>
-              <!-- <div class="pt-2 rounded-[8px]">
-                <v-select
-                v-model="validationType"
-                  class="w-[334px] h-[56px] rounded-[6px]"
-                  variant="outlined"
-                  label="ตรวจสอบการเข้าร่วมโดย"
-                  :rules="rules.require"
-                  :items="['QR Code', 'Step Counter', 'GPS', 'QR Code&GPS']"
-                  bg-color="#ECE9FA"
-                >
-                </v-select>
-              </div> -->
-              <!-- <div>
-                <v-select
-                  class="w-[334px] h-[56px] rounded-[6px]"
-                  variant="outlined"
-                  :rules="rules.require"
-                  label="ตรวจสอบการเข้าร่วมโดย"
-                  bg-color="#ECE9FA"
-                >
-                </v-select>
-              </div> -->
+              
             </div>
-            
           </div>
         </v-form>
       </div>
@@ -437,7 +459,6 @@ const changePage = () => {
 </template>
 
 <style scoped>
-
 .dp__theme_dark {
   --dp-input-padding: 16px; /*input high*/
   --dp-background-color: #ece9fa;
@@ -467,9 +488,10 @@ const changePage = () => {
   --dp-range-between-dates-text-color: var(--dp-hover-text-color, #fff);
   --dp-range-between-border-color: var(--dp-hover-color, #fff);
 }
+
 .dp__input {
-    /* line-height: 50px; */
-    height: 100%;
+  /* line-height: 50px; */
+  height: 100%;
 }
 .v-field {
   border-radius: 8px !important;
@@ -584,4 +606,5 @@ const changePage = () => {
   transform: scale(1.2);
   transition: transform 0.3s ease-in-out;
 }
+
 </style>

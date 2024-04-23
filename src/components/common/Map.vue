@@ -1,0 +1,161 @@
+<script setup>
+import leaflet from "leaflet";
+// import 'leaflet-control-geocoder';
+import { onMounted, watchEffect,ref } from "vue";
+import { useGeolocation } from "@vueuse/core";
+import { userMarker, nearbyMarkers } from "@/extend/mapStore";
+import editIcon from "@/assets/Edit.png";
+import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-geosearch/dist/geosearch.css';
+
+const provider = new OpenStreetMapProvider();
+const searchControl = new GeoSearchControl({
+  provider:provider,
+  autoComplete:true,
+  searchLabel: 'Location Name',
+  autoClose: true,
+})
+// const center = { lat: 40.689247, lng: -74.044502 }
+// const map2 = ref(null)
+let map;
+let userGeoMarker = ref([]);
+let markers;
+const { coords } = useGeolocation();
+let previousZoomLevel = 0;
+const locationName = ref('');
+
+onMounted(() => {
+
+  // Google map 
+  // new window.google.maps.Map(map2.value,{
+  //   center: center,
+  //   zoom:10,
+  // });
+
+
+
+
+  map = leaflet
+    .map("map")
+    .setView([userMarker.value.latitude, userMarker.value.longitude], 17)
+    
+
+  ////// Display map layer
+  leaflet
+    .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      minZoom:-20,
+      attribution:
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    })
+    .addTo(map);
+
+    map.addControl(searchControl)
+    map.on('geosearch/showlocation',(data) => {
+      locationName.value = data.location.label;
+    })
+
+
+  ///// Loop display nearby marker on map when reload web
+  // nearbyMarkers.value.forEach(({ latitude, longitude }) => {
+  //   leaflet
+  //     .marker([latitude, longitude])
+  //     .addTo(map)
+  //     .bindPopup(
+  //       `Saved Marker at <strong>${latitude.toFixed(2)},${longitude.toFixed(
+  //         2
+  //       )}</strong>`
+  //     );
+
+  //   nearbyMarkers.value.push({ latitude, longitude });
+  // });
+
+  ////// add event that collect lat lng from click on the map at store it to nearby marker.
+  map.addEventListener("click", (e) => {
+
+    if(markers){
+      map.removeLayer(markers)
+      nearbyMarkers.value = []
+    }
+      console.log(e);
+    const { lat: latitude, lng: longitude } = e.latlng;
+
+    markers = leaflet
+      .marker([latitude, longitude])
+      .addTo(map)
+      .bindPopup(
+        `Saved Marker at <strong>${latitude.toFixed(2)},${longitude.toFixed(
+          2
+        )}</strong>`
+      );
+      map.on('zoomend',()=>{
+      previousZoomLevel = map.getZoom();
+    })
+
+    nearbyMarkers.value.push({ latitude, longitude });
+    
+  });
+});
+
+////// watch effect to map and coords lat lng
+watchEffect(() => {
+  console.log(coords.value);
+
+  ///// condition make sure lat long is potitive value
+  if (
+    coords.value.latitude !== Number.POSITIVE_INFINITY &&
+    coords.value.longitude !== Number.POSITIVE_INFINITY
+  ) {
+    nearbyMarkers.value.latitude = coords.value.latitude;
+    nearbyMarkers.value.longitude = coords.value.longitude;
+
+    if (userGeoMarker) {
+      map.removeLayer(userGeoMarker);
+    }
+
+    userGeoMarker = leaflet
+      .marker([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude],
+      // {icon:markericon}
+    )
+      .addTo(map)
+      .bindPopup("User Marker");
+    
+    map.on('zoomend',()=>{
+      previousZoomLevel = map.getZoom();
+    })
+      
+    map.setView([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], previousZoomLevel);
+
+    // const el = userGeoMarker.getElement();
+    // if (el) {
+    //   el.style.filter;
+    // }
+  }
+});
+console.log(editIcon);
+
+
+  // let markericon = leaflet.icon({
+  //   iconUrl:"/src/assets/Edit.png"
+  // })
+
+const clearMarker = () => {
+  map.removeLayer(markers)
+  nearbyMarkers.value=[]
+}
+</script>
+
+<template>
+  <div class="relative">
+    {{ locationName }}
+    <div id="map" class="h-[180px] w-[333px] z-20"></div>
+    <!-- <div id="map" class="h-screen w-screen z-20"></div> -->
+    <!-- <div ref="map" style="width: 500px;height: 500px;"></div> -->
+    <button class="absolute top-0 right-0 z-40 p-2 bg-gray-200 rounded-[8px] w-[120px] hover:bg-gray-300 text-[13px]" @click="clearMarker()">Clear Marker</button>
+  </div>
+</template>
+
+<style>
+/* #map { height: screen } */
+</style>

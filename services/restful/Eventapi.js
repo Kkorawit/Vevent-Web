@@ -1,8 +1,10 @@
 import { data } from "autoprefixer";
 import axios from "axios";
 import moment from "moment";
+import { formatDateTime } from "@/extend/formatDateTime.js";
 
 export async function createEvent(event){
+
   console.log(event);
   const data = {
       "title": event.title,
@@ -10,10 +12,10 @@ export async function createEvent(event){
       "amountReceived": event.amountReceived,
       "category": event.category,
       "subCategory": event.subCategory,
-      "startDate": event.startDate,
-      "endDate": event.endDate,
-      "registerStartDate": event.registerStartDate,
-      "registerEndDate": event.registerEndDate,
+      "startDate": formatDateTime(event.startDate),
+      "endDate": formatDateTime(event.endDate),
+      "registerStartDate": formatDateTime(event.registerStartDate),
+      "registerEndDate": formatDateTime(event.registerEndDate),
       "validationType": event.validationType,
       "validationRules": event.validationRules,
       "posterImg": event.posterImg,
@@ -24,22 +26,25 @@ export async function createEvent(event){
       "locationLongitude": event.locationLongitude
   }
 
-    const response = await axios.post(
+    await axios.post(
       `${import.meta.env.VITE_API_ENV}/create-event`,
       data,
       {
         headers:{
           Authorization: `Bearer ${localStorage.getItem("access_token")}`
         },
+        params:{
+          currentDT:moment().format('YYYY-MM-DDTHH:mm:ssZ')
+        }
       
       }
     ).then(response => {
       console.log(response.data);
+      return response.data
     }).catch(error => {
       console.log(error.data);
     })
 
-    return response.data
 }
 
 

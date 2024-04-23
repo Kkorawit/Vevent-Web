@@ -25,7 +25,7 @@ export async function createEvent(event){
       "locationLatitude": event.locationLatitude,
       "locationLongitude": event.locationLongitude
   }
-
+  console.log(data);
     await axios.post(
       `${import.meta.env.VITE_API_ENV}/create-event`,
       data,

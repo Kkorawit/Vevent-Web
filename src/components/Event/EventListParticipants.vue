@@ -71,7 +71,7 @@ const filterEvent = computed(() => {
 
 <template>
   <div
-    class="content-slid grid grid-cols-12 gap-x-10 col-span-12 bg-[#4520CC] h-[540px] drop-shadow-xl"
+    class="content-slid grid grid-cols-12 gap-x-10 col-span-12 bg-gradient-to-b from-[#4520CC] to-[#6A4DD6] h-[540px] drop-shadow-xl"
   >
     <div
       class="col-start-1 col-span-3 flex flex-col justify-start items-start pt-[64px] pl-[80px] space-y-4"
@@ -177,6 +177,16 @@ const filterEvent = computed(() => {
 
 <style>
 .v-field {
-  border-radius: 15px;
+  border-radius: 8px;
+}
+
+.swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background-color: #B5A6EB;
+  opacity: 1;
+}
+.swiper-pagination-bullet-active {
+  background-color: white;
 }
 </style>

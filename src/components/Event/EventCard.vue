@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, onMounted, computed, reactive, watch } from "vue";
+import { ref, onMounted, computed, reactive, watch } from "vue";
 import moment from "moment";
 import router from "@/plugins/router";
 

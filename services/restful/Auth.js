@@ -3,6 +3,7 @@
 // import { computed, ref } from 'vue';
 // import { empty } from '@apollo/client';\
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 export async function auth(email, role, displayName, profileImg) {
   console.log(email);
@@ -20,22 +21,24 @@ export async function auth(email, role, displayName, profileImg) {
     data.displayName = displayName
   }
 
-  try {
-    const response = await axios.post(
+    let response = await axios.post(
       `${import.meta.env.VITE_API_ENV}/auth`,
+      // `http://localhost:8080/local/api/auth`,
       data
-    );
-
+    ).then(response => {
+      console.log(response.data);
+      setToken(response.data)
+      getUserInfo()
+      return response.data
+    }).catch(error => {
+      console.log(error);
+    });
     // Handle successful deletion response here
-    console.log(response.data);
-    
-  } catch (error) {
     // Handle error with informative message
-    console.error("Error deleting event:", error.message);
-  }
+    return response
 }
 
-export const getRefreshToken = async () => {
+export const fetchRefreshToken = async () => {
   console.log("get refresh token");
   const res = await fetch(`${import.meta.env.APP_API_ENV}/refresh-token`, {
     method: "GET",
@@ -58,58 +61,55 @@ export const getRefreshToken = async () => {
   }
 };
 
-export const storeToken = () => {
-  const accessToken = ref(localStorage.getItem("access_token"));
-  const userRole = ref("");
-  const userEmail = ref("");
+export const setToken = (obj) => {
+  localStorage.setItem("access_token",obj.access_token)
+  localStorage.setItem("refresh_token",obj.refresh_token)
+}
 
-  const getAccessToken = computed(() => {
-    return accessToken.value;
-  });
+const setUserInfo = (obj) => {
+  console.log(obj);
+  localStorage.setItem("role",obj.role)
+  localStorage.setItem("email",obj.email)
+  localStorage.setItem("displayName",obj.displayName)
+  localStorage.setItem("profileImg",obj.profileImg)
+}
 
-  const getUserRole = computed(() => {
-    return userRole.value;
-  });
+export const getUserInfo = async () => {
+  let access_token = localStorage.getItem("access_token")
 
-  const getUserEmail = computed(() => {
-    return userEmail.value;
-  });
+  let info = decodeToken(access_token)
+  console.log(info);
+  setUserInfo(info)
+}
 
-  const setAccessToken = (token) => {
-    if (token === null) {
-      accessToken.value = "";
-      return;
-    }
-    accessToken.value = token;
-  };
+export const clearStorage = () => {
+  localStorage.clear()
+}
 
-  const setUserRole = (role) => {
-    if (role === null) {
-      userRole.value = "";
-      return;
-    }
-    userRole.value = role;
-  };
+// export const getRefreshToken = () => {
+//   let refresh_token = localStorage.getItem("refresh_token")
+//   return decodeToken(refresh_token);
+// }
 
-  const setUserEmail = (email) => {
-    if (email === null) {
-      userEmail.value = "";
-      return;
-    }
-    userEmail.value = email;
-  };
+export const decodeToken = (token) => {
+  let details = jwtDecode(token)
 
-  return {
-    accessToken,
-    userRole,
-    userEmail,
-    setAccessToken,
-    setUserRole,
-    setUserEmail,
-    getAccessToken,
-    getUserRole,
-    getUserEmail,
-  };
-};
+  let userInfo = {
+    "email":details.sub,
+    "profileImg":details.profileURL,
+    "displayName":details.displayName,
+    "role":details.role[0],
+  }
 
-export default { auth, getRefreshToken };
+  return userInfo
+}
+
+export default { 
+  auth, 
+  fetchRefreshToken,
+  decodeToken,
+  setToken,
+  getUserInfo,
+  clearStorage,
+  // getRefreshToken,
+ };

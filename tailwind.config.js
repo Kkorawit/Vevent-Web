@@ -16,7 +16,10 @@ module.exports = {
         purple200:'#B5A6EB',
         purple100:'#DAD2F5',
         primaryLight:'#ECE9FA',
-      }
+      },
+      listStyleImage: {
+        checkmark: 'url("@/assets/checkmark-bullet.png")',
+      },
     },
     
   },

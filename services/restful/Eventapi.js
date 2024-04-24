@@ -37,7 +37,8 @@ export async function createEvent(event){
       data,
       {
         headers:{
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
         },
         params:{
           currentDT:currentDT

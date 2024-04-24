@@ -7,7 +7,9 @@ export async function createEvent(event){
 
   console.log(event);
   console.log(formatDateTime(event.startDate))
-  
+  const currentDT = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
+  console.log(currentDT);
+
   const data = {
       "title": event.title,
       "description": event.description,
@@ -28,15 +30,17 @@ export async function createEvent(event){
       "locationLongitude": event.locationLongitude
   }
   console.log(data);
+  console.log(localStorage.getItem("access_token"));
     await axios.post(
       `${import.meta.env.VITE_API_ENV}/create-event`,
+      // `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/create-event`,
       data,
       {
         headers:{
           Authorization: `Bearer ${localStorage.getItem("access_token")}`
         },
         params:{
-          currentDT:moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
+          currentDT:currentDT
         }
       
       }

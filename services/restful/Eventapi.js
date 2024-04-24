@@ -26,13 +26,35 @@ export async function createEvent(event){
           "locationLongitude": event.locationLongitude
       }
 
+      const data2 = {
+        "title": "MOCK",
+        "description": "MOCK description",
+        "amountReceived": 3,
+        "category": "BB",
+        "subCategory": "CC",
+        "startDate": "2024-04-28T16:59:00Z",
+        "endDate": "2024-04-28T18:41:02Z",
+        "registerStartDate": "2024-04-28T18:41:02Z",
+        "registerEndDate": "2024-04-28T18:41:02Z",
+        "validationType": "Qr_Code,CURRENT_GPS",
+        "validationRules": 225,
+        "posterImg": "",
+        "createBy": "koraw2948@gmail.com",
+        // "createDate": "2024-04-24T18:41:02ZZ",
+        "updateBy": "koraw2948@gmail.com",
+        // "updateDate": "2024-04-24T18:41:02Z",
+        "locationName": "โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม",
+        "locationLatitude": 14.1423399808249,
+        "locationLongitude": 100.116024883473
+    }
+
   const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event`,{
     method:'POST',
     headers:{
       'content-Type': 'application/json',
       "Authorization": `Bearer ${localStorage.getItem("access_token")}`
     },
-    body:JSON.stringify(data)
+    body:JSON.stringify(data2)
   }).then((response)=>{
     console.log(response.json());
     return response.json()

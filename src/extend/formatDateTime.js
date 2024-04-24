@@ -11,7 +11,7 @@ export function formatDateTime(dateTime){
 const originalMoment = moment.tz(dateTime, "Asia/Bangkok"); // Adjust timezone if needed
 
 // Convert to UTC and format
-const formattedDateTime = originalMoment.format("YYYY-MM-DDTHH:mm:ssZ");
+const formattedDateTime = originalMoment.format("YYYY-MM-DDTHH:mm:ss[Z]");
 
 console.log(formattedDateTime); // Output: 2024-04-26T00:00:00Z
 return formattedDateTime;

@@ -6,7 +6,6 @@ import Map from "@/components/common/Map.vue";
 import { nearbyMarkers } from "@/extend/mapStore";
 import { createEvent } from "~/restful/Eventapi.js";
 
-
 // event
 const title = ref("");
 const description = ref("");
@@ -20,25 +19,28 @@ const registerEndDate = ref(new Date());
 const validationType = ref("");
 const validationRules = ref("");
 const posterImg = ref("");
-// const locationName = ref("");
+const isOnline = ref(true);
+const onlineValidate = [
+  {name:'Qr Code',value:"QR_CODE"},
+  {name:'Step Counter',value:"STEP_COUNTER"},
+  ];
+const onsiteValidate = [
+  {name:'GPS',value:"CURRENT_GPS"},
+  {name:'Qr Code & GPS',value:"QR_CODE,CURRENT_GPS"},
+  {name:'Step Counter',value:"STEP_COUNTER"},
+];
+const event = ref()
+
 const location = ref({
-  locationName:'MOCK LOCATION NAME',
-  locationLatitude:null,
-  locationLongitude:null,
-})
+  locationName: !isOnline.value ? "Online" : "",
+  locationLatitude: null,
+  locationLongitude: null,
+});
 
-watchEffect(()=>{
-  location.value.locationLatitude = nearbyMarkers.value[0]?.latitude,
-  location.value.locationLongitude = nearbyMarkers.value[0]?.longitude
-})
-
-const isOnline = ref(false);
-const onlineValidate = ["Qr Code", "Step Counter"];
-const onsiteValidate = ["GPS", "Qr Code + GPS", "Step Counter"];
-import Navbar from "@/components/Navbar.vue";
-import router from "@/plugins/router";
-
-const event = {
+watchEffect(() => {
+  (location.value.locationLatitude = nearbyMarkers.value[0]?.latitude),
+    (location.value.locationLongitude = nearbyMarkers.value[0]?.longitude);
+  event.value = {
   title: title.value,
   description: description.value,
   amountReceived: amountReceived.value,
@@ -55,6 +57,12 @@ const event = {
   locationLatitude: location.value.locationLatitude,
   locationLongitude: location.value.locationLongitude,
 };
+});
+
+import Navbar from "@/components/Navbar.vue";
+import router from "@/plugins/router";
+
+
 
 // form validation
 const valid = ref(false);
@@ -151,29 +159,41 @@ const typeSwitch = (type) => {
   isOnline.value = type;
 };
 
-const updateValue = (rules,action) => {
-    if(rules=='validationRules'){
-      
-      switch(action){
-        case 'minus': validationRules.value >0 ? validationRules.value-- : alert("Can't fill least than 0"); break;
-        case 'plus': validationRules.value++; break;
-      }
-
-    }else if(rules == 'amountReceived'){
-      switch(action){
-        case 'minus': amountReceived.value>0 ? amountReceived.value-- : alert("Can't fill least than 0"); break;
-        case 'plus': amountReceived.value++; break;
-      }
+const updateValue = (rules, action) => {
+  if (rules == "validationRules") {
+    switch (action) {
+      case "minus":
+        validationRules.value > 0
+          ? validationRules.value--
+          : alert("Can't fill least than 0");
+        break;
+      case "plus":
+        validationRules.value++;
+        break;
     }
+  } else if (rules == "amountReceived") {
+    switch (action) {
+      case "minus":
+        amountReceived.value > 0
+          ? amountReceived.value--
+          : alert("Can't fill least than 0");
+        break;
+      case "plus":
+        amountReceived.value++;
+        break;
+    }
+  }
+};
+
+const handleLocationName = (newName) => {
+  location.value.locationName = newName
 }
 
-
-
+const getActiveItems = (isOnline) => (isOnline ? onlineValidate : onsiteValidate);
 </script>
 
 <template>
   <Navbar></Navbar>
-  {{ location }}
   <div class="grid grid-cols-12 justify-items-center">
     <div
       class="col-span-8 col-start-3 w-[1080px] bg-white shadow-xl rounded-b-[16px]"
@@ -198,8 +218,8 @@ const updateValue = (rules,action) => {
           <div class="flex justify-between items-center py-[40px]">
             <div class="text-[24px] font-bold">รายละเอียดกิจกรรม</div>
             <div>
-              
-              <v-btn @click="createEvent(event)"
+              <v-btn
+                @click="createEvent(event)"
                 :disabled="!valid"
                 color="#4520CC"
                 type="submit"
@@ -253,13 +273,13 @@ const updateValue = (rules,action) => {
                     placeholder="วันปิดรับสมัคร"
                     dark="true"
                   ></VueDatePicker>
-                  {{ registerEndDate }}
                 </div>
               </div>
               <!-- วันที่เปิด - ปิด กิจกรรม -->
               <div class="flex justify-center space-x-2 mt-[8px] pb-[8px]">
                 <div class="w-[300px] mt-[8px]">
                   <VueDatePicker
+                    v-model="startDate"
                     placeholder="วันเริ่มกิจกรรม"
                     dark="true"
                   ></VueDatePicker>
@@ -267,6 +287,7 @@ const updateValue = (rules,action) => {
                 <div class="pt-2">-</div>
                 <div class="w-[300px] mt-[8px]">
                   <VueDatePicker
+                    v-model="endDate"
                     placeholder="วันจบกิจกรรม"
                     dark="true"
                   ></VueDatePicker>
@@ -336,7 +357,6 @@ const updateValue = (rules,action) => {
                   variant="outlined"
                   class="w-[334px] h-[56px]"
                   :label="`หมวดหมู่`"
-                  hint="asdasdawdwsadaw"
                   :rules="rules.require"
                   :prepend-inner-icon="`mdi-magnify`"
                   :width="`20px`"
@@ -351,7 +371,6 @@ const updateValue = (rules,action) => {
                   color="#4520CC"
                   class="w-[334px] h-[56px]"
                   :label="`หมวดหมู่ย่อย`"
-                  hint="asdasdasdasdasdasdasd"
                   :rules="rules.require"
                   :prepend-inner-icon="`mdi-magnify`"
                   :width="`20px`"
@@ -359,8 +378,8 @@ const updateValue = (rules,action) => {
               </div>
               <div>
                 <v-text-field
-                v-model="amountReceived"
-                variant="outlined"
+                  v-model="amountReceived"
+                  variant="outlined"
                   bg-color="#ECE9FA"
                   type="number"
                   class="w-[334px] h-[56px] bg-[primaryLight]"
@@ -370,12 +389,20 @@ const updateValue = (rules,action) => {
                   hide-spin-buttons
                 >
                   <template #append-inner>
-                    <v-icon @click="updateValue('amountReceived','minus')" class="text-primaryColor">mdi-minus</v-icon>
-                    <v-icon @click="updateValue('amountReceived','plus')" class="text-primaryColor">mdi-plus</v-icon>
+                    <v-icon
+                      @click="updateValue('amountReceived', 'minus')"
+                      class="text-primaryColor"
+                      >mdi-minus</v-icon
+                    >
+                    <v-icon
+                      @click="updateValue('amountReceived', 'plus')"
+                      class="text-primaryColor"
+                      >mdi-plus</v-icon
+                    >
                   </template>
                 </v-text-field>
               </div>
-            
+
               <div>
                 <!-- ประเภทกิจกรรม -->
                 <div class="grid justify-items-center space-y-12 mb-12">
@@ -384,7 +411,12 @@ const updateValue = (rules,action) => {
                     <div>
                       <button
                         @click="typeSwitch(true)"
-                        :class="['w-[159px] h-[56px] rounded-[8px]', isOnline ? 'bg-[#4520CC] text-white hover:bg-[#4520CC]' : 'bg-primaryLight text-primaryColor hover:bg-purple100' ] "
+                        :class="[
+                          'w-[159px] h-[56px] rounded-[8px]',
+                          isOnline
+                            ? 'bg-[#4520CC] text-white hover:bg-[#4520CC]'
+                            : 'bg-primaryLight text-primaryColor hover:bg-purple100',
+                        ]"
                       >
                         Online
                       </button>
@@ -392,7 +424,12 @@ const updateValue = (rules,action) => {
                     <div>
                       <button
                         @click="typeSwitch(false)"
-                        :class="['w-[159px] h-[56px] rounded-[8px]', !isOnline ? 'bg-[#4520CC] text-white hover:bg-[#4520CC]' : 'bg-primaryLight text-primaryColor hover:bg-purple100' ] "
+                        :class="[
+                          'w-[159px] h-[56px] rounded-[8px]',
+                          !isOnline
+                            ? 'bg-[#4520CC] text-white hover:bg-[#4520CC]'
+                            : 'bg-primaryLight text-primaryColor hover:bg-purple100',
+                        ]"
                       >
                         Offline
                       </button>
@@ -402,7 +439,16 @@ const updateValue = (rules,action) => {
                   <div class="">
                     <!-- Map -->
                     <div v-if="!isOnline">
-                      <Map></Map>
+                      <Map @emitLocationName="handleLocationName"></Map>
+                      <v-text-field
+                        class="pt-6"
+                        variant="outlined"
+                        label="สถานที่จัดกิจกรรม"
+                        v-model="location.locationName"
+                        bg-color="#ECE9FA"
+                        :rules="rules.require"
+                      >
+                      </v-text-field>
                     </div>
                     <!-- Meeting Link -->
                     <div v-else-if="isOnline">
@@ -411,7 +457,6 @@ const updateValue = (rules,action) => {
                         variant="outlined"
                         color="#4520CC"
                         class="w-[334px] h-[56px]"
-                        
                         :rules="rules.require"
                         label="ลิงค์ห้องประชุม ex.http://meet.google...."
                       >
@@ -422,34 +467,61 @@ const updateValue = (rules,action) => {
                 <!-- ตรวจสอบโดย.... -->
                 <div class="mb-4">
                   <v-select
-                  label="ตรวจสอบการเข้าร่วมโดย"
-                  variant="outlined"
-                  bg-color="#ECE9FA"
-                  v-model="validationType"
-                  :items="isOnline ? onlineValidate : onsiteValidate">
+                    label="ตรวจสอบการเข้าร่วมโดย"
+                    variant="outlined"
+                    bg-color="#ECE9FA"
+                    v-model="validationType"
+                    :items="isOnline ? onlineValidate : onsiteValidate"
+                    item-title="name"
+                    item-value="value"
+                  >
                   </v-select>
                 </div>
                 <!-- rules -->
                 <div>
                   <v-text-field
-                v-model="validationRules"
-                variant="outlined"
-                  bg-color="#ECE9FA"
-                  type="number"
-                  class="w-[334px] h-[56px] bg-[primaryLight]"
-                  :label="validationType=='Step Counter' ? 'จำนวนก้าว' : 'รัศมีจากจุดกิจกรรม (เมตร)' "
-                  append-inner
-                  :rules="rules.require"
-                  hide-spin-buttons
-                >
-                  <template #append-inner>
-                    <v-icon @click="updateValue('validationRules','minus')" class="text-primaryColor">mdi-minus</v-icon>
-                    <v-icon @click="updateValue('validationRules','plus')" class="text-primaryColor">mdi-plus</v-icon>
-                  </template>
-                </v-text-field>
+                    v-if="validationType != 'Qr Code'"
+                    v-model="validationRules"
+                    variant="outlined"
+                    bg-color="#ECE9FA"
+                    type="number"
+                    class="w-[334px] h-[56px] bg-[primaryLight]"
+                    :label="
+                      validationType == 'Step Counter'
+                        ? 'จำนวนก้าว'
+                        : 'ขอบเขตการตรวจสอบ (เมตร)'
+                    "
+                    append-inner
+                    :rules="rules.require"
+                    hide-spin-buttons
+                  >
+                    <template #append-inner>
+                      <v-icon
+                        @click="updateValue('validationRules', 'minus')"
+                        class="text-primaryColor"
+                        >mdi-minus</v-icon
+                      >
+                      <v-icon
+                        @click="updateValue('validationRules', 'plus')"
+                        class="text-primaryColor"
+                        >mdi-plus</v-icon
+                      >
+                    </template>
+                  </v-text-field>
                 </div>
+                <!-- location name -->
+                <!-- <div class="pt-8">
+                  <v-text-field
+                    v-if="!isOnline"
+                    variant="outlined"
+                    label="สถานที่จัดกิจกรรม"
+                    v-model="location.locationName"
+                    bg-color="#ECE9FA"
+                    :rules="rules.require"
+                  >
+                  </v-text-field>
+                </div> -->
               </div>
-              
             </div>
           </div>
         </v-form>
@@ -606,5 +678,4 @@ const updateValue = (rules,action) => {
   transform: scale(1.2);
   transition: transform 0.3s ease-in-out;
 }
-
 </style>

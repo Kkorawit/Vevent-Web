@@ -6,6 +6,8 @@ import { formatDateTime } from "@/extend/formatDateTime.js";
 export async function createEvent(event){
 
   console.log(event);
+  console.log(formatDateTime(event.startDate))
+  
   const data = {
       "title": event.title,
       "description": event.description,
@@ -34,7 +36,7 @@ export async function createEvent(event){
           Authorization: `Bearer ${localStorage.getItem("access_token")}`
         },
         params:{
-          currentDT:moment().format('YYYY-MM-DDTHH:mm:ssZ')
+          currentDT:moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
         }
       
       }

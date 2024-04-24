@@ -49,20 +49,19 @@ export async function createEvent(event){
     }
 
     const currentDT = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
-  const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event?currenDT=${currentDT}`,{
+  
+    const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event?currenDT=${currentDT}`,{
     method:'POST',
     headers:{
       "Authorization": `Bearer ${localStorage.getItem("access_token")}`
     },
     body:JSON.stringify(data2)
-  }).then((response)=>{
-    console.log(response);
-    console.log(response.json());
-    return response.json()
-  }).catch((error)=>{
-    console.log(error);
   });
 
+  if(res.status!=201){
+    const textRes = await res.text()
+    console.error(textRes)
+  }
  
 }
 

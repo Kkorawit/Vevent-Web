@@ -3,6 +3,7 @@ import axios from "axios";
 import moment from "moment";
 import { formatDateTime } from "@/extend/formatDateTime.js";
 
+
 // export async function createEvent(event){
 //   console.log(event);
 
@@ -49,7 +50,7 @@ import { formatDateTime } from "@/extend/formatDateTime.js";
 //     }
 
 //     const currentDT = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
-  
+
 //     const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event?currentDT=${currentDT}`,{
 //     method:'POST',
 //     headers:{
@@ -64,111 +65,141 @@ import { formatDateTime } from "@/extend/formatDateTime.js";
 //     console.error(textRes)
 //   }
 //   console.log(res.json());
- 
+
 // }
+const currentDT = moment().format("YYYY-MM-DDTHH:mm:ss[Z]");
 
-export async function createEvent(event){
-
+export async function createEvent(event) {
   console.log(event);
-  console.log(formatDateTime(event.startDate))
-  const currentDT = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
-  console.log(currentDT);
+  console.log(formatDateTime(event.startDate));
 
   const data = {
-      "title": event.title,
-      "description": event.description,
-      "amountReceived": event.amountReceived,
-      "category": event.category,
-      "subCategory": event.subCategory,
-      "startDate": formatDateTime(event.startDate),
-      "endDate": formatDateTime(event.endDate),
-      "registerStartDate": formatDateTime(event.registerStartDate),
-      "registerEndDate": formatDateTime(event.registerEndDate),
-      "validationType": event.validationType,
-      "validationRules": event.validationRules,
-      "posterImg": event.posterImg,
-      "createBy": localStorage.getItem("email"),
-      "updateBy": localStorage.getItem("email"),
-      "locationName": event.locationName,
-      "locationLatitude": event.locationLatitude,
-      "locationLongitude": event.locationLongitude
-  }
+    title: event.title,
+    description: event.description,
+    amountReceived: event.amountReceived,
+    category: event.category,
+    subCategory: event.subCategory,
+    startDate: formatDateTime(event.startDate),
+    endDate: formatDateTime(event.endDate),
+    registerStartDate: formatDateTime(event.registerStartDate),
+    registerEndDate: formatDateTime(event.registerEndDate),
+    validationType: event.validationType,
+    validationRules: event.validationRules,
+    posterImg: event.posterImg,
+    createBy: localStorage.getItem("email"),
+    updateBy: localStorage.getItem("email"),
+    locationName: event.locationName,
+    locationLatitude: event.locationLatitude,
+    locationLongitude: event.locationLongitude,
+  };
   console.log(data);
   console.log(localStorage.getItem("access_token"));
-    await axios.post(
+  await axios
+    .post(
       `${import.meta.env.VITE_API_ENV}/create-event`,
       // `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/create-event`,
       data,
       {
-        headers:{
-          'content-Type': 'application/json',
-          "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+        headers: {
+          "content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
-        params:{
-          currentDT:currentDT
-        }
-      
+        params: {
+          currentDT: currentDT,
+        },
       }
-    ).then(response => {
+    )
+    .then((response) => {
       console.log(response.data);
-      alert(response.data)
-    }).catch(error => {
-      console.log(error.data);
+      alert(response.data);
     })
-
+    .catch((error) => {
+      console.log(error.data);
+    });
 }
 
+export async function deleteEventById(eid) {
+  // 2024-01-20T15:27:54.378693Z
+  console.log(eid);
+  console.log(currentDT);
 
-export async function deleteEventById (eid){
-    // 2024-01-20T15:27:54.378693Z
-    console.log(eid);
-    const currentDT = moment().format()
-    console.log(currentDT)
-
-        const response = await axios.delete(
-          `${import.meta.env.VITE_API_ENV}/delete-event`,
-          {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem("access_token")}`
-            },
-            params: {
-              eid: eid,
-              currentDT: '2023-12-11T00:00:00Z',
-            }
-          }
-        );
-
-        // Handle successful deletion response here
-        console.log(response.data);
-
-
-}
-
-export async function editEventById (event,eid){
-  const currentDT = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
-
-  await axios.put(`${import.meta.env.VITE_API_ENV}/edit-event`,{event},
-  {
-    headers:{
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`
-    },
-    params:{
-      currentDT:currentDT
+  const response = await axios.delete(
+    `${import.meta.env.VITE_API_ENV}/delete-event`,
+    {
+      headers: {
+        "content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+      params: {
+        eid: eid,
+        currentDT: currentDT,
+      },
     }
-  }).then((response)=>{
+  );
+
+  // Handle successful deletion response here
+  console.log(response.data);
+}
+
+export async function editEventById(event) {
+  const data = {
+    title: event.title,
+    description: event.description,
+    amountReceived: event.amountReceived,
+    category: event.category,
+    subCategory: event.subCategory,
+    startDate: formatDateTime(event.startDate),
+    endDate: formatDateTime(event.endDate),
+    registerStartDate: formatDateTime(event.registerStartDate),
+    registerEndDate: formatDateTime(event.registerEndDate),
+    validationType: event.validationType,
+    validationRules: event.validationRules,
+    posterImg: event.posterImg,
+    createBy: localStorage.getItem("email"),
+    updateBy: localStorage.getItem("email"),
+    locationName: event.locationName,
+    locationLatitude: event.locationLatitude,
+    locationLongitude: event.locationLongitude,
+  };
+
+  await axios
+    .put(`${import.meta.env.VITE_API_ENV}/edit-event`, data, {
+      headers: {
+        "content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+      params: {
+        currentDT: currentDT,
+      },
+    })
+    .then((response) => {
       console.log(response.data);
       return response.data;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+export async function bookEventById(eid) {
+  await axios.post(
+    `${import.meta.env.VITE_API_ENV}/book-event`,
+    {},
+    {
+      headers: {
+        "content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+      params: {
+        eid: eid,
+        currentDT: currentDT,
+      },
+    }
+  ).then((response) => {
+      alert(response.data)
   }).catch((error)=>{
       console.error(error);
-  })
+  });
 }
 
-export async function bookEventById (){
-    
-}
-
-
-
-export default ({createEvent,deleteEventById,editEventById,bookEventById})
-
-
+export default { createEvent, deleteEventById, editEventById, bookEventById };

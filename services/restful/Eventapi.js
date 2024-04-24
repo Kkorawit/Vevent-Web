@@ -51,11 +51,11 @@ export async function createEvent(event){
   const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event`,{
     method:'POST',
     headers:{
-      'content-Type': 'application/json',
       "Authorization": `Bearer ${localStorage.getItem("access_token")}`
     },
     body:JSON.stringify(data2)
   }).then((response)=>{
+    console.log(response);
     console.log(response.json());
     return response.json()
   }).catch((error)=>{

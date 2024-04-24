@@ -53,15 +53,17 @@ export async function createEvent(event){
     const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event?currentDT=${currentDT}`,{
     method:'POST',
     headers:{
-      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
+      'Content-Type': 'application/json'
     },
-    body:JSON.stringify(data2)
+    body:JSON.stringify(data)
   });
 
   if(res.status!=201){
     const textRes = await res.text()
     console.error(textRes)
   }
+  console.log(res.json());
  
 }
 
@@ -142,8 +144,23 @@ export async function deleteEventById (eid){
 
 }
 
-export async function editEventById (){
-    
+export async function editEventById (event,eid){
+  const currentDT = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
+
+  await axios.put(`${import.meta.env.VITE_API_ENV}/edit-event`,{event},
+  {
+    headers:{
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`
+    },
+    params:{
+      currentDT:currentDT
+    }
+  }).then((response)=>{
+      console.log(response.data);
+      return response.data;
+  }).catch((error)=>{
+      console.error(error);
+  })
 }
 
 export async function bookEventById (){

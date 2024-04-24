@@ -20,8 +20,15 @@ const validationType = ref("");
 const validationRules = ref("");
 const posterImg = ref("");
 const isOnline = ref(true);
-const onlineValidate = ["Qr Code", "Step Counter"];
-const onsiteValidate = ["GPS", "Qr Code + GPS", "Step Counter"];
+const onlineValidate = [
+  {name:'Qr Code',value:"QR_CODE"},
+  {name:'Step Counter',value:"STEP_COUNTER"},
+  ];
+const onsiteValidate = [
+  {name:'GPS',value:"CURRENT_GPS"},
+  {name:'Qr Code & GPS',value:"QR_CODE,CURRENT_GPS"},
+  {name:'Step Counter',value:"STEP_COUNTER"},
+];
 const event = ref()
 
 const location = ref({
@@ -181,6 +188,8 @@ const updateValue = (rules, action) => {
 const handleLocationName = (newName) => {
   location.value.locationName = newName
 }
+
+const getActiveItems = (isOnline) => (isOnline ? onlineValidate : onsiteValidate);
 </script>
 
 <template>
@@ -463,6 +472,8 @@ const handleLocationName = (newName) => {
                     bg-color="#ECE9FA"
                     v-model="validationType"
                     :items="isOnline ? onlineValidate : onsiteValidate"
+                    item-title="name"
+                    item-value="value"
                   >
                   </v-select>
                 </div>

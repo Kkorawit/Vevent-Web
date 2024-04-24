@@ -50,7 +50,7 @@ export async function createEvent(event){
 
     const currentDT = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
   
-    const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event?currenDT=${currentDT}`,{
+    const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event?currentDT=${currentDT}`,{
     method:'POST',
     headers:{
       "Authorization": `Bearer ${localStorage.getItem("access_token")}`

@@ -8,7 +8,8 @@ import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
 
 
 const user = ref();
-const role = ref("Organization");
+// const role = ref("Organization");
+const role = ref("Participants");
 const allEvents = ref();
 
 

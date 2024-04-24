@@ -49,11 +49,13 @@ onBeforeMount(() => {
   <div v-if="chooseFormat == 2">
     <!-- {{eventStartDateTime.toDateString().substring(3)}} -->
     <!-- {{prop.eventStartTime.moment().format('ll')}} -->
+
   </div>
   <!-- just Time -->
   <div v-if="chooseFormat == 3">
     <!-- {{eventStartDateTime.toLocaleTimeString()}} -->
     <!-- {{prop.eventStartTime.moment().format('LT')}} -->
+    {{ date }} . {{ time }}
   </div>
 
   <!-- date time -->

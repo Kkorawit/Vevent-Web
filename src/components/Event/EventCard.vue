@@ -1,19 +1,20 @@
 <script setup>
 import { ref, defineProps, onMounted, computed, reactive, watch } from "vue";
 import moment from "moment";
+import router from "@/plugins/router";
 
 const props = defineProps({
   eventList: {
     type: Array,
     require: true,
-  },
+  }
 });
 
 let showAll = ref(false);
-let limit = ref(9);
+let limit = ref(8);
 const filteredEvent = computed(() => {
   let showEvent = props.eventList.slice(0, limit.value);
-
+  
   return showEvent;
 });
 
@@ -43,12 +44,17 @@ const monthChars = [
 // const showMoreCard = computed(() => {
 //   return eventList.length > limit.value;
 // });
-</script>
 
+const showDetail = (id) => {
+  console.log(id);
+  router.push({name:"eventDetailParticipant",params:{id:id}})
+}
+
+</script>
 <template>
-  <div class="grid grid-cols-3 gap-[40px] mx-[80px] my-[40px]">
+  <div class="grid grid-cols-4 gap-[40px] place-content-center mx-[80px] my-[40px]">
     <div v-if="eventList" v-for="eventObj in filteredEvent" :key="eventObj">
-      <v-card class="mx-auto rounded-b-[15px]" max-width="400">
+      <v-card @click="showDetail(eventObj.id)" class="w-full mx-auto cursor-pointer hover:scale-105 " style="border-radius: 16px;" max-width="400">
         <v-img
           class="align-end text-white"
           height="200"
@@ -56,7 +62,7 @@ const monthChars = [
           cover
         >
         </v-img>
-        <div class="grid grid-flow-col">
+        <!-- <div class="grid grid-flow-col">
           <v-card-title>
             <div class="grid justify-items-center">
               <div class="text-[16px] text-primaryColor grid place-self-center">
@@ -70,6 +76,23 @@ const monthChars = [
           <v-card-text>
             <div>{{ eventObj.title }}</div>
           </v-card-text>
+        </div> -->
+        <div class=" py-[16px]">
+          <v-card-title>
+            <div class="text-[18px] w-full truncate font-semibold  ">{{ eventObj.title }}</div>
+          </v-card-title>
+          <v-card-subtitle>
+            <div class="flex justify-start mb-[8px]">
+              <img src="@/assets/Date.png" width="18" height="12" alt="date" class="mr-[8px]" >
+              <span>{{ eventObj.startDate }}</span>
+            </div>
+          </v-card-subtitle>
+          <v-card-subtitle>
+            <div class="flex justify-start">
+              <img src="@/assets/Category.png" width="18" height="12" alt="date" class="mr-[8px]" >
+              <span>{{ eventObj.category }}</span>
+            </div>
+          </v-card-subtitle>
         </div>
 
         <!-- <v-card-actions>
@@ -90,12 +113,12 @@ const monthChars = [
         <v-btn @click="showAll = false">Show Less</v-btn>
       </div> -->
     <div
-      class="col-span-3 grid justify-items-center"
+      class="col-span-4 grid justify-items-center"
       v-if="filteredEvent.length != 0"
     >
       <button
         class="rounded-[15px] text-main text-[18px] text-primaryColor font-bold bg-[#ECE9FA] px-[24px] py-[16px] w-[120px] h-[59px]"
-        @click="limit+=9"
+        @click="limit+=8"
       >
         More
       </button>
@@ -104,6 +127,37 @@ const monthChars = [
       </div> -->
     </div>
   </div>
+  <!-- <div v-if="props.format == 2" class="grid grid-cols-2 place-content-center gap-[40px] px-[120px]">
+    <div v-if="eventList" v-for="eventObj in filteredEvent.slice(6)" :key="eventObj">
+      <v-card @click="showDetail(eventObj.id)" class="mx-auto cursor-pointer hover:scale-105 " style="border-radius: 16px;"max-width="400">
+        <v-img
+          class="align-end text-white"
+          height="200"
+          :src="eventObj.posterImg"
+          cover
+        >
+        </v-img>
+        <div class=" py-[16px]">
+          <v-card-title>
+            <div class="text-[18px] w-full truncate font-semibold  ">{{ eventObj.title }}</div>
+          </v-card-title>
+          <v-card-subtitle>
+            <div class="flex justify-start mb-[8px]">
+              <img src="@/assets/Date.png" width="18" height="12" alt="date" class="mr-[8px]" >
+              <span>{{ eventObj.startDate }}</span>
+            </div>
+          </v-card-subtitle>
+          <v-card-subtitle>
+            <div class="flex justify-start">
+              <img src="@/assets/Category.png" width="18" height="12" alt="date" class="mr-[8px]" >
+              <span>{{ eventObj.category }}</span>
+            </div>
+          </v-card-subtitle>
+        </div>
+      </v-card>
+    </div>
+  </div> -->
+
 </template>
 
 <style scoped>

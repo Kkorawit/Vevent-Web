@@ -48,7 +48,8 @@ export async function createEvent(event){
         "locationLongitude": 100.116024883473
     }
 
-  const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event`,{
+    const currentDT = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
+  const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event?currenDT=${currentDT}`,{
     method:'POST',
     headers:{
       "Authorization": `Bearer ${localStorage.getItem("access_token")}`

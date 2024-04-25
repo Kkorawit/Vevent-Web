@@ -165,8 +165,8 @@ console.log(data);
 
   await axios
     .put(
-      // `${import.meta.env.VITE_API_ENV}/edit-event`, 
-      `http://localhost:8080/local/api/edit-event`,
+      `${import.meta.env.VITE_API_ENV}/edit-event`, 
+      // `http://localhost:8080/local/api/edit-event`,
       data, {
       headers: {
         "content-Type": "application/json",

@@ -1,7 +1,7 @@
 <script setup>
 //import section
 ///vue
-import { onMounted, ref, computed, defineProps, watch, reactive } from "vue";
+import { onMounted, ref, computed, defineProps, watch, reactive, watchEffect } from "vue";
 ///service
 
 ///components
@@ -19,17 +19,29 @@ const props = defineProps({
 });
 
 const allEvents = reactive(props.allEvents)
+const districtStatus = ref(Array.from(new Set(allEvents.map((event) => event.eventStatus))));
 
-watch(() => allEvents, (newValue) => {
-  console.log('allEvents updated:', newValue);
-});
+const statusShow = ref([])
+watchEffect(() => {
+  districtStatus.value.map((status) => {
+    switch(status){
+      case "CO": statusShow.value.push({name: "Closed", value: status}); break
+      case "UP": statusShow.value.push({name: "Upcoming", value: status}); break
+      case "ON": statusShow.value.push({name: "Ongoing", value: status}); break
+    }
+  })
+
+})
+// watch(() => allEvents, (newValue) => {
+//   console.log('allEvents updated:', newValue);
+// });
 //variable/function
 ///all events
 // const allEvents = ref(props.allEvents);
 // console.log(props.allEvents);
 // console.log(allEvents.value);
 ///event status filter
-const districtStatus = ref(Array.from(new Set(allEvents.map((event) => event.eventStatus))));
+
 const selectedStatus = ref(null);
 ///event category
 const districtCategory = ref(Array.from(new Set(allEvents.map((event) => event.category))));
@@ -124,7 +136,9 @@ const filterEvent = computed(() => {
           clearable
           variant="outlined"
           label="Event Status"
-          :items="districtStatus"
+          :items="statusShow"
+          item-title="name"
+          item-value="value"
           v-model="selectedStatus"
         ></v-autocomplete>
       </div>
@@ -149,30 +163,10 @@ const filterEvent = computed(() => {
           v-model="searchEvent"
         >
         </v-autocomplete>
-        <!-- <v-text-field
-          label="Search Event"
-          variant="outlined"
-          menu-icon=""
-          append-inner-icon="mdi-magnify"
-          v-model="searchEvent"
-        >
-        </v-text-field> -->
       </div>
     </div>
   </div>
-  <!-- List of Events (Card) -->
-  <!-- {{ props.allEvents }} -->
-  <!-- {{ selectedCategory }} {{ selectedStatus }} {{ searchEvent }}  -->
-  <!-- {{ filterEvent }} -->
-  <!-- <div class="contain-card grid grid-cols-12 col-span-12" v-if="filterEvent"> -->
-    <!-- {{ filterEvent }} -->
     <EventCard :eventList="filterEvent"></EventCard>
-    <!-- <div v-for="event in filterEvent" :key="event.id">
-      {{ event.eventStatus }}
-      {{ event.category }}
-      {{ event.title }}
-    </div> -->
-  <!-- </div> -->
 </template>
 
 <style>

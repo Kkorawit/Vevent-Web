@@ -19,7 +19,7 @@ const detailLeft = ref();
 
 onBeforeMount(async () => {
     const router = useRoute();
-    const eventId = router.params.id
+    const eventId = router.params.id;
   console.log(eventId);
   let response1 = await getEventDetailById(eventId);
   let response2 = await getAllEventCreatedByUEmail("Organization.032301@gmail.com");

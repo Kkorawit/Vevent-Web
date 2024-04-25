@@ -6,6 +6,14 @@ import { auth, setToken, getUserInfo, clearStorage } from "~/restful/Auth.js";
 import accDialog from "@/components/Account/acc-dialog.vue";
 import { useRouter } from "vue-router";
 
+
+const props = defineProps({
+  menu: {
+    type: String
+  }
+})
+
+
 let router = useRouter();
 const currentRoute = ref(router.currentRoute);
 // const role = ref("Guest");
@@ -17,6 +25,7 @@ const currentRoute = ref(router.currentRoute);
 // })
 const user = ref({});
 const email = ref(localStorage.getItem("email"));
+// const email = ref("timothy.d02@example.com");  //Demo
 const profileImg = ref(localStorage.getItem("profileImg"));
 const displayName = ref(localStorage.getItem("displayName"));
 const role = ref(localStorage.getItem("role") || "Guest");
@@ -71,6 +80,8 @@ const logout = () => {
 const menu = (page) => {
   if(page == 'home'){
     router.push({name:'home'});
+  }else if(page == 'myEvents') {
+    router.push({name:'myEvents', params:{email: email.value}});
   }
 }
 
@@ -93,21 +104,21 @@ const menu = (page) => {
     <!-- bar menu -->
     <div
       class="menu cols-start-2 flex justify-center"
-      v-if="role == 'Participants'"
+      v-if="role == 'Participants' || role == 'Guest' && email"
     >
       <div class="flex flex-row items-center">
-        <button
-          class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900"
+        <button @click="menu('home')"
+          :class="props.menu == null ? 'box-content h-[43px] w-[120px] rounded-[16px] bg-primaryColor text-white focus:bg-purple-900':'box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 '"
         >
           Home
         </button>
-        <button
-          class="box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900 mr-10"
+        <button @click="menu('myEvents')"
+        :class="props.menu != null ? 'box-content h-[43px] w-[120px] rounded-[16px] bg-primaryColor text-white focus:bg-purple-900':'box-content h-[43px] w-[120px] rounded-[16px] bg-white focus:bg-purple-900'"
         >
           My Event
         </button>
       </div>
-    </div> -->
+    </div>
     <!-- bar profile -->
     <div
       class="profile-user col-start-3 flex justify-end mr-10"
@@ -193,10 +204,10 @@ const menu = (page) => {
 </template>
 
 <style scoped>
-.logo {
+/* .logo {
   margin-top: 40px;
   margin-bottom: 40px;
-}
+} */
 .sidebar {
   width: 280px; /* Adjust width as needed */
   height: 100vh; /* Full viewport height */

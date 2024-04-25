@@ -120,6 +120,7 @@ export const GET_ALL_PARTICIPANTS = gql`
   }
 `;
 
+
 export const GET_ONE_EVENT_UEID = gql`
   query FindEventDetailsByUserEventId($ueid: ID!) {
     findEventDetailsByUserEventId(id: $ueid) {
@@ -160,8 +161,9 @@ export const GET_ONE_EVENT_UEID = gql`
   }
 `;
 
+
 export const GET_ONE_EVENT_ID = gql`
-  query FindEventDetailsByEventId {
+  query FindEventDetailsByEventId($id: ID!) {
     findEventDetailsByEventId(id: $id) {
       id
       title

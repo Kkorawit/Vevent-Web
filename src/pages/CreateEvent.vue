@@ -431,7 +431,7 @@ const getActiveItems = (isOnline) => (isOnline ? onlineValidate : onsiteValidate
                             : 'bg-primaryLight text-primaryColor hover:bg-purple100',
                         ]"
                       >
-                        Offline
+                        Onsite
                       </button>
                     </div>
                   </div>
@@ -480,14 +480,14 @@ const getActiveItems = (isOnline) => (isOnline ? onlineValidate : onsiteValidate
                 <!-- rules -->
                 <div>
                   <v-text-field
-                    v-if="validationType != 'Qr Code'"
+                    v-if="validationType != 'QR_CODE'"
                     v-model="validationRules"
                     variant="outlined"
                     bg-color="#ECE9FA"
                     type="number"
                     class="w-[334px] h-[56px] bg-[primaryLight]"
                     :label="
-                      validationType == 'Step Counter'
+                      validationType == 'STEP_COUNTER'
                         ? 'จำนวนก้าว'
                         : 'ขอบเขตการตรวจสอบ (เมตร)'
                     "

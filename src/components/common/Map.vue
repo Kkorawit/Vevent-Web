@@ -30,15 +30,6 @@ const locationName = ref('');
 
 onMounted(() => {
 
-  // Google map 
-  // new window.google.maps.Map(map2.value,{
-  //   center: center,
-  //   zoom:10,
-  // });
-
-
-
-
   map = leaflet
     .map("map")
     .setView([userMarker.value.latitude, userMarker.value.longitude], 17)
@@ -83,7 +74,6 @@ onMounted(() => {
       map.removeLayer(markers)
       nearbyMarkers.value = []
     }
-      console.log(e);
     const { lat: latitude, lng: longitude } = e.latlng;
 
     markers = leaflet
@@ -105,7 +95,6 @@ onMounted(() => {
 
 ////// watch effect to map and coords lat lng
 watchEffect(() => {
-  console.log(coords.value);
 
   ///// condition make sure lat long is potitive value
   if (

@@ -142,28 +142,32 @@ export async function deleteEventById(eid) {
 }
 
 export async function editEventById(event) {
+  console.log(event);
   const data = {
-    title: event.title,
-    description: event.description,
-    amountReceived: event.amountReceived,
-    category: event.category,
-    subCategory: event.subCategory,
-    startDate: formatDateTime(event.startDate),
-    endDate: formatDateTime(event.endDate),
-    registerStartDate: formatDateTime(event.registerStartDate),
-    registerEndDate: formatDateTime(event.registerEndDate),
-    validationType: event.validationType,
-    validationRules: event.validationRules,
-    posterImg: event.posterImg,
-    createBy: localStorage.getItem("email"),
+    title: event.newTitle,
+    description: event.newDescription,
+    amountReceived: event.newAmountReceived,
+    category: event.newCategory,
+    subCategory: event.newSubCategory,
+    startDate: formatDateTime(event.newStartDate),
+    endDate: formatDateTime(event.newEndDate),
+    registerStartDate: formatDateTime(event.newRegisterStartDate),
+    registerEndDate: formatDateTime(event.newRegisterEndDate),
+    validationType: event.newValidationType,
+    validationRules: event.newValidationRules,
+    posterImg: event.newPosterImg,
     updateBy: localStorage.getItem("email"),
-    locationName: event.locationName,
-    locationLatitude: event.locationLatitude,
-    locationLongitude: event.locationLongitude,
+    locationName: event.newLocationName,
+    locationLatitude: event.newLocationLatitude,
+    locationLongitude: event.newLocationLongitude,
   };
+console.log(data);
 
   await axios
-    .put(`${import.meta.env.VITE_API_ENV}/edit-event`, data, {
+    .put(
+      // `${import.meta.env.VITE_API_ENV}/edit-event`, 
+      `http://localhost:8080/local/api/edit-event`,
+      data, {
       headers: {
         "content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,

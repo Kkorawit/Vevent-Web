@@ -1,76 +1,159 @@
 <script setup>
 import DateTimeFormat from "@/extend/DateTimeFormat.vue";
-import { onBeforeMount, onMounted, ref } from "vue";
+import { onBeforeMount, onMounted, ref, watchEffect } from "vue";
 import router from "@/plugins/router";
 import { rules } from "@/extend/utils.ts";
 import Navbar from "@/components/Navbar.vue";
-import { useRoute } from 'vue-router';
+import { useRoute } from "vue-router";
 import { getEventDetailById } from "@/gql/gqlGet.js";
+import Map from "@/components/common/Map.vue";
+import { nearbyMarkers } from "@/extend/mapStore";
+import { editEventById } from "~/restful/Eventapi.js";
 
 const props = defineProps({
   id: {
-    type: String
+    type: String,
     // required:true
   },
 });
 
 //get event id from router
-const id= ref("");
-const route = useRoute()
+const id = ref("");
+const route = useRoute();
 
 //get event detail
-// const eventDetail = ref([]);
-// onMounted(async () => {
-//   id.value = route.params.id;
-//   console.log(id.value);
-//   let response = await getEventDetailById(id.value);
-//   console.log(response);
-//   eventDetail.value = response;
-//   console.log(eventDetail.value.title);
-  
-// });
-
-// demo เพราะ function ข้างบนมัน get eventDetail ค่ามาได้ แต่เอามาโชวน์ไม่ได้
 const eventDetail = ref({
-  id: "1",
-  title: "อาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย นครปฐม",
-  description:
-    "We Volunteer Spirit Thailand ขอเชิญน้องๆร่วมโครงการจิตอาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม กิจกรรมสร้างสรรค์ดีๆ สำหรับน้องๆ ระดับชั้นมัธยมที่สนใจร่วมกิจกรรมเพื่อเก็บชั่วโมงอาสาและสะสมในแฟ้มประวัติผลงาน (Portfolio)",
-  amountReceived: "100",
-  category: "Volunteers",
-  subCategory: "Social Services",
-  startDate: "2023-11-11T09:30:00Z",
-  endDate: "2023-11-11T16:30:00Z",
-  registerStartDate: "2023-10-10T00:00:00Z",
-  registerEndDate: "2023-11-10T23:59:00Z",
-  validationType: "CURRENT_GPS",
-  validationRules: 10,
-  posterImg:
-    "https://firebasestorage.googleapis.com/v0/b/vevent-capstone.appspot.com/o/NK-2%2FPoster_image%2Fevent01.png?alt=media&token=6222c4f1-bc33-4246-91e7-59cdda885784",
-  createBy: "Organization.032301@gmail.com",
-  createDate: "2023-10-09T16:48:00Z",
-  updateBy: "Organization.032301@gmail.com",
-  updateDate: "2023-10-09T16:48:00Z",
-  locationName: "โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม",
-  locationLatitude: 14.1423399808249,
-  locationLongitude: 100.116024883473,
-  validate_times: null,
-  eventStatus: "CO",
+  title: "",
+  description: "",
+  amountReceived: "",
+  category: "",
+  subCategory: "",
+  startDate: "",
+  endDate: "",
+  registerStartDate: "",
+  registerEndDate: "",
+  validationType: "",
+  validationRules: "",
+  posterImg: "",
+  locationName: "",
+  locationLatitude: "",
+  locationLongitude: "",
+});
+const newEvent = ref({
+  newTitle: "",
+  newDescription: "",
+  newDmountReceived: "",
+  newCategory: "",
+  newSubCategory: "",
+  newStartDate: "",
+  newEndDate: "",
+  newRegisterStartDate: "",
+  newRegisterEndDate: "",
+  newValidationType: "",
+  newValidationRules: "",
+  newPosterImg: "",
+  newLocationName: "",
+  newLocationLatitude: "",
+  newLocationLongitude: "",
+});
+//new event detail
+
+//map details
+const isOnline = ref(true);
+const location = ref({
+  locationName: isOnline.value ? "Online" : eventDetail.value.locationName,
+  locationLatitude: null,
+  locationLongitude: null,
 });
 
+onMounted(async () => {
+  id.value = route.params.id;
+  console.log(id.value);
+  let response = await getEventDetailById(id.value);
+  console.log(response);
+  eventDetail.value = response;
+  //   eventDetail.value = {
+  //   title: response.title,
+  //   description: response.description,
+  //   amountReceived: response.amountReceived,
+  //   category: response.category,
+  //   subCategory: response.subCategory,
+  //   startDate: response.startDate,
+  //   endDate: response.endDate,
+  //   registerStartDate: response.registerStartDate,
+  //   registerEndDate: response.registerEndDate,
+  //   validationType: response.validationType,
+  //   validationRules: response.validationRules,
+  //   posterImg: response.posterImg,
+  //   locationName: response.locationName,
+  //   locationLatitude: response.locationLatitude,
+  //   locationLongitude: response.locationLongitude,
+  // };
+  console.log(eventDetail.value);
+  response.locationLatitude && response.locationLongitude
+    ? (isOnline.value = false)
+    : (isOnline.value = true);
+  newPoster.value = eventDetail.value.posterImg;
+  newTitle.value = eventDetail.value.title;
+  newDescription.value = eventDetail.value.description;
+  newCategory.value = eventDetail.value.category;
+  newSubCategory.value = eventDetail.value.subCategory;
+  newAmountReceived.value = eventDetail.value.amountReceived;
+  newValidationType.value = eventDetail.value.validationType;
+  newValidationRules.value = eventDetail.value.validationRules;
+  newRegisEndDate.value = eventDetail.value.registerEndDate;
+  newRegisStartDate.value = eventDetail.value.registerStartDate;
+  newStartDate.value = eventDetail.value.startDate;
+  newEndate.value = eventDetail.value.endDate;
+  location.value.locationName = eventDetail.value.locationName;
+  location.value.locationLatitude = nearbyMarkers.value[0]?.latitude;
+  location.value.locationLongitude = nearbyMarkers.value[0]?.longitude;
+});
 
-const newTitle = ref(eventDetail.value.title);
-const newDescription = ref(eventDetail.value.description);
-const newCategory = ref(eventDetail.value.category);
-const newAmountReceived = ref(eventDetail.value.amountReceived);
-const newPoster = ref(eventDetail.value.posterImg);
-const newValidationType = ref(eventDetail.value.validationType);
-const newSubCategory = ref(eventDetail.value.subCategory);
-const newRegisStartDate = ref(eventDetail.value.registerStartDate)
-const newRegisEndtDate = ref(eventDetail.value.registerEndDate)
-const newStartDate = ref(eventDetail.value.startDate)
-const newEndate = ref(eventDetail.value.endDate)
+const newTitle = ref("");
+const newDescription = ref("");
+const newCategory = ref("");
+const newSubCategory = ref("");
+const newAmountReceived = ref("");
+const newPoster = ref("");
+const newValidationType = ref("");
+const newValidationRules = ref("");
+const newRegisStartDate = ref("");
+const newRegisEndDate = ref("");
+const newStartDate = ref("");
+const newEndate = ref("");
+const onlineValidate = [
+  { name: "Qr Code", value: "QR_CODE" },
+  { name: "Step Counter", value: "STEP_COUNTER" },
+];
+const onsiteValidate = [
+  { name: "GPS", value: "CURRENT_GPS" },
+  { name: "Qr Code & GPS", value: "QR_CODE,CURRENT_GPS" },
+  { name: "Step Counter", value: "STEP_COUNTER" },
+];
 
+watchEffect(() => {
+  // Assign Value
+
+  newEvent.value = {
+    newTitle: newTitle.value,
+    newDescription: newDescription.value,
+    newDmountReceived: newAmountReceived.value,
+    newCategory: newCategory.value,
+    newSubCategory: newSubCategory.value,
+    newStartDate: newStartDate.value,
+    newEndDate: newEndate.value,
+    newRegisterStartDate: newRegisStartDate.value,
+    newRegisterEndDate: newRegisEndDate.value,
+    newValidationType: newValidationType.value,
+    newValidationRules: newValidationRules.value,
+    newPosterImg: newPoster.value,
+    newLocationName: location.value.locationName,
+    newLocationLatitude: location.value.locationLatitude,
+    newLocationLongitude: location.value.locationLongitude,
+  };
+
+});
 
 //poster image input
 const posterStatus = ref("");
@@ -156,21 +239,69 @@ const onDrop = (event) => {
   }
 };
 
-
-const updateEventDetail = () =>{
+const updateEventDetail = () => {
+  // console.log(newEvent.value);
+  editEventById(newEvent.value)
+  alert("Updated");
+  router.push({ name: "eventDetail", params: {} });
   // code update event detail
-
-}
+};
 
 const changePage = (p) => {
   console.log(p);
   if (p == "home") {
     router.push({ name: "home" });
   } else if (p == "eventDetail") {
-    router.push({name: "eventDetail" , params:{id:id.value}});
-  } 
+    router.push({ name: "eventDetail", params: {} });
+  }
 };
 
+const typeSwitch = (type) => {
+  isOnline.value = type;
+
+  isOnline.value? (location.value.locationName='Online', 
+            location.value.locationLatitude=null,
+            location.value.locationLongitude=null)
+          : (location.value.locationName=eventDetail.value.locationName,
+            location.value.locationLatitude=eventDetail.value.locationLatitude,
+          location.value.locationLongitude=eventDetail.value.locationLongitude)
+};
+
+const updateValue = (rules, action) => {
+  console.log(newValidationRules.value);
+  console.log(newAmountReceived.value);
+  console.log("Updating");
+  if (rules == "validationRules") {
+    switch (action) {
+      case "minus":
+        newValidationRules.value > 0
+          ? newValidationRules.value--
+          : alert("Can't fill least than 0");
+        break;
+      case "plus":
+        newValidationRules.value++;
+        break;
+    }
+  } else if (rules == "amountReceived") {
+    switch (action) {
+      case "minus":
+        newAmountReceived.value > 0
+          ? newAmountReceived.value--
+          : alert("Can't fill least than 0");
+        break;
+      case "plus":
+        newAmountReceived.value++;
+        break;
+    }
+  }
+};
+
+const handleLocationName = (newName) => {
+  location.value.locationName = newName;
+};
+
+const getActiveItems = (isOnline) =>
+  isOnline ? onlineValidate : onsiteValidate;
 </script>
 <template>
   <Navbar></Navbar>
@@ -195,27 +326,22 @@ const changePage = (p) => {
             >
               Event Deatail
             </button>
-            > <span >Edit Event</span></span
+            > <span>Edit Event</span></span
           >
           <div class="text-[32px]">แก้ไขข้อมูลกิจกรรม</div>
         </div>
         <hr />
         <!-- form -->
-        <v-form
-          fast-fail
-          @submit.prevent
-          class="mt-0"
-        >
+        <v-form fast-fail @submit.prevent class="mt-0">
           <div class="flex justify-between items-center py-[40px]">
-            <div class="text-[24px] font-bold ">
-              รายละเอียดกิจกรรม
-            </div>
+            <div class="text-[24px] font-bold">รายละเอียดกิจกรรม</div>
             <div>
-              <v-btn @click="updateEventDetail"
+              <v-btn
+                @click="updateEventDetail"
                 class="custom-rounded-btn"
                 color="#4520CC"
                 type="submit"
-                style="height: 56px;"
+                style="height: 56px"
               >
                 Update
               </v-btn>
@@ -227,7 +353,8 @@ const changePage = (p) => {
             <div class="justify-self-start space-y-[24px]">
               <!-- หัวข้อกิจกรรม -->
               <div>
-                <v-text-field clearable
+                <v-text-field
+                  clearable
                   class="custom-outline-border w-[620px]"
                   variant="outlined"
                   color="#4520CC"
@@ -240,8 +367,9 @@ const changePage = (p) => {
               </div>
               <!-- รายละเอียด -->
               <div>
-                <v-textarea clearable
-                bg-color="#ECE9FA"
+                <v-textarea
+                  clearable
+                  bg-color="#ECE9FA"
                   variant="outlined"
                   color="#4520CC"
                   class="w-[ุ620px] h-[166px]"
@@ -258,7 +386,7 @@ const changePage = (p) => {
                     <VueDatePicker
                       placeholder="วันเปิดรับสมัคร"
                       dark="true"
-                      v-model="newRegisStartDate"               
+                      v-model="newRegisStartDate"
                     ></VueDatePicker>
                   </div>
                 </div>
@@ -269,7 +397,7 @@ const changePage = (p) => {
                     <VueDatePicker
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
-                      v-model="newRegisEndtDate"
+                      v-model="newRegisEndDate"
                     ></VueDatePicker>
                   </div>
                 </div>
@@ -280,7 +408,7 @@ const changePage = (p) => {
                   <label>วันเริ่มกิจกรรม </label>
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
-                      placeholder="วันเปิดรับสมัคร"
+                      placeholder="วันเริ่มกิจกรรม"
                       dark="true"
                       v-model="newStartDate"
                     ></VueDatePicker>
@@ -291,7 +419,7 @@ const changePage = (p) => {
                   <label>วันจบกิจกรรม </label>
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
-                      placeholder="วันปิดรับสมัคร"
+                      placeholder="วันจบกิจกรรม"
                       dark="true"
                       v-model="newEndate"
                     ></VueDatePicker>
@@ -356,8 +484,9 @@ const changePage = (p) => {
             <div class="justify-self-end space-y-[48px]">
               <!-- หมวดหมู่ -->
               <div>
-                <v-text-field clearable 
-                bg-color="#ECE9FA"
+                <v-text-field
+                  clearable
+                  bg-color="#ECE9FA"
                   variant="outlined"
                   color="#4520CC"
                   class="w-[334px] h-[56px]"
@@ -369,8 +498,9 @@ const changePage = (p) => {
               </div>
               <!-- หมวดหมู่ย่อย -->
               <div>
-                <v-text-field clearable 
-                bg-color="#ECE9FA"
+                <v-text-field
+                  clearable
+                  bg-color="#ECE9FA"
                   variant="outlined"
                   color="#4520CC"
                   class="w-[334px] h-[56px]"
@@ -379,58 +509,150 @@ const changePage = (p) => {
                   :width="`20px`"
                   :rules="rules.require"
                   v-model="newSubCategory"
-
                 ></v-text-field>
               </div>
               <!-- จำนวนผู้เข้าร่วม -->
               <div>
                 <v-text-field
-                variant="outlined"
+                  variant="outlined"
                   bg-color="#ECE9FA"
                   color="#4520CC"
                   type="number"
                   class="w-[334px] h-[56px] bg-[primaryLight]"
                   label="จำนวนผู้เข้าร่วม"
                   :rules="rules.require"
-                  v-model="eventDetail.amountReceived"
+                  v-model="newAmountReceived"
                   append-inner
                   hide-spin-buttons
                 >
                   <template #append-inner>
-                    <v-icon class="text-primaryColor">mdi-minus</v-icon>
-                    <v-icon class="text-primaryColor">mdi-plus</v-icon>
+                    <v-icon
+                      @click="updateValue('amountReceived', 'minus')"
+                      class="text-primaryColor"
+                      >mdi-minus</v-icon
+                    >
+                    <v-icon
+                      @click="updateValue('amountReceived', 'plus')"
+                      class="text-primaryColor"
+                      >mdi-plus</v-icon
+                    >
                   </template>
                 </v-text-field>
               </div>
-              <div class="pt-2 rounded-[8px]">
-                <v-select
-                  class="w-[334px] h-[56px] rounded-[6px]"
-                  variant="outlined"
-                  color="#4520CC"
-                  label="ตรวจสอบการเข้าร่วมโดย"
-                  :items="['QR Code', 'Step Counter', 'GPS', 'QR Code&GPS']"
-                  bg-color="#ECE9FA"
-                  :rules="rules.require"
-                  v-model="newValidationType"
-                >
-                </v-select>
+              <div>
+                <!-- ประเภทกิจกรรม -->
+                <div class="grid justify-items-center space-y-12 mb-[8px]">
+                  <!-- switch -->
+                  <div class="flex space-x-5">
+                    <div>
+                      <button
+                        @click="typeSwitch(true)"
+                        :class="[
+                          'w-[159px] h-[56px] rounded-[8px]',
+                          isOnline
+                            ? 'bg-[#4520CC] text-white hover:bg-[#4520CC]'
+                            : 'bg-primaryLight text-primaryColor hover:bg-purple100',
+                        ]"
+                      >
+                        Online
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        @click="typeSwitch(false)"
+                        :class="[
+                          'w-[159px] h-[56px] rounded-[8px]',
+                          !isOnline
+                            ? 'bg-[#4520CC] text-white hover:bg-[#4520CC]'
+                            : 'bg-primaryLight text-primaryColor hover:bg-purple100',
+                        ]"
+                      >
+                        Onsite
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Map || Meeting Link -->
+                  <div class="">
+                    <!-- Map -->
+                    <div v-if="!isOnline">
+                      <Map @emitLocationName="handleLocationName"></Map>
+                      <v-text-field
+                        class="pt-6"
+                        variant="outlined"
+                        label="สถานที่จัดกิจกรรม"
+                        v-model="location.locationName"
+                        bg-color="#ECE9FA"
+                        :rules="rules.require"
+                      >
+                      </v-text-field>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ตรวจสอบโดย.... -->
+                <div class="mb-4">
+                  <v-select
+                    label="ตรวจสอบการเข้าร่วมโดย"
+                    variant="outlined"
+                    bg-color="#ECE9FA"
+                    v-model="newValidationType"
+                    :items="isOnline ? onlineValidate : onsiteValidate"
+                    item-title="name"
+                    item-value="value"
+                  >
+                  </v-select>
+                </div>
+                <!-- rules -->
+                <div>
+                  <v-text-field
+                    v-if="newValidationType != 'QR_CODE'"
+                    v-model="newValidationRules"
+                    variant="outlined"
+                    bg-color="#ECE9FA"
+                    type="number"
+                    class="w-[334px] h-[56px] bg-[primaryLight]"
+                    :label="
+                      newValidationType == 'STEP_COUNTER'
+                        ? 'จำนวนก้าว'
+                        : 'ขอบเขตการตรวจสอบ (เมตร)'
+                    "
+                    append-inner
+                    :rules="rules.require"
+                    hide-spin-buttons
+                  >
+                    <template #append-inner>
+                      <v-icon
+                        @click="updateValue('validationRules', 'minus')"
+                        class="text-primaryColor"
+                        >mdi-minus</v-icon
+                      >
+                      <v-icon
+                        @click="updateValue('validationRules', 'plus')"
+                        class="text-primaryColor"
+                        >mdi-plus</v-icon
+                      >
+                    </template>
+                  </v-text-field>
+                </div>
+                <!-- location name -->
+                <!-- <div class="pt-8">
+                  <v-text-field
+                    v-if="!isOnline"
+                    variant="outlined"
+                    label="สถานที่จัดกิจกรรม"
+                    v-model="location.locationName"
+                    bg-color="#ECE9FA"
+                    :rules="rules.require"
+                  >
+                  </v-text-field>
+                </div> -->
               </div>
-              <!-- <div>
-                <v-select
-                  class="w-[334px] h-[56px] rounded-[6px]"
-                  variant="outlined"
-                  label="ตรวจสอบการเข้าร่วมโดย"
-                  bg-color="#ECE9FA"
-                >
-                </v-select>
-              </div> -->
             </div>
           </div>
         </v-form>
       </div>
     </div>
   </div>
-  
 </template>
 <style scoped>
 .custom-rounded-btn {
@@ -466,8 +688,8 @@ const changePage = (p) => {
   --dp-range-between-border-color: var(--dp-hover-color, #fff);
 }
 .dp__input {
-    /* line-height: 50px; */
-    height: 100%;
+  /* line-height: 50px; */
+  height: 100%;
 }
 .v-field {
   border-radius: 8px !important;
@@ -544,7 +766,6 @@ const changePage = (p) => {
 .select:hover {
   opacity: 0.6;
 }
-
 
 .container-poster {
   width: 100%;

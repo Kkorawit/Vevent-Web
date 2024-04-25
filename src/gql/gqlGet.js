@@ -57,46 +57,17 @@ export async function getAllEventCreatedByUEmail (email) {
 }
 
 
-
 export async function getEventDetailById (eid) {
   console.log("get event detail gql")
-  let query = gql`
-  query FindEventDetailsByEventId {
-    findEventDetailsByEventId(id: ${eid}) {
-      id
-      title
-      description
-      amountReceived
-      category
-      subCategory
-      startDate
-      endDate
-      registerStartDate
-      registerEndDate
-      validationType
-      validationRules
-      posterImg
-      createBy
-      createDate
-      updateBy
-      updateDate
-      locationName
-      locationLatitude
-      locationLongitude
-      validate_times
-      eventStatus
-    }
-  }
-`;
+  
     console.log(eid);
     const { resolveClient } = useApolloClient();
     const client = resolveClient();
     const { data,error } = await client.query({
-    // query:  GET_ONE_EVENT_ID,
-    query:  query,
-    // variables: {
-    //   id: eid, // Use the reactive email value
-    // },
+    query:  GET_ONE_EVENT_ID,
+    variables: {
+      id: eid, 
+    },
   });
   console.log(data.findEventDetailsByEventId);
   if(error){

@@ -2,12 +2,13 @@
 import Navbar from "@/components/Navbar.vue";
 import { onBeforeMount, onMounted, ref, watch } from "vue";
 import moment from "moment-timezone";
-import { getAllEventCreatedByUEmail, getEventDetailById } from "@/gql/gqlGet.js";
+import { getEventDetailById } from "@/gql/gqlGet.js";
 import { useRoute } from "vue-router";
 import EventCard from "@/components/Event/EventCard.vue";
 
 
 
+const eid = ref()
 //get event detail
 const eventDetail = ref();
 
@@ -20,15 +21,12 @@ const detailLeft = ref();
 const route = useRoute();
 
 onBeforeMount(async () => {
+  eid.value = route.params.id
+    
+  let response = await getEventDetailById(eid.value);
+  console.log(response);
+  eventDetail.value = response;
 
-    const eventId = route.params.id;
-  console.log(eventId);
-  let response1 = await getEventDetailById(eventId);
-  let response2 = await getAllEventCreatedByUEmail("Organization.032301@gmail.com");
-  console.log(response1);
-  eventDetail.value = response1;
-  console.log(response2);
-  allEvents.value = response2;
 
   detailLeft.value =  [{
     titile: "วันที่จัดกิจกรรม",

@@ -255,9 +255,6 @@ const changePage = (p) => {
 const typeSwitch = (type) => {
   isOnline.value = type;
 
-  console.log(eventDetail.value.locationLatitude);
-  console.log(eventDetail.value.locationLongitude);
-  console.log(nearbyMarkers.value[0]);
   isOnline.value? (location.value.locationName='Online', 
             location.value.locationLatitude=null,
             location.value.locationLongitude=null)
@@ -328,9 +325,6 @@ const handleLocationName = (newName) => {
           <div class="text-[32px]">แก้ไขข้อมูลกิจกรรม</div>
         </div>
         <hr />
-        {{ location.locationName }}
-        {{ location.locationLatitude }}
-        {{ location.locationLongitude }}
         <!-- form -->
         <v-form fast-fail @submit.prevent class="mt-0">
           <div class="flex justify-between items-center py-[40px]">

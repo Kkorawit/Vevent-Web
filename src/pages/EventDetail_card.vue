@@ -435,8 +435,7 @@ const changePage = (p) => {
                 </v-text-field>
               </div>
               <!-- locationName -->
-              {{ eventDetail.locationName }}
-              <div v-if="eventDetail.locationName!='Online'"
+              <div
               >
                 <v-text-field
                   class="pt-6"

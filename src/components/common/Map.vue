@@ -33,7 +33,7 @@ onMounted(() => {
   map = leaflet
     .map("map")
     .setView([userMarker.value.latitude, userMarker.value.longitude], 17)
-    
+
 
   ////// Display map layer
   leaflet

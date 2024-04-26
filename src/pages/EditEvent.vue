@@ -10,15 +10,9 @@ import Map from "@/components/common/Map.vue";
 import { nearbyMarkers } from "@/extend/mapStore";
 import { editEventById } from "~/restful/Eventapi.js";
 
-const props = defineProps({
-  id: {
-    type: String,
-    // required:true
-  },
-});
 
 //get event id from router
-const id = ref("");
+const id = ref(0);
 const route = useRoute();
 
 //get event detail
@@ -136,9 +130,10 @@ watchEffect(() => {
   // Assign Value
 
   newEvent.value = {
+    id:id.value,
     newTitle: newTitle.value,
     newDescription: newDescription.value,
-    newDmountReceived: newAmountReceived.value,
+    newAmountReceived: newAmountReceived.value,
     newCategory: newCategory.value,
     newSubCategory: newSubCategory.value,
     newStartDate: newStartDate.value,
@@ -240,10 +235,11 @@ const onDrop = (event) => {
 };
 
 const updateEventDetail = () => {
-  // console.log(newEvent.value);
+  
+  console.log(newEvent.value);
   editEventById(newEvent.value)
   alert("Updated");
-  router.push({ name: "eventDetail", params: {} });
+  router.push({ name: "eventDetail", params: {id:id.value} });
   // code update event detail
 };
 
@@ -252,7 +248,7 @@ const changePage = (p) => {
   if (p == "home") {
     router.push({ name: "home" });
   } else if (p == "eventDetail") {
-    router.push({ name: "eventDetail", params: {} });
+    router.push({ name: "eventDetail", params: {id:id.value} });
   }
 };
 
@@ -263,8 +259,8 @@ const typeSwitch = (type) => {
             location.value.locationLatitude=null,
             location.value.locationLongitude=null)
           : (location.value.locationName=eventDetail.value.locationName,
-            location.value.locationLatitude=eventDetail.value.locationLatitude,
-          location.value.locationLongitude=eventDetail.value.locationLongitude)
+            location.value.locationLatitude=nearbyMarkers.value[0].latitude,
+          location.value.locationLongitude=nearbyMarkers.value[0].longitude)
 };
 
 const updateValue = (rules, action) => {

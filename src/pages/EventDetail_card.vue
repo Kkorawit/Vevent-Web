@@ -5,24 +5,50 @@ import { onBeforeMount, ref } from "vue";
 import { rules } from "@/extend/utils.ts";
 import Navbar from "@/components/Navbar.vue";
 import Participants from "@/pages/Participants.vue";
-import { useRoute } from 'vue-router';
+import { useRoute } from "vue-router";
 
+//get event id from router
+const id = ref("");
+const route = useRoute();
 
-const eventDetail = ref();
-const participants = ref([]);
-
-// get event id from router
-onBeforeMount(async () => {
-    const router = useRoute();
-    const eventId = router.params.id;
-  console.log(eventId);
-  let response1 = await getEventDetailById(eventId);
-  console.log(response1);
-  eventDetail.value = response1;
-  let response2 = await getAllParticipantsByEventId(eventId);
-  console.log(response2);
-  participants.value = response2;
+//get event detail
+const eventDetail = ref([]);
+onMounted(async () => {
+  id.value = route.params.id;
+  console.log(id.value);
+  let response = await getEventDetailById(id.value);
+  console.log(response);
+  eventDetail.value = response;
+  console.log(eventDetail.value.title);
 });
+
+// demo เพราะ function ข้างบนมัน get eventDetail ค่ามาได้ แต่เอามาโชวน์ไม่ได้ฝากดููหน่อยนะ
+// const eventDetail = ref({
+//   id: "1",
+//   title: "อาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย นครปฐม",
+//   description:
+//     "We Volunteer Spirit Thailand ขอเชิญน้องๆร่วมโครงการจิตอาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม กิจกรรมสร้างสรรค์ดีๆ สำหรับน้องๆ ระดับชั้นมัธยมที่สนใจร่วมกิจกรรมเพื่อเก็บชั่วโมงอาสาและสะสมในแฟ้มประวัติผลงาน (Portfolio)",
+//   amountReceived: "100",
+//   category: "Volunteers",
+//   subCategory: "Social Services",
+//   startDate: "2023-11-11T09:30:00Z",
+//   endDate: "2023-11-11T16:30:00Z",
+//   registerStartDate: "2023-10-10T00:00:00Z",
+//   registerEndDate: "2023-11-10T23:59:00Z",
+//   validationType: "CURRENT_GPS",
+//   validationRules: 10,
+//   posterImg:
+//     "https://firebasestorage.googleapis.com/v0/b/vevent-capstone.appspot.com/o/NK-2%2FPoster_image%2Fevent01.png?alt=media&token=6222c4f1-bc33-4246-91e7-59cdda885784",
+//   createBy: "Organization.032301@gmail.com",
+//   createDate: "2023-10-09T16:48:00Z",
+//   updateBy: "Organization.032301@gmail.com",
+//   updateDate: "2023-10-09T16:48:00Z",
+//   locationName: "โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม",
+//   locationLatitude: 14.1423399808249,
+//   locationLongitude: 100.116024883473,
+//   validate_times: null,
+//   eventStatus: "CO",
+// });
 
 // demo เพราะ function ข้างบนมัน get eventDetail ค่ามาได้ แต่เอามาโชวน์ไม่ได้ฝากดููหน่อยนะ
 // const eventDetail = ref({
@@ -170,11 +196,10 @@ const changePage = (p) => {
     // router.push({name: "participants" , params: eventDetail.value.id});
     state.value = p;
     console.log(p);
-  }else if(p == 'editEvent'){
+  } else if (p == "editEvent") {
     // router.push({name: "editEvent" , component: EditEvent, props:{info: eventDetail}});
     // router.push({name: "editEvent" , component: EditEvent, info: eventDetail});
-    router.push({name: "editEvent" , params:{id:eventDetail.value.id}});
-
+    router.push({ name: "editEvent", params: { id: id.value } });
   }
 };
 </script>
@@ -194,7 +219,8 @@ const changePage = (p) => {
             >
               Event
             </button>
-            > <span v-if="state == 'eventDetail'">Event Detail</span> <span v-if="state != 'eventDetail'">Particiapnts</span></span
+            > <span v-if="state == 'eventDetail'">Event Detail</span>
+            <span v-if="state != 'eventDetail'">Particiapnts</span></span
           >
           <div class="text-[32px]">{{ eventDetail.title }}</div>
         </div>
@@ -204,13 +230,32 @@ const changePage = (p) => {
           <ul class="flex justify-center">
             <li
               @click="changePage('eventDetail')"
-              class="w-[110px]  text-gray-300 hover:text-primaryColor  text-center"
+              class="w-[110px] text-gray-300 hover:text-primaryColor text-center"
             >
-              <button :class="state == 'eventDetail' ? 'underline underline-offset-8 text-medium text-primaryColor ' : ' '">Event Detail</button>
+              <button
+                :class="
+                  state == 'eventDetail'
+                    ? 'underline underline-offset-8 text-medium text-primaryColor '
+                    : ' '
+                "
+              >
+                Event Detail
+              </button>
             </li>
             <li class="text-gray-400">|</li>
-            <li @click="changePage('participants')" class="w-[110px] text-gray-300 hover:text-primaryColor text-center" >
-              <button :class="state == 'participants' ? 'underline underline-offset-8 text-medium text-primaryColor' : ' '">Participants</button>
+            <li
+              @click="changePage('participants')"
+              class="w-[110px] text-gray-300 hover:text-primaryColor text-center"
+            >
+              <button
+                :class="
+                  state == 'participants'
+                    ? 'underline underline-offset-8 text-medium text-primaryColor'
+                    : ' '
+                "
+              >
+                Participants
+              </button>
             </li>
           </ul>
         </div>
@@ -222,11 +267,10 @@ const changePage = (p) => {
           class="mt-0"
         >
           <div class="flex justify-between items-center py-[40px]">
-            <div class="text-[24px] font-bold ">
-              รายละเอียดกิจกรรม
-            </div>
+            <div class="text-[24px] font-bold">รายละเอียดกิจกรรม</div>
             <div>
-              <v-btn @click="changePage('editEvent')"
+              <v-btn
+                @click="changePage('editEvent')"
                 class="custom-rounded-btn"
                 color="#4520CC"
                 type="submit"
@@ -254,8 +298,6 @@ const changePage = (p) => {
                   :rules="rules.require"
                   :width="`20px`"
                   readonly
-                  
-                  
                 ></v-text-field>
               </div>
               <!-- รายละเอียด -->
@@ -420,6 +462,21 @@ const changePage = (p) => {
                 >
                 </v-text-field>
               </div>
+              <!-- locationName -->
+              <div
+              >
+                <v-text-field
+                  class="pt-6"
+                  variant="outlined"
+                  label="สถานที่จัดกิจกรรม"
+                  v-model="eventDetail.locationName"
+                  :rules="rules.require"
+                  readonly
+                  cursor-none
+                  hide-selected
+                >
+                </v-text-field>
+              </div>
               <!-- validate type -->
               <div>
                 <v-text-field
@@ -429,21 +486,22 @@ const changePage = (p) => {
                   v-model="eventDetail.validationType"
                   readonly
                   cursor-none
-                  hide-seleced
+                  hide-selected
                 >
                 </v-text-field>
               </div>
             </div>
           </div>
         </v-form>
-        <Participants :info="participants" v-if="state == 'participants'"></Participants>
+        <Participants
+          :info="participants"
+          v-if="state == 'participants'"
+        ></Participants>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
-
-
 .custom-rounded-btn {
   border-radius: 16px;
 }

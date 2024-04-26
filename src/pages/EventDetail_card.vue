@@ -5,11 +5,11 @@ import { onMounted, ref } from "vue";
 import { rules } from "@/extend/utils.ts";
 import Navbar from "@/components/Navbar.vue";
 import Participants from "@/pages/Participants.vue";
-import { useRoute } from 'vue-router';
+import { useRoute } from "vue-router";
 
 //get event id from router
-const id= ref("");
-const route = useRoute()
+const id = ref("");
+const route = useRoute();
 
 //get event detail
 const eventDetail = ref([]);
@@ -20,7 +20,7 @@ onMounted(async () => {
   console.log(response);
   eventDetail.value = response;
   console.log(eventDetail.value.title);
-  });
+});
 
 // demo เพราะ function ข้างบนมัน get eventDetail ค่ามาได้ แต่เอามาโชวน์ไม่ได้ฝากดููหน่อยนะ
 // const eventDetail = ref({
@@ -168,11 +168,10 @@ const changePage = (p) => {
     // router.push({name: "participants" , params: eventDetail.value.id});
     state.value = p;
     console.log(p);
-  }else if(p == 'editEvent'){
+  } else if (p == "editEvent") {
     // router.push({name: "editEvent" , component: EditEvent, props:{info: eventDetail}});
     // router.push({name: "editEvent" , component: EditEvent, info: eventDetail});
-    router.push({name:'editEvent',params:{id:id.value}});
-
+    router.push({ name: "editEvent", params: { id: id.value } });
   }
 };
 </script>
@@ -192,7 +191,8 @@ const changePage = (p) => {
             >
               Event
             </button>
-            > <span v-if="state == 'eventDetail'">Event Detail</span> <span v-if="state != 'eventDetail'">Particiapnts</span></span
+            > <span v-if="state == 'eventDetail'">Event Detail</span>
+            <span v-if="state != 'eventDetail'">Particiapnts</span></span
           >
           <div class="text-[32px]">{{ eventDetail.title }}</div>
         </div>
@@ -202,13 +202,32 @@ const changePage = (p) => {
           <ul class="flex justify-center">
             <li
               @click="changePage('eventDetail')"
-              class="w-[110px]  text-gray-300 hover:text-primaryColor  text-center"
+              class="w-[110px] text-gray-300 hover:text-primaryColor text-center"
             >
-              <button :class="state == 'eventDetail' ? 'underline underline-offset-8 text-medium text-primaryColor ' : ' '">Event Detail</button>
+              <button
+                :class="
+                  state == 'eventDetail'
+                    ? 'underline underline-offset-8 text-medium text-primaryColor '
+                    : ' '
+                "
+              >
+                Event Detail
+              </button>
             </li>
             <li class="text-gray-400">|</li>
-            <li @click="changePage('participants')" class="w-[110px] text-gray-300 hover:text-primaryColor text-center" >
-              <button :class="state == 'participants' ? 'underline underline-offset-8 text-medium text-primaryColor' : ' '">Participants</button>
+            <li
+              @click="changePage('participants')"
+              class="w-[110px] text-gray-300 hover:text-primaryColor text-center"
+            >
+              <button
+                :class="
+                  state == 'participants'
+                    ? 'underline underline-offset-8 text-medium text-primaryColor'
+                    : ' '
+                "
+              >
+                Participants
+              </button>
             </li>
           </ul>
         </div>
@@ -220,20 +239,19 @@ const changePage = (p) => {
           class="mt-0"
         >
           <div class="flex justify-between items-center py-[40px]">
-            <div class="text-[24px] font-bold ">
-              รายละเอียดกิจกรรม
-            </div>
+            <div class="text-[24px] font-bold">รายละเอียดกิจกรรม</div>
             <div>
-              <v-btn @click="changePage('editEvent')"
+              <v-btn
+                @click="changePage('editEvent')"
                 class="custom-rounded-btn"
                 color="#4520CC"
                 type="submit"
                 style="height: 56px; width: 56px"
               >
                 <img
-                src="@/assets/Edit.png"
-                class="w-[32px] h-[32px]"
-                alt="edit"
+                  src="@/assets/Edit.png"
+                  class="w-[32px] h-[32px]"
+                  alt="edit"
                 />
               </v-btn>
             </div>
@@ -252,8 +270,6 @@ const changePage = (p) => {
                   :rules="rules.require"
                   :width="`20px`"
                   readonly
-                  
-                  
                 ></v-text-field>
               </div>
               <!-- รายละเอียด -->
@@ -418,6 +434,22 @@ const changePage = (p) => {
                 >
                 </v-text-field>
               </div>
+              <!-- locationName -->
+              {{ eventDetail.locationName }}
+              <div v-if="eventDetail.locationName!='Online'"
+              >
+                <v-text-field
+                  class="pt-6"
+                  variant="outlined"
+                  label="สถานที่จัดกิจกรรม"
+                  v-model="eventDetail.locationName"
+                  :rules="rules.require"
+                  readonly
+                  cursor-none
+                  hide-selected
+                >
+                </v-text-field>
+              </div>
               <!-- validate type -->
               <div>
                 <v-text-field
@@ -427,21 +459,22 @@ const changePage = (p) => {
                   v-model="eventDetail.validationType"
                   readonly
                   cursor-none
-                  hide-seleced
+                  hide-selected
                 >
                 </v-text-field>
               </div>
             </div>
           </div>
         </v-form>
-        <Participants :info="participants" v-if="state == 'participants'"></Participants>
+        <Participants
+          :info="participants"
+          v-if="state == 'participants'"
+        ></Participants>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
-
-
 .custom-rounded-btn {
   border-radius: 16px;
 }

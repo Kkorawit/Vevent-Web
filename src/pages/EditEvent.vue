@@ -235,7 +235,8 @@ const onDrop = (event) => {
 };
 
 const updateEventDetail = () => {
-  // console.log(newEvent.value);
+  
+  console.log(newEvent.value);
   editEventById(newEvent.value)
   alert("Updated");
   router.push({ name: "eventDetail", params: {id:id.value} });

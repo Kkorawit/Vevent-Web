@@ -4,10 +4,12 @@ import leaflet from "leaflet";
 import { onMounted, watchEffect,ref } from "vue";
 import { useGeolocation } from "@vueuse/core";
 import { userMarker, nearbyMarkers } from "@/extend/mapStore";
-import editIcon from "@/assets/Edit.png";
+import currentLocationIcon from "@/assets/currentLocation.svg";
+import userLocation from "@/assets/mapMarker.svg"
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
+const emits = defineEmits(['emitLocationName'])
 
 const provider = new OpenStreetMapProvider();
 const searchControl = new GeoSearchControl({
@@ -25,16 +27,8 @@ const { coords } = useGeolocation();
 let previousZoomLevel = 0;
 const locationName = ref('');
 
+
 onMounted(() => {
-
-  // Google map 
-  // new window.google.maps.Map(map2.value,{
-  //   center: center,
-  //   zoom:10,
-  // });
-
-
-
 
   map = leaflet
     .map("map")
@@ -54,6 +48,8 @@ onMounted(() => {
     map.addControl(searchControl)
     map.on('geosearch/showlocation',(data) => {
       locationName.value = data.location.label;
+      console.log(locationName.value);
+      emits('emitLocationName',locationName.value)
     })
 
 
@@ -78,11 +74,10 @@ onMounted(() => {
       map.removeLayer(markers)
       nearbyMarkers.value = []
     }
-      console.log(e);
     const { lat: latitude, lng: longitude } = e.latlng;
 
     markers = leaflet
-      .marker([latitude, longitude])
+      .marker([latitude, longitude],{icon:markerIcon})
       .addTo(map)
       .bindPopup(
         `Saved Marker at <strong>${latitude.toFixed(2)},${longitude.toFixed(
@@ -100,7 +95,6 @@ onMounted(() => {
 
 ////// watch effect to map and coords lat lng
 watchEffect(() => {
-  console.log(coords.value);
 
   ///// condition make sure lat long is potitive value
   if (
@@ -116,10 +110,10 @@ watchEffect(() => {
 
     userGeoMarker = leaflet
       .marker([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude],
-      // {icon:markericon}
+      {icon:userHereIcon}
     )
       .addTo(map)
-      .bindPopup("User Marker");
+      .bindPopup("You're Here");
     
     map.on('zoomend',()=>{
       previousZoomLevel = map.getZoom();
@@ -133,12 +127,18 @@ watchEffect(() => {
     // }
   }
 });
-console.log(editIcon);
+// console.log(editIcon);
 
 
-  // let markericon = leaflet.icon({
-  //   iconUrl:"/src/assets/Edit.png"
-  // })
+  let userHereIcon = leaflet.icon({
+    iconUrl: currentLocationIcon,
+    iconSize:[50,50]
+  })
+
+  let markerIcon = leaflet.icon({
+    iconUrl:userLocation,
+    iconSize:[30,30]
+  })
 
 const clearMarker = () => {
   map.removeLayer(markers)
@@ -148,7 +148,6 @@ const clearMarker = () => {
 
 <template>
   <div class="relative">
-    {{ locationName }}
     <div id="map" class="h-[180px] w-[333px] z-20"></div>
     <!-- <div id="map" class="h-screen w-screen z-20"></div> -->
     <!-- <div ref="map" style="width: 500px;height: 500px;"></div> -->

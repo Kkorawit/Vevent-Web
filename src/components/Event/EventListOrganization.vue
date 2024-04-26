@@ -10,15 +10,14 @@ import moment from "moment-timezone";
 // import VueDatePicker from "@vuepic/vue-datepicker";
 // import '@vuepic/vue-datepicker/dist/main.css'
 
-const props = defineProps({
-  info: {
-    type: Array,
-    request: true,
-  },
-});
+// const props = defineProps({
+//   info: {
+//     type: Array,
+//     request: ,
+//   },
+// });
 
-
-const eventTitle = ref(Array.from(new Set(props.info?.map((event) => event.title))))
+const eventTitle = ref()
 
 const countAll = ref();
 const countUP = ref();
@@ -42,15 +41,21 @@ const countEvents = () => {
   ).length;
 };
 
-onMounted(() => {
+onMounted(async () => {
+  // let email  = localStorage.getItem("email")
+  let response = await getAllEventCreatedByUEmail(localStorage.getItem("email"))
+  console.log(response);
+  allEvents.value = response
+  filtered.value = response
+  eventTitle.value = Array.from(new Set(allEvents.value.map((event) => event.title)))
   countEvents();
 });
 
-const allEvents = ref(props.info);
+const allEvents = ref([]);
 const searchEvent = ref("");
 
 
-const filtered = ref(props.info);
+const filtered = ref([]);
 const eventList = computed(() => {
   console.log(filtered.value);
 

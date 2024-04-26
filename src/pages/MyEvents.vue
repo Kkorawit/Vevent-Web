@@ -32,6 +32,7 @@ const eventTitle = ref();
 const statusShow = ref([]);
 
 onMounted(async () => {
+  allEventRegis.value = [];
   const router = useRoute();
   const uEmail = router.params.email;
   console.log(uEmail);

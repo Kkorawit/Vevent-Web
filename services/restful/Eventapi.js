@@ -143,6 +143,9 @@ export async function deleteEventById(eid) {
 
 export async function editEventById(event) {
   console.log(event);
+  console.log(event.newLocationLatitude);
+  console.log(event.newLocationLongitude);
+  console.log(event.newLocationName);
   const data = {
     id:event.id,
     title: event.newTitle,

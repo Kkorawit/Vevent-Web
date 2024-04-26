@@ -4,6 +4,7 @@ import { onBeforeMount, onMounted, ref, watch } from "vue";
 import moment from "moment-timezone";
 import { getEventDetailById } from "@/gql/gqlGet.js";
 import { useRoute } from "vue-router";
+import { bookEventById } from "~/restful/Eventapi";
 
 const eid = ref()
 //get event detail
@@ -104,6 +105,7 @@ onBeforeMount(async () => {
             <hr />
             <div class="flex justify-start">
               <button
+              @click="bookEventById(eventDetail.id)"
                 class="bg-primaryColor font-semibold text-[16px] text-white w-[240px] h-[48px] rounded-[8px] mr-[8px]"
               >
                 Book Now!!

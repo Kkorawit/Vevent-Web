@@ -4,6 +4,50 @@ import { useApolloClient, useQuery } from "@vue/apollo-composable";
 import { GET_ALL_CREATEDBY_QUERY,GET_ONE_EVENT_ID } from '@/gql/setup/gqlQuery.js';
 import { id } from "vuetify/locale";
 
+export async function getAllEvents () {
+  let query = gql`
+  query AllEvents {
+    allEvents {
+        id
+        title
+        description
+        amountReceived
+        category
+        subCategory
+        startDate
+        endDate
+        registerStartDate
+        registerEndDate
+        validationType
+        validationRules
+        posterImg
+        createBy
+        createDate
+        updateBy
+        updateDate
+        locationName
+        locationLatitude
+        locationLongitude
+        validate_times
+        eventStatus
+    }
+}
+`;
+    const { resolveClient } = useApolloClient();
+    const client = resolveClient();
+    const { data,error } = await client.query({
+    query: query,
+  });
+  console.log(data.allEvents);
+  if(error){
+    console.error('GraphQL error:',error.value)
+    return { error: true}
+  }
+  return data?.allEvents || []
+
+}
+
+
 export async function getAllEventCreatedByUEmail (email) {
   let query = gql`
   query FindAllEventCreatedByUEmail($uEmail: ID!) {
@@ -149,11 +193,7 @@ export async function getAllEventRegisEventByUEmail (email) {
     const { resolveClient } = useApolloClient();
     const client = resolveClient();
     const { data,error } = await client.query({
-    // query:  GET_ONE_EVENT_ID,
     query:  query,
-    // variables: {
-    //   id: eid, // Use the reactive email value
-    // },
   });
   console.log(data.findAllRegisEventsByUEmail);
   if(error){
@@ -166,117 +206,41 @@ export async function getAllEventRegisEventByUEmail (email) {
 }
 
 
-// export async function getAllEventCreatedByUEmail (email) {
-//   let query = gql`
-//   query FindAllEventCreatedByUEmail  {
-//     findAllEventCreatedByUEmail (uEmail: "'${email}'" )  {
-//         id
-//         title
-//         description
-//         amountReceived
-//         category
-//         subCategory
-//         startDate
-//         endDate
-//         registerStartDate
-//         registerEndDate
-//         validationType
-//         validationRules
-//         posterImg
-//         createBy
-//         createDate
-//         updateBy
-//         updateDate
-//         locationName
-//         locationLatitude
-//         locationLongitude
-//         validate_times
-//         eventStatus
-//     }
-// }
-// `;
-// console.log("test repo");
-// const { resolveClient } = useApolloClient();
-// const client = resolveClient();
-// const result = ref();
+export async function getAllParticipantsByEventId (id) {
+  console.log(id);
+  console.log("get paarticipants by id gql")
+  let query = gql`
+  query FindAllParticipantsByEventId {
+    findAllParticipantsByEventId(eid: ${id}) {
+        status
+        user {
+            userEmail
+            role
+            displayName
+            profileImg
+        }
+    }
+}
+`;
+    console.log(id);
+    const { resolveClient } = useApolloClient();
+    const client = resolveClient();
+    const { data,error } = await client.query({
+    query:  query,
+  });
+  console.log(data.findAllParticipantsByEventId);
+  if(error){
+    console.error('GraphQL error:',error.value)
+    return { error: true}
+  }
+  
+  return data?.findAllParticipantsByEventId || []
 
-// result.value = ref();
-// const { data, error } = await client.query({
-//   query: query,
-// });
-// if (error) {
-//   console.error("GraphQL error:", error);
-// }
-// return result.value = data;
+}
 
 
-// }
 
-// export async function getAllEventCreatedByUEmail (mail) {
-
-//   let query = gql`
-//   query FindAllEventCreatedByUEmail($uEmail: String!)  {
-//     findAllEventCreatedByUEmail (uEmail: $uEmail )  {
-//         id
-//         title
-//         description
-//         amountReceived
-//         category
-//         subCategory
-//         startDate
-//         endDate
-//         registerStartDate
-//         registerEndDate
-//         validationType
-//         validationRules
-//         posterImg
-//         createBy
-//         createDate
-//         updateBy
-//         updateDate
-//         locationName
-//         locationLatitude
-//         locationLongitude
-//         validate_times
-//         eventStatus
-//     }
-// }
-// `;
-
-// console.log("test repo");
-// const { result, error, loading } = useQuery(query, {
-//   variables: {
-//     uEmail: mail
-//   }
-// })
-// if(loading.value){
-//   return {loading:true};
-// }
-
-// if(error.value){
-//   console.error('GraphQL error:',error.value)
-//   return { error: true}
-// }
-
-// const event = result.data?.findAllEventCreatedByEmail || [];
-// const { resolveClient } = useApolloClient();
-// const client = resolveClient();
-// const result = ref();
-
-// result.value = ref();
-// const { data, error } = await client.query({
-//   query: query,
-// });
-// if (error) {
-//   console.error("GraphQL error:", error);
-// }
-// return { event }
-
-
-// }
-
-
-export default ({getAllEventCreatedByUEmail , getEventDetailById, getAllEventRegisEventByUEmail})
+export default ({getAllEventCreatedByUEmail , getEventDetailById, getAllEventRegisEventByUEmail, getAllParticipantsByEventId , getAllEvents})
 
 
 

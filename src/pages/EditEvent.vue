@@ -14,62 +14,71 @@ const props = defineProps({
   },
 });
 
-//get event id from router
-const id= ref("");
-const route = useRoute()
+const eventDetail = ref({});
 
-//get event detail
-// const eventDetail = ref([]);
-// onMounted(async () => {
-//   id.value = route.params.id;
-//   console.log(id.value);
-//   let response = await getEventDetailById(id.value);
-//   console.log(response);
-//   eventDetail.value = response;
-//   console.log(eventDetail.value.title);
-  
-// });
+const newTitle = ref();
+const newDescription = ref();
+const newCategory = ref();
+const newAmountReceived = ref();
+const newPoster = ref();
+const newValidationType = ref();
+const newSubCategory = ref();
+const newRegisStartDate = ref()
+const newRegisEndtDate = ref()
+const newStartDate = ref()
+const newEndate = ref()
+
+
+
+//get event id from router
+onMounted( async () => {
+  const router = useRoute();
+  const id = router.params.id
+  let response = await getEventDetailById(id)
+  eventDetail.value = response;
+  console.log(eventDetail.value);
+  newTitle.value = eventDetail.value.title;
+  newDescription.value = eventDetail.value.description;
+  newCategory.value = eventDetail.value.category;
+  newPoster.value = eventDetail.value.posterImg;
+  newValidationType.value = eventDetail.value.validationType;
+  newSubCategory.value = eventDetail.value.subCategory;
+  newRegisStartDate.value = eventDetail.value.registerStartDate;
+  newRegisEndtDate.value = eventDetail.value.registerEndDate;
+  newStartDate.value = eventDetail.value.startDate;
+  newEndate.value = eventDetail.value.endDate;
+  newAmountReceived.value = eventDetail.value.amountReceived;
+})
+
+
 
 // demo เพราะ function ข้างบนมัน get eventDetail ค่ามาได้ แต่เอามาโชวน์ไม่ได้
-const eventDetail = ref({
-  id: "1",
-  title: "อาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย นครปฐม",
-  description:
-    "We Volunteer Spirit Thailand ขอเชิญน้องๆร่วมโครงการจิตอาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม กิจกรรมสร้างสรรค์ดีๆ สำหรับน้องๆ ระดับชั้นมัธยมที่สนใจร่วมกิจกรรมเพื่อเก็บชั่วโมงอาสาและสะสมในแฟ้มประวัติผลงาน (Portfolio)",
-  amountReceived: "100",
-  category: "Volunteers",
-  subCategory: "Social Services",
-  startDate: "2023-11-11T09:30:00Z",
-  endDate: "2023-11-11T16:30:00Z",
-  registerStartDate: "2023-10-10T00:00:00Z",
-  registerEndDate: "2023-11-10T23:59:00Z",
-  validationType: "CURRENT_GPS",
-  validationRules: 10,
-  posterImg:
-    "https://firebasestorage.googleapis.com/v0/b/vevent-capstone.appspot.com/o/NK-2%2FPoster_image%2Fevent01.png?alt=media&token=6222c4f1-bc33-4246-91e7-59cdda885784",
-  createBy: "Organization.032301@gmail.com",
-  createDate: "2023-10-09T16:48:00Z",
-  updateBy: "Organization.032301@gmail.com",
-  updateDate: "2023-10-09T16:48:00Z",
-  locationName: "โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม",
-  locationLatitude: 14.1423399808249,
-  locationLongitude: 100.116024883473,
-  validate_times: null,
-  eventStatus: "CO",
-});
-
-
-const newTitle = ref(eventDetail.value.title);
-const newDescription = ref(eventDetail.value.description);
-const newCategory = ref(eventDetail.value.category);
-const newAmountReceived = ref(eventDetail.value.amountReceived);
-const newPoster = ref(eventDetail.value.posterImg);
-const newValidationType = ref(eventDetail.value.validationType);
-const newSubCategory = ref(eventDetail.value.subCategory);
-const newRegisStartDate = ref(eventDetail.value.registerStartDate)
-const newRegisEndtDate = ref(eventDetail.value.registerEndDate)
-const newStartDate = ref(eventDetail.value.startDate)
-const newEndate = ref(eventDetail.value.endDate)
+// const eventDetail = ref({
+//   id: "1",
+//   title: "อาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย นครปฐม",
+//   description:
+//     "We Volunteer Spirit Thailand ขอเชิญน้องๆร่วมโครงการจิตอาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม กิจกรรมสร้างสรรค์ดีๆ สำหรับน้องๆ ระดับชั้นมัธยมที่สนใจร่วมกิจกรรมเพื่อเก็บชั่วโมงอาสาและสะสมในแฟ้มประวัติผลงาน (Portfolio)",
+//   amountReceived: "100",
+//   category: "Volunteers",
+//   subCategory: "Social Services",
+//   startDate: "2023-11-11T09:30:00Z",
+//   endDate: "2023-11-11T16:30:00Z",
+//   registerStartDate: "2023-10-10T00:00:00Z",
+//   registerEndDate: "2023-11-10T23:59:00Z",
+//   validationType: "CURRENT_GPS",
+//   validationRules: 10,
+//   posterImg:
+//     "https://firebasestorage.googleapis.com/v0/b/vevent-capstone.appspot.com/o/NK-2%2FPoster_image%2Fevent01.png?alt=media&token=6222c4f1-bc33-4246-91e7-59cdda885784",
+//   createBy: "Organization.032301@gmail.com",
+//   createDate: "2023-10-09T16:48:00Z",
+//   updateBy: "Organization.032301@gmail.com",
+//   updateDate: "2023-10-09T16:48:00Z",
+//   locationName: "โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม",
+//   locationLatitude: 14.1423399808249,
+//   locationLongitude: 100.116024883473,
+//   validate_times: null,
+//   eventStatus: "CO",
+// });
 
 
 //poster image input

@@ -22,12 +22,8 @@ onBeforeMount(async () => {
     const eventId = router.params.id;
   console.log(eventId);
   let response1 = await getEventDetailById(eventId);
-  let response2 = await getAllEventCreatedByUEmail("Organization.032301@gmail.com");
   console.log(response1);
   eventDetail.value = response1;
-  console.log(response2);
-  allEvents.value = response2;
-
   detailLeft.value =  [{
     titile: "วันที่จัดกิจกรรม",
     detail: moment(eventDetail.value.startDate).format("MM/DD/YYYY HH:mm"),

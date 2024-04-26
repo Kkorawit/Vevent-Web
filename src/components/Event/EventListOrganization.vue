@@ -1,11 +1,12 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, VueElement } from "vue";
 import DateTimeFormat from "@/extend/DateTimeFormat.vue";
 import { deleteEventById } from '~/restful/Eventapi.js'
 import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
 import EventDetailCard from "@/pages/EventDetail_card.vue";
 import CreateEvent from "@/pages/CreateEvent.vue";
 import router from "@/plugins/router";
+import moment from "moment-timezone";
 // import VueDatePicker from "@vuepic/vue-datepicker";
 // import '@vuepic/vue-datepicker/dist/main.css'
 
@@ -15,6 +16,7 @@ const props = defineProps({
     request: true,
   },
 });
+
 
 const eventTitle = ref(Array.from(new Set(props.info?.map((event) => event.title))))
 
@@ -100,18 +102,11 @@ const changeState = async (s, id) => {
   console.log(s);
   state.value = "";
   if (s == "eventDetail") {
-    // let result = await getEventById(id);
-    // console.log(result);
-    // eventDetaildata.value = result;
-    // console.log(eventDetaildata.value);
-    // state.value = s;
-    // router.push({name: 'eventDetail', params: id} );
     router.push({name: "eventDetail" , params:{id:id}});
 
   } else if (s == "editEvent") {
     state.value = s;
   } else if (s == "createEvent") {
-    // state.value = s;
     router.push({name: 'create'});
 
   } else {

@@ -207,7 +207,7 @@ export async function bookEventById(eid) {
       alert(response.data)
   }).catch((error)=>{
       alert(error)
-      console.error(error);
+      console.error(error.response);
   });
 }
 

@@ -130,9 +130,10 @@ watchEffect(() => {
   // Assign Value
 
   newEvent.value = {
+    id:id.value,
     newTitle: newTitle.value,
     newDescription: newDescription.value,
-    newDmountReceived: newAmountReceived.value,
+    newAmountReceived: newAmountReceived.value,
     newCategory: newCategory.value,
     newSubCategory: newSubCategory.value,
     newStartDate: newStartDate.value,

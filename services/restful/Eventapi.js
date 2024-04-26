@@ -144,6 +144,7 @@ export async function deleteEventById(eid) {
 export async function editEventById(event) {
   console.log(event);
   const data = {
+    id:event.id,
     title: event.newTitle,
     description: event.newDescription,
     amountReceived: event.newAmountReceived,

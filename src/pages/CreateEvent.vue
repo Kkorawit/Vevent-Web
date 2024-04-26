@@ -157,7 +157,11 @@ const changePage = () => {
 
 const typeSwitch = (type) => {
   isOnline.value = type;
+  isOnline.value? (location.value.locationName='Online', 
+                  nearbyMarkers.value=[])
+          : location.value.locationName='';
 };
+
 
 const updateValue = (rules, action) => {
   if (rules == "validationRules") {
@@ -189,7 +193,6 @@ const handleLocationName = (newName) => {
   location.value.locationName = newName
 }
 
-const getActiveItems = (isOnline) => (isOnline ? onlineValidate : onsiteValidate);
 </script>
 
 <template>
@@ -405,7 +408,7 @@ const getActiveItems = (isOnline) => (isOnline ? onlineValidate : onsiteValidate
 
               <div>
                 <!-- ประเภทกิจกรรม -->
-                <div class="grid justify-items-center space-y-12 mb-12">
+                <div class="grid justify-items-center space-y-12 mb-4">
                   <!-- switch -->
                   <div class="flex space-x-5">
                     <div>
@@ -439,7 +442,7 @@ const getActiveItems = (isOnline) => (isOnline ? onlineValidate : onsiteValidate
                   <div class="">
                     <!-- Map -->
                     <div v-if="!isOnline">
-                      <Map @emitLocationName="handleLocationName"></Map>
+                      <Map @emitLocationName="handleLocationName" ref="mapComponentsClear"></Map>
                       <v-text-field
                         class="pt-6"
                         variant="outlined"
@@ -451,17 +454,6 @@ const getActiveItems = (isOnline) => (isOnline ? onlineValidate : onsiteValidate
                       </v-text-field>
                     </div>
                     <!-- Meeting Link -->
-                    <div v-else-if="isOnline">
-                      <v-text-field
-                        bg-color="#ECE9FA"
-                        variant="outlined"
-                        color="#4520CC"
-                        class="w-[334px] h-[56px]"
-                        :rules="rules.require"
-                        label="ลิงค์ห้องประชุม ex.http://meet.google...."
-                      >
-                      </v-text-field>
-                    </div>
                   </div>
                 </div>
                 <!-- ตรวจสอบโดย.... -->

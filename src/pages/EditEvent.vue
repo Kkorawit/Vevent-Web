@@ -300,8 +300,6 @@ const handleLocationName = (newName) => {
   location.value.locationName = newName;
 };
 
-const getActiveItems = (isOnline) =>
-  isOnline ? onlineValidate : onsiteValidate;
 </script>
 <template>
   <Navbar></Navbar>

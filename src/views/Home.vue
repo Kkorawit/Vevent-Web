@@ -50,7 +50,7 @@ onMounted(async () => {
   <div v-if="role == 'Organization'">
     <!-- content event list -->
     <div class="event-list">
-      <EventListOrganization v-if="allEvents" :info="allEvents"></EventListOrganization>
+      <EventListOrganization></EventListOrganization>
     </div>
   </div>
 </template>

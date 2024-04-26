@@ -8,47 +8,47 @@ import Participants from "@/pages/Participants.vue";
 import { useRoute } from 'vue-router';
 
 //get event id from router
-// const id= ref("");
-// const route = useRoute()
+const id= ref("");
+const route = useRoute()
 
 //get event detail
-// const eventDetail = ref([]);
-// onMounted(async () => {
-//   id.value = route.params.id;
-//   console.log(id.value);
-//   let response = await getEventDetailById(id.value);
-//   console.log(response);
-//   eventDetail.value = response;
-//   console.log(eventDetail.value.title);
-  // });
+const eventDetail = ref([]);
+onMounted(async () => {
+  id.value = route.params.id;
+  console.log(id.value);
+  let response = await getEventDetailById(id.value);
+  console.log(response);
+  eventDetail.value = response;
+  console.log(eventDetail.value.title);
+  });
 
 // demo เพราะ function ข้างบนมัน get eventDetail ค่ามาได้ แต่เอามาโชวน์ไม่ได้ฝากดููหน่อยนะ
-const eventDetail = ref({
-  id: "1",
-  title: "อาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย นครปฐม",
-  description:
-    "We Volunteer Spirit Thailand ขอเชิญน้องๆร่วมโครงการจิตอาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม กิจกรรมสร้างสรรค์ดีๆ สำหรับน้องๆ ระดับชั้นมัธยมที่สนใจร่วมกิจกรรมเพื่อเก็บชั่วโมงอาสาและสะสมในแฟ้มประวัติผลงาน (Portfolio)",
-  amountReceived: "100",
-  category: "Volunteers",
-  subCategory: "Social Services",
-  startDate: "2023-11-11T09:30:00Z",
-  endDate: "2023-11-11T16:30:00Z",
-  registerStartDate: "2023-10-10T00:00:00Z",
-  registerEndDate: "2023-11-10T23:59:00Z",
-  validationType: "CURRENT_GPS",
-  validationRules: 10,
-  posterImg:
-    "https://firebasestorage.googleapis.com/v0/b/vevent-capstone.appspot.com/o/NK-2%2FPoster_image%2Fevent01.png?alt=media&token=6222c4f1-bc33-4246-91e7-59cdda885784",
-  createBy: "Organization.032301@gmail.com",
-  createDate: "2023-10-09T16:48:00Z",
-  updateBy: "Organization.032301@gmail.com",
-  updateDate: "2023-10-09T16:48:00Z",
-  locationName: "โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม",
-  locationLatitude: 14.1423399808249,
-  locationLongitude: 100.116024883473,
-  validate_times: null,
-  eventStatus: "CO",
-});
+// const eventDetail = ref({
+//   id: "1",
+//   title: "อาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย นครปฐม",
+//   description:
+//     "We Volunteer Spirit Thailand ขอเชิญน้องๆร่วมโครงการจิตอาสาเติมสี แต้มฝันให้น้อง ณ โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม กิจกรรมสร้างสรรค์ดีๆ สำหรับน้องๆ ระดับชั้นมัธยมที่สนใจร่วมกิจกรรมเพื่อเก็บชั่วโมงอาสาและสะสมในแฟ้มประวัติผลงาน (Portfolio)",
+//   amountReceived: "100",
+//   category: "Volunteers",
+//   subCategory: "Social Services",
+//   startDate: "2023-11-11T09:30:00Z",
+//   endDate: "2023-11-11T16:30:00Z",
+//   registerStartDate: "2023-10-10T00:00:00Z",
+//   registerEndDate: "2023-11-10T23:59:00Z",
+//   validationType: "CURRENT_GPS",
+//   validationRules: 10,
+//   posterImg:
+//     "https://firebasestorage.googleapis.com/v0/b/vevent-capstone.appspot.com/o/NK-2%2FPoster_image%2Fevent01.png?alt=media&token=6222c4f1-bc33-4246-91e7-59cdda885784",
+//   createBy: "Organization.032301@gmail.com",
+//   createDate: "2023-10-09T16:48:00Z",
+//   updateBy: "Organization.032301@gmail.com",
+//   updateDate: "2023-10-09T16:48:00Z",
+//   locationName: "โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม",
+//   locationLatitude: 14.1423399808249,
+//   locationLongitude: 100.116024883473,
+//   validate_times: null,
+//   eventStatus: "CO",
+// });
 
 const participants = ref([
   {
@@ -171,7 +171,7 @@ const changePage = (p) => {
   }else if(p == 'editEvent'){
     // router.push({name: "editEvent" , component: EditEvent, props:{info: eventDetail}});
     // router.push({name: "editEvent" , component: EditEvent, info: eventDetail});
-    router.push({name: "editEvent" , params:{id:eventDetail.value.id}});
+    router.push({name:'editEvent',params:{id:id.value}});
 
   }
 };
@@ -231,9 +231,9 @@ const changePage = (p) => {
                 style="height: 56px; width: 56px"
               >
                 <img
-                  src="@/assets/Edit.png"
-                  class="w-[32px] h-[32px]"
-                  alt="edit"
+                src="@/assets/Edit.png"
+                class="w-[32px] h-[32px]"
+                alt="edit"
                 />
               </v-btn>
             </div>

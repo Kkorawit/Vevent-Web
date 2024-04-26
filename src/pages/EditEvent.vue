@@ -10,15 +10,9 @@ import Map from "@/components/common/Map.vue";
 import { nearbyMarkers } from "@/extend/mapStore";
 import { editEventById } from "~/restful/Eventapi.js";
 
-const props = defineProps({
-  id: {
-    type: String,
-    // required:true
-  },
-});
 
 //get event id from router
-const id = ref("");
+const id = ref(0);
 const route = useRoute();
 
 //get event detail
@@ -243,7 +237,7 @@ const updateEventDetail = () => {
   // console.log(newEvent.value);
   editEventById(newEvent.value)
   alert("Updated");
-  router.push({ name: "eventDetail", params: {} });
+  router.push({ name: "eventDetail", params: {id:id.value} });
   // code update event detail
 };
 
@@ -252,7 +246,7 @@ const changePage = (p) => {
   if (p == "home") {
     router.push({ name: "home" });
   } else if (p == "eventDetail") {
-    router.push({ name: "eventDetail", params: {} });
+    router.push({ name: "eventDetail", params: {id:id.value} });
   }
 };
 

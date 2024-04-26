@@ -3,7 +3,6 @@ import { useLocalStorage } from "@vueuse/core";
 type Marker = {
     latitude: number,
     longitude: number;
-    
 }
 
 export const userMarker = useLocalStorage<Marker>("USER_MARKER",{

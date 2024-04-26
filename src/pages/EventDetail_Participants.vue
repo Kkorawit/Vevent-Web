@@ -4,16 +4,10 @@ import { onBeforeMount, onMounted, ref, watch } from "vue";
 import moment from "moment-timezone";
 import { getEventDetailById } from "@/gql/gqlGet.js";
 import { useRoute } from "vue-router";
-import EventCard from "@/components/Event/EventCard.vue";
-
-
 
 const eid = ref()
 //get event detail
 const eventDetail = ref();
-
-// get all event for กิจกรรมอื่นๆ
-const allEvents = ref();
 
 // for loop left form
 const detailLeft = ref();

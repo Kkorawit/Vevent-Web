@@ -275,6 +275,7 @@ const create = async (event) => {
                     <VueDatePicker
                       v-model="registerStartDate"
                       placeholder="วันเปิดรับสมัคร"
+                      :timezone="'UTC'"
                       dark="true"
                     ></VueDatePicker>
                   </div>
@@ -285,6 +286,7 @@ const create = async (event) => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="registerEndDate"
+                      :timezone="'UTC'"
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
                     ></VueDatePicker>
@@ -298,6 +300,7 @@ const create = async (event) => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="startDate"
+                      :timezone="'UTC'"
                       placeholder="วันเริ่มกิจกรรม"
                       dark="true"
                     ></VueDatePicker>
@@ -309,6 +312,7 @@ const create = async (event) => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="endDate"
+                      :timezone="'UTC'"
                       placeholder="วันจบกิจกรรม"
                       dark="true"
                     ></VueDatePicker>

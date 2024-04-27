@@ -193,6 +193,7 @@ const handleLocationName = (newName) => {
 
 const create = async (event) => {
   let response = await createEvent(event)
+  console.log(response);
   if(response.status==201){
     alert(response.data)
     nearbyMarkers.value=[]

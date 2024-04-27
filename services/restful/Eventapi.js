@@ -49,7 +49,6 @@ export async function createEvent(event) {
       }
     )
     .then((response) => {
-      nearbyMarkers.value=[]
       console.log(response.status);
       console.log(response.data);
       console.log(response);

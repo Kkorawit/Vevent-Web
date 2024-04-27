@@ -238,7 +238,7 @@ const onDrop = (event) => {
 };
 
 const updateEventDetail = async () => {
-  
+
   console.log(newEvent.value);
   let response = await editEventById(newEvent.value)
   if(response.status==201){
@@ -579,9 +579,8 @@ const handleLocationName = (newName) => {
                   <!-- Map || Meeting Link -->
                   <div class="">
                     <!-- Map -->
-                    
                     <div v-if="!isOnline">
-                      <Map @emitLocationName="handleLocationName" :latitude="location.locationLatitude" :longitude="location.locationLongitude"></Map>
+                      <Map @emitLocationName="handleLocationName" :latitude="location.locationLatitude" :longitude="location.locationLongitude" :state="'edit'"></Map>
                       <v-text-field
                         class="pt-6"
                         variant="outlined"

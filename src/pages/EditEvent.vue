@@ -570,6 +570,9 @@ const handleLocationName = (newName) => {
                   </div>
                   <!-- Map || Meeting Link -->
                   <div class="">
+                    {{ location }}
+                    {{ location.latitude }}
+                    {{ location.longitude }}
                     <!-- Map -->
                     <div v-if="!isOnline">
                       <Map @emitLocationName="handleLocationName" :lat="location.latitude" :lng="location.longitude"></Map>

@@ -25,7 +25,7 @@ const dateTImeFormat = () => {
   const input = prop.eventStartTime;
   date.value  = moment(input).format("ll");
 //   time.value = moment(input).format('LT');
-  time.value = moment(input).utcOffset(+'-7*60').format('LT');
+  time.value = moment(input).utcOffset(+'-7*60')
 
   
   if(date.value != null && time.value != null){

@@ -386,6 +386,7 @@ const handleLocationName = (newName) => {
                     <VueDatePicker
                       placeholder="วันเปิดรับสมัคร"
                       dark="true"
+                      :timezone="'UTC'"
                       v-model="newRegisStartDate"
                     ></VueDatePicker>
                   </div>
@@ -397,6 +398,7 @@ const handleLocationName = (newName) => {
                     <VueDatePicker
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
+                      :timezone="'UTC'"
                       v-model="newRegisEndDate"
                     ></VueDatePicker>
                   </div>
@@ -410,6 +412,7 @@ const handleLocationName = (newName) => {
                     <VueDatePicker
                       placeholder="วันเริ่มกิจกรรม"
                       dark="true"
+                      :timezone="'UTC'"
                       v-model="newStartDate"
                     ></VueDatePicker>
                   </div>
@@ -421,6 +424,7 @@ const handleLocationName = (newName) => {
                     <VueDatePicker
                       placeholder="วันจบกิจกรรม"
                       dark="true"
+                      :timezone="'UTC'"
                       v-model="newEndate"
                     ></VueDatePicker>
                   </div>

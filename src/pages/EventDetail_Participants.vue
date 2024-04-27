@@ -5,6 +5,7 @@ import moment from "moment-timezone";
 import { getEventDetailById } from "@/gql/gqlGet.js";
 import { useRoute } from "vue-router";
 import { bookEventById } from "~/restful/Eventapi";
+import Map from "../components/common/Map.vue";
 
 const eid = ref()
 //get event detail
@@ -88,7 +89,7 @@ onBeforeMount(async () => {
                   }}</v-list-item-subtitle>
                 </v-list-item>
                 <!-- map -->
-                <div class="w-[420px] h-[200px] bg-gray-100">map</div>
+                <Map></Map>
               </div>
             </v-list>
           </div>

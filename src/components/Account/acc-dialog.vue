@@ -34,7 +34,7 @@ const toggleReadonly = () => {
       <!-- profile img-->
       <div class="absolute top-[75px] right-[150px]">
         <img
-          class="w-[200px] h-[200px] rounded-[8px]"
+          class="w-[200px] h-[200px] rounded-[8px] bg-white"
           :src="profileImg"
           alt=""
         />
@@ -42,7 +42,7 @@ const toggleReadonly = () => {
     </div>
     <div class="rows-start-2 bg-white pt-[80px]">
       <!-- profile details -->
-      <div class="grid justify-items-center">
+      <div class="">
         <v-text-field
     class="w-[245px] pl-16"
     :append-inner-icon="isReadonly ? 'mdi-account-edit-outline': 'mdi-check'"
@@ -53,9 +53,7 @@ const toggleReadonly = () => {
     @click:append-inner="toggleReadonly"
   >
   </v-text-field>
-
-        <!-- <div>{{ displayName }}</div>
-            <div>{{ email }}</div> -->
+            <div>{{ email }}</div>
       </div>
       <!-- event own -->
       <div class="grid justify-items-center content-center"></div>

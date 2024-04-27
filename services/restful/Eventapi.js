@@ -33,7 +33,7 @@ export async function createEvent(event) {
   };
   console.log(data);
   console.log(localStorage.getItem("access_token"));
-  await axios
+  let response = await axios
     .post(
       `${import.meta.env.VITE_API_ENV}/create-event`,
       // `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/create-event`,
@@ -57,6 +57,8 @@ export async function createEvent(event) {
     .catch((error) => {
       console.log(error.data);
     });
+
+    return response
 }
 
 export async function deleteEventById(eid) {

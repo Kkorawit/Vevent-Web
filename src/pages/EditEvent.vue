@@ -83,6 +83,9 @@ onMounted(async () => {
   //   locationLatitude: response.locationLatitude,
   //   locationLongitude: response.locationLongitude,
   // };
+    
+
+
   console.log(eventDetail.value);
   response.locationLatitude && response.locationLongitude
     ? (isOnline.value = false)
@@ -100,8 +103,8 @@ onMounted(async () => {
   newStartDate.value = eventDetail.value.startDate;
   newEndate.value = eventDetail.value.endDate;
   location.value.locationName = eventDetail.value.locationName;
-  location.value.locationLatitude = nearbyMarkers.value[0]?.latitude;
-  location.value.locationLongitude = nearbyMarkers.value[0]?.longitude;
+  location.value.locationLatitude = eventDetail.value.locationLatitude;
+  location.value.locationLongitude = eventDetail.value.locationLongitude;
 });
 
 const newTitle = ref("");
@@ -575,7 +578,7 @@ const handleLocationName = (newName) => {
                     {{ location.longitude }}
                     <!-- Map -->
                     <div v-if="!isOnline">
-                      <Map @emitLocationName="handleLocationName" :lat="location.latitude" :lng="location.longitude"></Map>
+                      <Map @emitLocationName="handleLocationName" :lat="location.latitude" :lng="location.longitude" :state="'edit'"></Map>
                       <v-text-field
                         class="pt-6"
                         variant="outlined"

@@ -14,11 +14,18 @@ const props = defineProps({
   latitude:{
     type:Number,
     require:false,
+    default:null,
   },
   longitude:{
     type:Number,
     require:false,
+    default:null
   },
+  state:{
+    type:String,
+    require:false,
+    default:null
+  }
 })
 
 const provider = new OpenStreetMapProvider();
@@ -42,21 +49,22 @@ const eventLocation = reactive({
 })
 
 onMounted(() => {
+  console.log(coords.value);
   console.log(eventLocation.latitude);
   console.log(eventLocation.longitude);
 
+    if(props.state=='edit'&&eventLocation.latitude!=null&&eventLocation.longitude!=null){
+      console.log("user location");
+      map = leaflet
+      .map("map")
+      .setView([eventLocation.latitude, eventLocation.longitude], 13)
+    }else{
+      map = leaflet
+        .map("map")
+        .setView([userMarker.value.latitude, userMarker.value.longitude], 13)
+        
+    }
 
-  // if(props.lat==null&&props.lng==null){
-  //   console.log("user location");
-    map = leaflet
-    .map("map")
-    .setView([userMarker.value.latitude, userMarker.value.longitude], 13)
-  // }else{
-  //   map = leaflet
-  //     .map("map")
-  //     .setView([props.lat, props.lng], 13)
-  // }
-  
   ////// Display map layer
   leaflet
     .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -76,28 +84,31 @@ onMounted(() => {
 
 
   ///// Loop display event marker on map when reload web
+    if(eventLocation.latitude!=null&&eventLocation.longitude!=null){
 
-    leaflet
+      markers = leaflet
       .marker([eventLocation.latitude, eventLocation.longitude],{icon:markerIcon})
       .addTo(map)
       .bindPopup(
         `Event here
-        )}</strong>`
-      );
-
+      )}</strong>`
+    );
     nearbyMarkers.value.push({ latitude:eventLocation.latitude,longitude:eventLocation.longitude });
-    map.setView([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], previousZoomLevel)
+    // map.setView([eventLocation.latitude, eventLocation.longitude], previousZoomLevel)
+    
+  }
+
+    
 
   ////// add event that collect lat lng from click on the map at store it to nearby marker.
   map.addEventListener("click", (e) => {
-
+      console.log(coords.value);
     if(markers){
-      
       map.removeLayer(markers)
       nearbyMarkers.value = []
     }
     const { lat: latitude, lng: longitude } = e.latlng;
-
+    console.log(e);
     markers = leaflet
       .marker([latitude, longitude],{icon:markerIcon})
       .addTo(map)
@@ -112,10 +123,9 @@ onMounted(() => {
       map.on('zoomend',()=>{
       previousZoomLevel = map.getZoom();
     })
-
-    // map.setView([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], previousZoomLevel);
     
   });
+
 });
 
 ////// watch effect to map and coords lat lng
@@ -144,7 +154,8 @@ watchEffect(() => {
       previousZoomLevel = map.getZoom();
     })
 
-    // map.setView([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], previousZoomLevel);
+    
+    map.setView([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], previousZoomLevel);
 
     
   }

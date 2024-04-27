@@ -444,6 +444,7 @@ const handleLocationName = (newName) => {
                     <div v-if="!isOnline">
                       <Map @emitLocationName="handleLocationName" ref="mapComponentsClear"></Map>
                       <v-text-field
+                        clearable
                         class="pt-6"
                         variant="outlined"
                         label="สถานที่จัดกิจกรรม"

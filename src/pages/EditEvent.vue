@@ -4,11 +4,12 @@ import { onBeforeMount, onMounted, ref, watchEffect } from "vue";
 import router from "@/plugins/router";
 import { rules } from "@/extend/utils.ts";
 import Navbar from "@/components/Navbar.vue";
-import { useRoute } from "vue-router";
+import { useRoute, onBeforeRouteLeave } from "vue-router";
 import { getEventDetailById } from "@/gql/gqlGet.js";
 import Map from "@/components/common/Map.vue";
 import { nearbyMarkers } from "@/extend/mapStore";
 import { editEventById } from "~/restful/Eventapi.js";
+defineEmits(['leave', 'close']);
 
 
 //get event id from router
@@ -130,7 +131,7 @@ watchEffect(() => {
   // Assign Value
 
   newEvent.value = {
-    id:id.value,
+    id: id.value,
     newTitle: newTitle.value,
     newDescription: newDescription.value,
     newAmountReceived: newAmountReceived.value,
@@ -147,7 +148,31 @@ watchEffect(() => {
     newLocationLatitude: location.value.locationLatitude,
     newLocationLongitude: location.value.locationLongitude,
   };
+});
 
+const leavePagePopup = ref(false); //for open popup leave page
+// const confirmToLeave = ref(false); //input from popup to change page
+
+const leavePage = ref(false);
+const confirmToLeave = async (status) => {
+  console.log("func confirm");
+  console.log(status);
+  if (status) {
+    console.log("result = true");
+    leavePage.value = true;
+  } else {
+    leavePage.value = false;
+  }
+};
+
+// check to leave page
+onBeforeRouteLeave( async (to, from, next) => {
+  const hostname = "VEvent"
+  if(window.confirm(`${hostname}Do you want to leave page?`)){
+    next();
+  }else {
+    next(false);
+  }
 });
 
 //poster image input
@@ -235,11 +260,10 @@ const onDrop = (event) => {
 };
 
 const updateEventDetail = () => {
-  
   console.log(newEvent.value);
-  editEventById(newEvent.value)
+  editEventById(newEvent.value);
   alert("Updated");
-  router.push({ name: "eventDetail", params: {id:id.value} });
+  router.push({ name: "eventDetail", params: { id: id.value } });
   // code update event detail
 };
 
@@ -248,19 +272,20 @@ const changePage = (p) => {
   if (p == "home") {
     router.push({ name: "home" });
   } else if (p == "eventDetail") {
-    router.push({ name: "eventDetail", params: {id:id.value} });
+    router.push({ name: "eventDetail", params: { id: id.value } });
   }
 };
 
 const typeSwitch = (type) => {
   isOnline.value = type;
 
-  isOnline.value? (location.value.locationName='Online', 
-            location.value.locationLatitude=null,
-            location.value.locationLongitude=null)
-          : (location.value.locationName=eventDetail.value.locationName,
-            location.value.locationLatitude=nearbyMarkers.value[0].latitude,
-          location.value.locationLongitude=nearbyMarkers.value[0].longitude)
+  isOnline.value
+    ? ((location.value.locationName = "Online"),
+      (location.value.locationLatitude = null),
+      (location.value.locationLongitude = null))
+    : ((location.value.locationName = eventDetail.value.locationName),
+      (location.value.locationLatitude = nearbyMarkers.value[0].latitude),
+      (location.value.locationLongitude = nearbyMarkers.value[0].longitude));
 };
 
 const updateValue = (rules, action) => {
@@ -295,7 +320,6 @@ const updateValue = (rules, action) => {
 const handleLocationName = (newName) => {
   location.value.locationName = newName;
 };
-
 </script>
 <template>
   <Navbar></Navbar>
@@ -797,5 +821,18 @@ const handleLocationName = (newName) => {
 .image span:hover {
   transform: scale(1.2);
   transition: transform 0.3s ease-in-out;
+}
+
+/* gap buton right */
+.v-card-actions .v-btn ~ .v-btn:not(.v-btn-toggle .v-btn) {
+  margin-inline-start: 0;
+}
+
+.v-dialog > .v-overlay__content > .v-card,
+.v-dialog > .v-overlay__content > .v-sheet,
+.v-dialog > .v-overlay__content > form > .v-card,
+.v-dialog > .v-overlay__content > form > .v-sheet {
+  --v-scrollbar-offset: 0px;
+  border-radius: 16px;
 }
 </style>

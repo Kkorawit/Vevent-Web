@@ -21,7 +21,6 @@ import "swiper/css/bundle";
 import { useRoute } from "vue-router";
 import { getAllEventRegisEventByUEmail } from "@/gql/gqlGet.js";
 import Navbar from "@/components/Navbar.vue";
-// const emits = defineEmits(['filter-event'])
 
 const allEventRegis = ref([]);
 

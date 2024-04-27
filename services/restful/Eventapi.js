@@ -206,7 +206,7 @@ export async function bookEventById(eid) {
   ).then((response) => {
       alert(response.data)
   }).catch((error)=>{
-      alert(error.response)
+      alert(error.response.data)
       console.error(error.response);
   });
 }

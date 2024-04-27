@@ -21,15 +21,15 @@ const validationRules = ref("");
 const posterImg = ref("");
 const isOnline = ref(true);
 const onlineValidate = [
-  {name:'Qr Code',value:"QR_CODE"},
-  {name:'Step Counter',value:"STEP_COUNTER"},
-  ];
-const onsiteValidate = [
-  {name:'GPS',value:"CURRENT_GPS"},
-  {name:'Qr Code & GPS',value:"QR_CODE,CURRENT_GPS"},
-  {name:'Step Counter',value:"STEP_COUNTER"},
+  { name: "Qr Code", value: "QR_CODE" },
+  { name: "Step Counter", value: "STEP_COUNTER" },
 ];
-const event = ref()
+const onsiteValidate = [
+  { name: "GPS", value: "CURRENT_GPS" },
+  { name: "Qr Code & GPS", value: "QR_CODE,CURRENT_GPS" },
+  { name: "Step Counter", value: "STEP_COUNTER" },
+];
+const event = ref();
 
 const location = ref({
   locationName: !isOnline.value ? "Online" : "",
@@ -41,28 +41,26 @@ watchEffect(() => {
   (location.value.locationLatitude = nearbyMarkers.value[0]?.latitude),
     (location.value.locationLongitude = nearbyMarkers.value[0]?.longitude);
   event.value = {
-  title: title.value,
-  description: description.value,
-  amountReceived: amountReceived.value,
-  category: category.value,
-  subCategory: subCategory.value,
-  startDate: startDate.value,
-  endDate: endDate.value,
-  registerStartDate: registerStartDate.value,
-  registerEndDate: registerEndDate.value,
-  validationType: validationType.value,
-  validationRules: validationRules.value,
-  posterImg: posterImg.value,
-  locationName: location.value.locationName,
-  locationLatitude: location.value.locationLatitude,
-  locationLongitude: location.value.locationLongitude,
-};
+    title: title.value,
+    description: description.value,
+    amountReceived: amountReceived.value,
+    category: category.value,
+    subCategory: subCategory.value,
+    startDate: startDate.value,
+    endDate: endDate.value,
+    registerStartDate: registerStartDate.value,
+    registerEndDate: registerEndDate.value,
+    validationType: validationType.value,
+    validationRules: validationRules.value,
+    posterImg: posterImg.value,
+    locationName: location.value.locationName,
+    locationLatitude: location.value.locationLatitude,
+    locationLongitude: location.value.locationLongitude,
+  };
 });
 
 import Navbar from "@/components/Navbar.vue";
 import router from "@/plugins/router";
-
-
 
 // form validation
 const valid = ref(false);
@@ -157,11 +155,10 @@ const changePage = () => {
 
 const typeSwitch = (type) => {
   isOnline.value = type;
-  isOnline.value? (location.value.locationName='Online', 
-                  nearbyMarkers.value=[])
-          : location.value.locationName='';
+  isOnline.value
+    ? ((location.value.locationName = "Online"), (nearbyMarkers.value = []))
+    : (location.value.locationName = "");
 };
-
 
 const updateValue = (rules, action) => {
   if (rules == "validationRules") {
@@ -190,9 +187,8 @@ const updateValue = (rules, action) => {
 };
 
 const handleLocationName = (newName) => {
-  location.value.locationName = newName
-}
-
+  location.value.locationName = newName;
+};
 </script>
 
 <template>
@@ -262,38 +258,50 @@ const handleLocationName = (newName) => {
               </div>
               <!-- วันที่เปิด - ปิด รับสมัคร -->
               <div class="flex justify-center space-x-2">
-                <div class="w-[300px] mt-[8px]">
-                  <VueDatePicker
-                    v-model="registerStartDate"
-                    placeholder="วันเปิดรับสมัคร"
-                    dark="true"
-                  ></VueDatePicker>
+                <div>
+                  <label>วันที่เปิดรับสมัคร </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      v-model="registerStartDate"
+                      placeholder="วันเปิดรับสมัคร"
+                      dark="true"
+                    ></VueDatePicker>
+                  </div>
                 </div>
                 <div class="pt-2">-</div>
-                <div class="w-[300px] mt-[8px]">
-                  <VueDatePicker
-                    v-model="registerEndDate"
-                    placeholder="วันปิดรับสมัคร"
-                    dark="true"
-                  ></VueDatePicker>
+                <div>
+                  <label>วันที่ปิดรับสมัคร </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      v-model="registerEndDate"
+                      placeholder="วันปิดรับสมัคร"
+                      dark="true"
+                    ></VueDatePicker>
+                  </div>
                 </div>
               </div>
               <!-- วันที่เปิด - ปิด กิจกรรม -->
               <div class="flex justify-center space-x-2 mt-[8px] pb-[8px]">
-                <div class="w-[300px] mt-[8px]">
-                  <VueDatePicker
-                    v-model="startDate"
-                    placeholder="วันเริ่มกิจกรรม"
-                    dark="true"
-                  ></VueDatePicker>
+                <div>
+                  <label>วันเริ่มกิจกรรม </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      v-model="startDate"
+                      placeholder="วันเริ่มกิจกรรม"
+                      dark="true"
+                    ></VueDatePicker>
+                  </div>
                 </div>
                 <div class="pt-2">-</div>
-                <div class="w-[300px] mt-[8px]">
-                  <VueDatePicker
-                    v-model="endDate"
-                    placeholder="วันจบกิจกรรม"
-                    dark="true"
-                  ></VueDatePicker>
+                <div>
+                  <label>วันจบกิจกรรม </label>
+                  <div class="w-[300px] mt-[8px]">
+                    <VueDatePicker
+                      v-model="endDate"
+                      placeholder="วันจบกิจกรรม"
+                      dark="true"
+                    ></VueDatePicker>
+                  </div>
                 </div>
               </div>
               <!-- Drag & Drop Images -->
@@ -442,7 +450,10 @@ const handleLocationName = (newName) => {
                   <div class="">
                     <!-- Map -->
                     <div v-if="!isOnline">
-                      <Map @emitLocationName="handleLocationName" ref="mapComponentsClear"></Map>
+                      <Map
+                        @emitLocationName="handleLocationName"
+                        ref="mapComponentsClear"
+                      ></Map>
                       <v-text-field
                         clearable
                         class="pt-6"

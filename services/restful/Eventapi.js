@@ -72,7 +72,9 @@ const currentDT = moment().format("YYYY-MM-DDTHH:mm:ss[Z]");
 export async function createEvent(event) {
   console.log(event);
   console.log(formatDateTime(event.startDate));
-
+  if(event.validationType=='QR_CODE'){
+    
+  }
   const data = {
     title: event.title,
     description: event.description,
@@ -84,7 +86,7 @@ export async function createEvent(event) {
     registerStartDate: formatDateTime(event.registerStartDate),
     registerEndDate: formatDateTime(event.registerEndDate),
     validationType: event.validationType,
-    validationRules: event.validationRules,
+    validationRules: event.validationType=='QR_CODE'?0:event.validationRules,
     posterImg: event.posterImg,
     createBy: localStorage.getItem("email"),
     updateBy: localStorage.getItem("email"),
@@ -158,7 +160,7 @@ export async function editEventById(event) {
     registerStartDate: formatDateTime(event.newRegisterStartDate),
     registerEndDate: formatDateTime(event.newRegisterEndDate),
     validationType: event.newValidationType,
-    validationRules: event.newValidationRules,
+    validationRules: event.newValidationType=='QR_CODE'?0:event.newValidationRules,
     posterImg: event.newPosterImg,
     updateBy: localStorage.getItem("email"),
     locationName: event.newLocationName,
@@ -191,7 +193,8 @@ console.log(data);
 
 export async function bookEventById(eid) {
   await axios.post(
-    `${import.meta.env.VITE_API_ENV}/book-event`,
+    // `${import.meta.env.VITE_API_ENV}/book-event`,
+    `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/book-event`,
     {},
     {
       headers: {
@@ -206,7 +209,8 @@ export async function bookEventById(eid) {
   ).then((response) => {
       alert(response.data)
   }).catch((error)=>{
-      console.error(error);
+      alert(error.response.data)
+      console.error(error.response);
   });
 }
 

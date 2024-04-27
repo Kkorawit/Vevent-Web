@@ -1,19 +1,21 @@
 <script setup>
 import router from "@/plugins/router";
-import { getEventDetailById, getAllParticipantsByEventId } from "@/gql/gqlGet.js";
+import { getEventDetailById } from "@/gql/gqlGet.js";
 import { onMounted, ref, watch } from "vue";
 import { rules } from "@/extend/utils.ts";
 import Navbar from "@/components/Navbar.vue";
 import Participants from "@/pages/Participants.vue";
 import { useRoute } from "vue-router";
-import moment from "moment-timezone";
+
 
 //get event id from router
-const id = ref("");
+const id = ref();
 const route = useRoute();
 const RegisDate = ref();
 //get event detail
 const eventDetail = ref([]);
+
+// participants
 onMounted(async () => {
   id.value = route.params.id;
   console.log(id.value);
@@ -335,7 +337,7 @@ const changePage = (page) => {
           </div>
         </v-form>
         <Participants
-          :info="participants"
+        :eid="id"
           v-if="state == 'participants'"
         ></Participants>
       </div>

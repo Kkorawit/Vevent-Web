@@ -53,6 +53,7 @@ async function callback(response) {
     });
   } else {
     window.location.reload();
+    router.push({name:'home'})
   }
 }
 

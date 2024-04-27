@@ -1,18 +1,22 @@
 <script setup>
-import { ref } from "vue";
-
+import { onMounted, ref } from "vue";
+import { getAllParticipantsByEventId } from "@/gql/gqlGet.js";
 
 const emits = defineEmits(["isShow", "close"]);
 const props = defineProps({
-  info: {
-    type: Array,
+  eid: {
+    type: Number,
     required: true,
   },
 });
 
+const participants = ref([]);
+onMounted(async ()=>{
+  let getParticipants = await getAllParticipantsByEventId(props.eid)
+  console.log(getParticipants);
+  participants.value = getParticipants
+})
 console.log("event detail page");
-console.log(props.info);
-const participants = ref(props.info);
 
 
 </script>

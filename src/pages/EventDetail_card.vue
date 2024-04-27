@@ -1,18 +1,20 @@
 <script setup>
 import router from "@/plugins/router";
-import { getEventDetailById, getAllParticipantsByEventId } from "@/gql/gqlGet.js";
-import { onBeforeMount, ref } from "vue";
+import { getEventDetailById } from "@/gql/gqlGet.js";
+import { onMounted, ref } from "vue";
 import { rules } from "@/extend/utils.ts";
 import Navbar from "@/components/Navbar.vue";
 import Participants from "@/pages/Participants.vue";
 import { useRoute } from "vue-router";
 
 //get event id from router
-const id = ref("");
+const id = ref();
 const route = useRoute();
 
 //get event detail
 const eventDetail = ref([]);
+
+// participants
 onMounted(async () => {
   id.value = route.params.id;
   console.log(id.value);
@@ -20,6 +22,7 @@ onMounted(async () => {
   console.log(response);
   eventDetail.value = response;
   console.log(eventDetail.value.title);
+
 });
 
 // demo เพราะ function ข้างบนมัน get eventDetail ค่ามาได้ แต่เอามาโชวน์ไม่ได้ฝากดููหน่อยนะ
@@ -494,7 +497,7 @@ const changePage = (p) => {
           </div>
         </v-form>
         <Participants
-          :info="participants"
+        :eid="id"
           v-if="state == 'participants'"
         ></Participants>
       </div>

@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 import { ref } from "vue";
 import { useApolloClient, useQuery } from "@vue/apollo-composable";
-import { GET_ALL_CREATEDBY_QUERY,GET_ONE_EVENT_ID } from '@/gql/setup/gqlQuery.js';
+import { GET_ALL_CREATEDBY_QUERY,GET_ONE_EVENT_ID, GET_ALL_PARTICIPANTS } from '@/gql/setup/gqlQuery.js';
 import { id } from "vuetify/locale";
 
 export async function getAllEvents () {
@@ -176,28 +176,17 @@ export async function getAllEventRegisEventByUEmail (email) {
 
 }
 
-
-export async function getAllParticipantsByEventId (id) {
-  console.log(id);
-  console.log("get paarticipants by id gql")
-  let query = gql`
-  query FindAllParticipantsByEventId {
-    findAllParticipantsByEventId(eid: ${id}) {
-        status
-        user {
-            userEmail
-            role
-            displayName
-            profileImg
-        }
-    }
-}
-`;
-    console.log(id);
+export async function getAllParticipantsByEventId (eid) {
+  console.log(eid);
+  console.log("get participants by id gql")
+    console.log(eid);
     const { resolveClient } = useApolloClient();
     const client = resolveClient();
     const { data,error } = await client.query({
-    query:  query,
+    query:  GET_ALL_PARTICIPANTS,
+    variables: {
+      eid: eid,
+    },
   });
   console.log(data.findAllParticipantsByEventId);
   if(error){

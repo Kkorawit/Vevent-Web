@@ -234,12 +234,15 @@ const onDrop = (event) => {
   }
 };
 
-const updateEventDetail = () => {
+const updateEventDetail = async () => {
   
   console.log(newEvent.value);
-  editEventById(newEvent.value)
-  alert("Updated");
-  router.push({ name: "eventDetail", params: {id:id.value} });
+  let response = await editEventById(newEvent.value)
+  if(response.status==201){
+    alert(response.data);
+    nearbyMarkers.value=[]
+    router.push({ name: "eventDetail", params: {id:id.value} });
+  }
   // code update event detail
 };
 
@@ -569,7 +572,7 @@ const handleLocationName = (newName) => {
                   <div class="">
                     <!-- Map -->
                     <div v-if="!isOnline">
-                      <Map @emitLocationName="handleLocationName"></Map>
+                      <Map @emitLocationName="handleLocationName" :lat="location.latitude" :lng="location.longitude"></Map>
                       <v-text-field
                         class="pt-6"
                         variant="outlined"

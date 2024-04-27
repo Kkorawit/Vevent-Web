@@ -49,9 +49,7 @@ export async function createEvent(event) {
       }
     )
     .then((response) => {
-      console.log(response.status);
-      console.log(response.data);
-      console.log(response);
+
       return response
     })
     .catch((error) => {
@@ -110,7 +108,7 @@ export async function editEventById(event) {
   };
 console.log(data);
 
-  await axios
+  let response = await axios
     .put(
       `${import.meta.env.VITE_API_ENV}/edit-event`, 
       // `http://localhost:8080/local/api/edit-event`,
@@ -125,11 +123,13 @@ console.log(data);
     })
     .then((response) => {
       console.log(response.data);
-      return response.data;
+      return response;
     })
     .catch((error) => {
       console.error(error);
     });
+
+    return response
 }
 
 export async function bookEventById(eid) {

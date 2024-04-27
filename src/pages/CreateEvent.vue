@@ -189,6 +189,16 @@ const updateValue = (rules, action) => {
 const handleLocationName = (newName) => {
   location.value.locationName = newName;
 };
+
+
+const create = (event) => {
+  let response = createEvent(event)
+  if(response.status==201){
+    alert(response.data)
+    nearbyMarkers.value=[]
+    router.push({name:'home'})
+  }
+}
 </script>
 
 <template>
@@ -218,7 +228,7 @@ const handleLocationName = (newName) => {
             <div class="text-[24px] font-bold">รายละเอียดกิจกรรม</div>
             <div>
               <v-btn
-                @click="createEvent(event)"
+                @click="create(event)"
                 :disabled="!valid"
                 color="#4520CC"
                 type="submit"

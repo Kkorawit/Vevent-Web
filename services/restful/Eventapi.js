@@ -2,71 +2,8 @@ import { data } from "autoprefixer";
 import axios from "axios";
 import moment from "moment";
 import { formatDateTime } from "@/extend/formatDateTime.js";
+import { nearbyMarkers } from "@/extend/mapStore";
 
-
-// export async function createEvent(event){
-//   console.log(event);
-
-//   const data = {
-//           "title": event.title,
-//           "description": event.description,
-//           "amountReceived": event.amountReceived,
-//           "category": event.category,
-//           "subCategory": event.subCategory,
-//           "startDate": formatDateTime(event.startDate),
-//           "endDate": formatDateTime(event.endDate),
-//           "registerStartDate": formatDateTime(event.registerStartDate),
-//           "registerEndDate": formatDateTime(event.registerEndDate),
-//           "validationType": event.validationType,
-//           "validationRules": event.validationRules,
-//           "posterImg": event.posterImg,
-//           "createBy": localStorage.getItem("email"),
-//           "updateBy": localStorage.getItem("email"),
-//           "locationName": event.locationName,
-//           "locationLatitude": event.locationLatitude,
-//           "locationLongitude": event.locationLongitude
-//       }
-
-//       const data2 = {
-//         "title": "MOCK",
-//         "description": "MOCK description",
-//         "amountReceived": 3,
-//         "category": "BB",
-//         "subCategory": "CC",
-//         "startDate": "2024-04-28T16:59:00Z",
-//         "endDate": "2024-04-28T18:41:02Z",
-//         "registerStartDate": "2024-04-28T18:41:02Z",
-//         "registerEndDate": "2024-04-28T18:41:02Z",
-//         "validationType": "Qr_Code,CURRENT_GPS",
-//         "validationRules": 225,
-//         "posterImg": "",
-//         "createBy": "koraw2948@gmail.com",
-//         // "createDate": "2024-04-24T18:41:02ZZ",
-//         "updateBy": "koraw2948@gmail.com",
-//         // "updateDate": "2024-04-24T18:41:02Z",
-//         "locationName": "โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม",
-//         "locationLatitude": 14.1423399808249,
-//         "locationLongitude": 100.116024883473
-//     }
-
-//     const currentDT = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
-
-//     const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event?currentDT=${currentDT}`,{
-//     method:'POST',
-//     headers:{
-//       "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
-//       'Content-Type': 'application/json'
-//     },
-//     body:JSON.stringify(data)
-//   });
-
-//   if(res.status!=201){
-//     const textRes = await res.text()
-//     console.error(textRes)
-//   }
-//   console.log(res.json());
-
-// }
 const currentDT = moment().format("YYYY-MM-DDTHH:mm:ss[Z]");
 
 export async function createEvent(event) {
@@ -112,8 +49,11 @@ export async function createEvent(event) {
       }
     )
     .then((response) => {
+      nearbyMarkers.value=[]
+      console.log(response.status);
       console.log(response.data);
-      alert(response.data);
+      console.log(response);
+      return response
     })
     .catch((error) => {
       console.log(error.data);

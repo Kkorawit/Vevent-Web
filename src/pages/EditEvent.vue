@@ -571,14 +571,13 @@ const handleLocationName = (newName) => {
                       </button>
                     </div>
                   </div>
+                  <!-- {{ location }} -->
                   <!-- Map || Meeting Link -->
                   <div class="">
-                    {{ location }}
-                    {{ location.latitude }}
-                    {{ location.longitude }}
                     <!-- Map -->
+                    
                     <div v-if="!isOnline">
-                      <Map @emitLocationName="handleLocationName" :lat="location.latitude" :lng="location.longitude" :state="'edit'"></Map>
+                      <Map @emitLocationName="handleLocationName" :latitude="location.locationLatitude" :longitude="location.locationLongitude"></Map>
                       <v-text-field
                         class="pt-6"
                         variant="outlined"

@@ -1,7 +1,7 @@
 <script setup>
 import leaflet from "leaflet";
 // import 'leaflet-control-geocoder';
-import { onMounted, watchEffect,ref } from "vue";
+import { onMounted, watchEffect,ref, reactive } from "vue";
 import { useGeolocation } from "@vueuse/core";
 import { userMarker, nearbyMarkers } from "@/extend/mapStore";
 import currentLocationIcon from "@/assets/currentLocation.svg";
@@ -11,18 +11,15 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 const emits = defineEmits(['emitLocationName'])
 const props = defineProps({
-  lat:{
+  latitude:{
     type:Number,
     require:false,
-    default:null,
   },
-  lng:{
+  longitude:{
     type:Number,
     require:false,
-    default:null,
-  }
+  },
 })
-
 
 const provider = new OpenStreetMapProvider();
 const searchControl = new GeoSearchControl({
@@ -39,25 +36,27 @@ let markers;
 const { coords } = useGeolocation();
 let previousZoomLevel = 0;
 const locationName = ref('');
-const eventLocation = ref([{latitude:props.lat,longitude:props.lng}])
+const eventLocation = reactive({
+  latitude:props.latitude,
+  longitude:props.longitude
+})
 
 onMounted(() => {
-  console.log(props.lat);
-  console.log(props.lng);
+  console.log(eventLocation.latitude);
+  console.log(eventLocation.longitude);
 
 
-  if(props.lat==null&&props.lng==null){
-    console.log("user location");
+  // if(props.lat==null&&props.lng==null){
+  //   console.log("user location");
     map = leaflet
     .map("map")
     .setView([userMarker.value.latitude, userMarker.value.longitude], 13)
-  }else{
-    map = leaflet
-      .map("map")
-      .setView([props.lat, props.lng], 13)
-  }
+  // }else{
+  //   map = leaflet
+  //     .map("map")
+  //     .setView([props.lat, props.lng], 13)
+  // }
   
-  var group = leaflet.featureGroup().addTo(map);
   ////// Display map layer
   leaflet
     .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -77,17 +76,17 @@ onMounted(() => {
 
 
   ///// Loop display event marker on map when reload web
-  eventLocation.value.forEach(({latitude,longitude}) => {
+
     leaflet
-      .marker([latitude, longitude])
+      .marker([eventLocation.latitude, eventLocation.longitude])
       .addTo(map)
       .bindPopup(
         `Event here
         )}</strong>`
       );
 
-    nearbyMarkers.value.push({ latitude, longitude });
-  });
+    nearbyMarkers.value.push({ latitude:eventLocation.latitude,longitude:eventLocation.longitude });
+
 
   ////// add event that collect lat lng from click on the map at store it to nearby marker.
   map.addEventListener("click", (e) => {
@@ -101,7 +100,7 @@ onMounted(() => {
 
     markers = leaflet
       .marker([latitude, longitude],{icon:markerIcon})
-      .addTo(group)
+      .addTo(map)
       .bindPopup(
         `Saved Marker at <strong>${latitude.toFixed(2)},${longitude.toFixed(
           2

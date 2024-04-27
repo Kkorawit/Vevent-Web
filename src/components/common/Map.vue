@@ -78,7 +78,7 @@ onMounted(() => {
   ///// Loop display event marker on map when reload web
 
     leaflet
-      .marker([eventLocation.latitude, eventLocation.longitude])
+      .marker([eventLocation.latitude, eventLocation.longitude],{icon:markerIcon})
       .addTo(map)
       .bindPopup(
         `Event here
@@ -86,7 +86,7 @@ onMounted(() => {
       );
 
     nearbyMarkers.value.push({ latitude:eventLocation.latitude,longitude:eventLocation.longitude });
-
+    map.setView([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], previousZoomLevel)
 
   ////// add event that collect lat lng from click on the map at store it to nearby marker.
   map.addEventListener("click", (e) => {
@@ -144,7 +144,7 @@ watchEffect(() => {
       previousZoomLevel = map.getZoom();
     })
 
-    map.setView([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], previousZoomLevel);
+    // map.setView([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], previousZoomLevel);
 
     
   }

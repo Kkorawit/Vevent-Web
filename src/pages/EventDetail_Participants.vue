@@ -4,6 +4,7 @@ import { onBeforeMount, onMounted, ref, watch } from "vue";
 import moment from "moment-timezone";
 import { getEventDetailById } from "@/gql/gqlGet.js";
 import { useRoute } from "vue-router";
+import router from "@/plugins/router";
 import { bookEventById } from "~/restful/Eventapi";
 import Map from "../components/common/Map.vue";
 
@@ -41,6 +42,23 @@ onBeforeMount(async () => {
     { titile: "จัดโดย", detail: eventDetail.value.createBy },
   ];
 });
+
+const somethingWrong = ref(false);
+const successfull = ref(false);
+
+const bookingEvent = async (id) => {
+  console.log(id);
+  let response = await bookEventById(id);
+  if (response.status == 201) {
+    successfull.value = true;
+    setTimeout(() => {
+      successfull.value = false},2000
+    );
+    router.push({ name: "myEvents", params: email });
+  }else {
+    somethingWrong.value = true;
+  }
+};
 </script>
 
 <template>
@@ -189,7 +207,7 @@ onBeforeMount(async () => {
                           text="Confirm"
                           @click="
                             (isActive.value = false),
-                              bookEventById(eventDetail.id)
+                              bookingEvent(eventDetail.id)
                           "
                         >
                         </v-btn>
@@ -198,15 +216,81 @@ onBeforeMount(async () => {
                   </v-card>
                 </template>
               </v-dialog>
-              
-              <!-- old button -->
-              <!-- <button
-              @click="bookEventById(eventDetail.id)"
-                class="bg-primaryColor font-semibold text-[16px] text-white w-[240px] h-[48px] rounded-[8px] mr-[8px]"
+
+                <!-- pop up something wrong -->
+                <v-dialog v-model="somethingWrong" class="w-full" style="border-radius: 24px"> 
+                <template v-slot:default="{ isActive }">
+                  <v-card class="text-center">
+                    <div class="w-full flex justify-center py-[24px]">
+                      <img
+                        src="@/assets/alert_wrong.png"
+                        alt="icon"
+                        class="w-[56px] h-[56px]"
+                      />
+                    </div>
+                    <v-card-title class="-my-[16px]" style="font-weight: 600"
+                      >Opps</v-card-title
+                    >
+                    <v-card-text
+                      style="padding-top: 16px; padding-bottom: 24px"
+                    >
+                      Something went wrong. Please, Try again.
+                    </v-card-text>
+                    <v-card-actions
+                      style="
+                        padding-bottom: 24px;
+                        padding-top: 0;
+                        padding-left: 24px;
+                        padding-right: 24px;
+                      "
+                    >
+                      <v-spacer></v-spacer>
+                      <div class="w-full flex justify-stretch gap-[24px]">
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: #EFB008;
+                            color: white;
+                            border-radius: 8px;
+                            height: 40px;
+                          "
+                          text="Try again"
+                          @click="isActive.value = false"
+                        >
+                        </v-btn>
+                      </div>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+
+              <!-- pop up success have icon -->
+              <v-dialog
+                v-model="successfull"
+                class="w-full"
+                style="border-radius: 24px"
               >
-                Book Now!!
-              </button> -->
-              <!-- share button -->
+                <template v-slot:default="{ isActive }">
+                  <v-card class="text-center">
+                    <div class="w-full flex justify-center py-[24px]">
+                      <img
+                        src="@/assets/alert_success.png"
+                        alt="icon"
+                        class="w-[56px] h-[56px]"
+                      />
+                    </div>
+                    <v-card-title class="-my-[16px]" style="font-weight: 600"
+                      >Success!</v-card-title
+                    >
+                    <v-card-text
+                      style="padding-top: 16px; padding-bottom: 24px"
+                    >
+                      Your display name has been updated.
+                    </v-card-text>
+                  </v-card>
+                </template>
+              </v-dialog>
+
               <button
                 class="bg-primaryLight text-bold text-[16px] text-white px-[16px] h-[48px] rounded-[8px]"
               >
@@ -235,7 +319,7 @@ onBeforeMount(async () => {
     </div>
   </div> -->
 </template>
-<style>
+<style >
 .v-list-item--density-default.v-list-item--three-line {
   min-height: 88px;
   padding: 0px;

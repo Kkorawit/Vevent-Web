@@ -88,7 +88,7 @@ onMounted(async () => {
   //   locationLatitude: response.locationLatitude,
   //   locationLongitude: response.locationLongitude,
   // };
-    
+
   console.log(eventDetail.value);
   response.locationLatitude && response.locationLongitude
     ? (isOnline.value = false)
@@ -163,7 +163,6 @@ watchEffect(() => {
     newLocationLatitude: nearbyMarkers.value[0]?.latitude,
     newLocationLongitude: nearbyMarkers.value[0]?.longitude,
   };
-
 });
 
 //poster image input
@@ -253,10 +252,15 @@ const onDrop = (event) => {
 const updateEventDetail = async () => {
   console.log(location.value);
   console.log(nearbyMarkers.value);
+  console.log("update event func");
   console.log(newEvent.value);
   let response = await editEventById(newEvent.value)
-  if(response?.status==201){
-    alert(response.data);
+  if(response.status==201){
+    // alert(response.data);
+    successfull.value = true; //popup success
+    setTimeout(() => {
+      successfull.value = false;
+    }, 2000);
     nearbyMarkers.value=[]
     router.push({ name: "eventDetail", params: {id:id.value} });
   }else{
@@ -318,11 +322,11 @@ const handleLocationName = (newName) => {
   location.value.locationName = newName;
 };
 
-
-const somethingWrong = ref(false) //show popup when fetch false
+const successfull = ref(false); //popup success
+const somethingWrong = ref(false); //show popup when fetch false
 const updateDialogVisible = ref(false); //show popup confirm
 const openUpdateDialog = () => {
-    updateDialogVisible.value = true;
+  updateDialogVisible.value = true;
 };
 </script>
 <template>
@@ -364,13 +368,17 @@ const openUpdateDialog = () => {
                 class="custom-rounded-btn"
                 color="#4520CC"
                 type="submit"
-                style="height: 56px"
+                style="height: 56px; width: 120px"
               >
-                Update
+                Save
               </v-btn>
 
               <!-- pop up update -->
-              <v-dialog v-model="updateDialogVisible" class="w-[400px]" style="border-radius: 24px"> 
+              <v-dialog
+                v-model="updateDialogVisible"
+                class="w-[400px]"
+                style="border-radius: 24px"
+              >
                 <template v-slot:default="{ isActive }">
                   <v-card class="text-center">
                     <div class="w-full flex justify-center py-[24px]">
@@ -386,7 +394,7 @@ const openUpdateDialog = () => {
                     <v-card-text
                       style="padding-top: 16px; padding-bottom: 24px"
                     >
-                    Are you sure you want to update the data?
+                      Are you sure you want to update the data?
                     </v-card-text>
                     <v-card-actions
                       style="
@@ -413,7 +421,7 @@ const openUpdateDialog = () => {
                         <v-btn
                           class="flex-grow-1"
                           style="
-                            background-color: #2563EB;
+                            background-color: #2563eb;
                             color: white;
                             border-radius: 8px;
                             height: 40px;
@@ -430,7 +438,11 @@ const openUpdateDialog = () => {
                 </template>
               </v-dialog>
               <!-- pop up something wrong -->
-              <v-dialog v-model="somethingWrong" class="w-[400px]" style="border-radius: 24px"> 
+              <v-dialog
+                v-model="somethingWrong"
+                class="w-[400px]"
+                style="border-radius: 24px"
+              >
                 <template v-slot:default="{ isActive }">
                   <v-card class="text-center">
                     <div class="w-full flex justify-center py-[24px]">
@@ -461,17 +473,43 @@ const openUpdateDialog = () => {
                         <v-btn
                           class="flex-grow-1"
                           style="
-                            background-color: #EFB008;
+                            background-color: #efb008;
                             color: white;
                             border-radius: 8px;
                             height: 40px;
                           "
                           text="Try again"
-                          @click="isActive.value = false, updateSuccess = true"
+                          @click="
+                            (isActive.value = false)
+                          "
                         >
                         </v-btn>
                       </div>
                     </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+
+              <!-- pop up success  -->
+              <v-dialog v-model="successfull" style="border-radius: 24px">
+                <template>
+                  <v-card class="text-center">
+                    <div class="w-full flex justify-center py-[24px]">
+                      <img
+                        src="@/assets/bookingImg_suc.png"
+                        width="413"
+                        height="340"
+                        alt="icon"
+                      />
+                    </div>
+                    <v-card-title class="-my-[16px]" style="font-weight: 600"
+                      >Booking Confirmed!</v-card-title
+                    >
+                    <v-card-text
+                      style="padding-top: 16px; padding-bottom: 40px"
+                    >
+                      We look forward to seeing you!
+                    </v-card-text>
                   </v-card>
                 </template>
               </v-dialog>
@@ -724,7 +762,12 @@ const openUpdateDialog = () => {
                   <div class="">
                     <!-- Map -->
                     <div v-if="!isOnline">
-                      <Map @emitLocationName="handleLocationName" :latitude="location.locationLatitude" :longitude="location.locationLongitude" :state="'edit'"></Map>
+                      <Map
+                        @emitLocationName="handleLocationName"
+                        :latitude="location.locationLatitude"
+                        :longitude="location.locationLongitude"
+                        :state="'edit'"
+                      ></Map>
                       <v-text-field
                         class="pt-6"
                         variant="outlined"

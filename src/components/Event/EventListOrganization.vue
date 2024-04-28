@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed, VueElement } from "vue";
 import DateTimeFormat from "@/extend/DateTimeFormat.vue";
-import { deleteEventById } from '~/restful/Eventapi.js'
+import { deleteEventById } from "~/restful/Eventapi.js";
 import { getAllEventCreatedByUEmail } from "@/gql/gqlGet.js";
 import EventDetailCard from "@/pages/EventDetail_card.vue";
 import CreateEvent from "@/pages/CreateEvent.vue";
@@ -17,7 +17,7 @@ import moment from "moment-timezone";
 //   },
 // });
 
-const eventTitle = ref()
+const eventTitle = ref();
 
 const countAll = ref();
 const countUP = ref();
@@ -43,17 +43,37 @@ const countEvents = () => {
 
 onMounted(async () => {
   // let email  = localStorage.getItem("email")
-  let response = await getAllEventCreatedByUEmail(localStorage.getItem("email"))
+  let response = await getAllEventCreatedByUEmail(
+    localStorage.getItem("email")
+  );
   console.log(response);
-  allEvents.value = response
-  filtered.value = response
-  eventTitle.value = Array.from(new Set(allEvents.value.map((event) => event.title)))
+  allEvents.value = response;
+  filtered.value = response;
+  eventTitle.value = Array.from(
+    new Set(allEvents.value.map((event) => event.title))
+  );
   countEvents();
 });
 
+const successfull = ref(false);
+const somethingWrong = ref(false);
+
+const deleteEvent = async (id) => {
+  console.log(id);
+  let response = await deleteEventById(id);
+  if (response.status == 201) {
+    successfull.value = true;
+    setTimeout(() => {
+      successfull.value = false;
+    }, 2000);
+    router.push({ name: "home" }); // relaod
+  } else {
+    somethingWrong.value = true;
+  }
+};
+
 const allEvents = ref([]);
 const searchEvent = ref("");
-
 
 const filtered = ref([]);
 const eventList = computed(() => {
@@ -61,7 +81,7 @@ const eventList = computed(() => {
 
   return filtered.value.filter((event) => {
     console.log(event.title);
-    
+
     return searchEvent.value ? event.title.includes(searchEvent.value) : true;
   });
 });
@@ -95,7 +115,7 @@ const filterEvent = (status) => {
       return event.eventStatus == status;
     }
   });
-  eventTitle.value = filtered.value
+  eventTitle.value = filtered.value;
 };
 
 const eventDetaildata = ref({});
@@ -107,13 +127,11 @@ const changeState = async (s, id) => {
   console.log(s);
   state.value = "";
   if (s == "eventDetail") {
-    router.push({name: "eventDetail" , params:{id:id}});
-
+    router.push({ name: "eventDetail", params: { id: id } });
   } else if (s == "editEvent") {
     state.value = s;
   } else if (s == "createEvent") {
-    router.push({name: 'create'});
-
+    router.push({ name: "create" });
   } else {
     state.value = "eventList";
   }
@@ -253,14 +271,14 @@ const changeState = async (s, id) => {
       </div>
 
       <!-- Event List -->
-      <div v-if="eventList" class="event-list drop-shadow-sm min-h-[410px] ">
+      <div v-if="eventList" class="event-list drop-shadow-sm min-h-[410px]">
         <!-- header -->
         <div class="header grid grid-flow-col mb-[16px]">
           <div class="title text-[20px] justify-self-start">
             Event List
             <!-- {{ title }} -->
           </div>
-          <div class="button-search justify-self-end w-[400px] ">
+          <div class="button-search justify-self-end w-[400px]">
             <v-autocomplete
               search
               clearable
@@ -275,12 +293,12 @@ const changeState = async (s, id) => {
           </div>
         </div>
         <!-- card -->
-        <div v-if="eventList" >
-          <button   @click="changeState('eventDetail', event.id)" 
-          v-for="(event, index) in eventList"
+        <div v-if="eventList">
+          <button
+            @click="changeState('eventDetail', event.id)"
+            v-for="(event, index) in eventList"
             :key="index"
             class="event-card w-full h-[96px] bg-white rounded-[16px] grid items-center grid-cols-10 mb-[16px] p-[24px]"
-           
           >
             <!-- event name -->
             <div class="grid col-span-4 col-start-1 place-items-start">
@@ -333,50 +351,164 @@ const changeState = async (s, id) => {
               </div>
             </div>
             <div class="bin col-start-10 grid justify-items-end">
-
-            <!-- delete Event -->
-            <v-dialog class="w-[400px]" style="border-radius: 24px;">
-              <template v-slot:activator="{props:activatorProps }">
-                <v-btn
-                class="text-gray-500 hover:text-red-500"
-                v-bind="activatorProps"
-                icon
-                >
-                <v-icon >mdi-trash-can</v-icon>
-                </v-btn>
-              </template>
-              <!-- pop up delete -->
-              <template v-slot:default="{ isActive }">
-                <v-card class="text-center">
-                  <div class="w-full flex justify-center py-[24px] ">
-                    <img src="@/assets/alert_delete.png" alt="icon" class="w-[56px] h-[56px] ">
-                  </div>
-                  <v-card-title class="-my-[16px]" style="font-weight: 600;">Delete Event?</v-card-title>
-                  <v-card-text style="padding-top: 16px; padding-bottom: 24px">
-                    Are you sure want to delete  this event? this action cannot be undone. 
-                  </v-card-text>
-                  <v-card-actions style="padding-bottom: 24px; padding-top: 0; padding-left: 24px; padding-right: 24px;">
-                    <v-spacer></v-spacer>
-                    <div class="w-full flex justify-stretch  gap-[24px]">
-                      <v-btn  class="flex-grow-1 "
-                      style="background-color: #ECECEC; color: #515151; border-radius: 8px; height: 40px;"
-                      text="Cancel"
-                      @click="isActive.value = false">
-                      </v-btn>
-                      <v-btn class="flex-grow-1"
-                      style="background-color: red; color: white; border-radius: 8px; height: 40px;"
-                      text="Delete"
-                      @click="(isActive.value = false,deleteEventById(event.id))">
-                      </v-btn>
+              <!-- delete Event -->
+              <v-dialog class="w-[400px]" style="border-radius: 24px">
+                <template v-slot:activator="{ props: activatorProps }">
+                  <v-btn
+                    class="text-gray-500 hover:text-red-500"
+                    v-bind="activatorProps"
+                    icon
+                  >
+                    <v-icon>mdi-trash-can</v-icon>
+                  </v-btn>
+                </template>
+                <!-- pop up delete -->
+                <template v-slot:default="{ isActive }">
+                  <v-card class="text-center">
+                    <div class="w-full flex justify-center py-[24px]">
+                      <img
+                        src="@/assets/alert_delete.png"
+                        alt="icon"
+                        class="w-[56px] h-[56px]"
+                      />
                     </div>
-                  </v-card-actions>
-                </v-card>
-              </template>
-            </v-dialog>
-          </div>
+                    <v-card-title class="-my-[16px]" style="font-weight: 600"
+                      >Delete Event?</v-card-title
+                    >
+                    <v-card-text
+                      style="padding-top: 16px; padding-bottom: 24px"
+                    >
+                      Are you sure want to delete this event? this action cannot
+                      be undone.
+                    </v-card-text>
+                    <v-card-actions
+                      style="
+                        padding-bottom: 24px;
+                        padding-top: 0;
+                        padding-left: 24px;
+                        padding-right: 24px;
+                      "
+                    >
+                      <v-spacer></v-spacer>
+                      <div class="w-full flex justify-stretch gap-[24px]">
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: #ececec;
+                            color: #515151;
+                            border-radius: 8px;
+                            height: 40px;
+                          "
+                          text="Cancel"
+                          @click="isActive.value = false"
+                        >
+                        </v-btn>
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: red;
+                            color: white;
+                            border-radius: 8px;
+                            height: 40px;
+                          "
+                          text="Delete"
+                          @click="
+                            (isActive.value = false), deleteEvent(event.id)
+                          "
+                        >
+                        </v-btn>
+                      </div>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+
+              <!-- pop up success have icon -->
+              <v-dialog
+                v-model="successfull"
+                class="w-[400px]"
+                style="border-radius: 24px"
+              >
+                <template v-slot:default="{ isActive }">
+                  <v-card class="text-center">
+                    <div class="w-full flex justify-center py-[24px]">
+                      <img
+                        src="@/assets/alert_success.png"
+                        alt="icon"
+                        class="w-[56px] h-[56px]"
+                      />
+                    </div>
+                    <v-card-title class="-my-[16px]" style="font-weight: 600"
+                      >Event Created!!</v-card-title
+                    >
+                    <v-card-text
+                      style="padding-top: 16px; padding-bottom: 24px"
+                    >
+                      Your event has been successfully created.
+                    </v-card-text>
+                  </v-card>
+                </template>
+              </v-dialog>
+
+              <!-- pop up something wrong -->
+              <v-dialog
+                v-model="somethingWrong"
+                class="w-[400px]"
+                style="border-radius: 24px"
+              >
+                <template v-slot:default="{ isActive }">
+                  <v-card class="text-center">
+                    <div class="w-full flex justify-center py-[24px]">
+                      <img
+                        src="@/assets/alert_wrong.png"
+                        alt="icon"
+                        class="w-[56px] h-[56px]"
+                      />
+                    </div>
+                    <v-card-title class="-my-[16px]" style="font-weight: 600"
+                      >Opps</v-card-title
+                    >
+                    <v-card-text
+                      style="padding-top: 16px; padding-bottom: 24px"
+                    >
+                      Something went wrong. Please, Try again.
+                    </v-card-text>
+                    <v-card-actions
+                      style="
+                        padding-bottom: 24px;
+                        padding-top: 0;
+                        padding-left: 24px;
+                        padding-right: 24px;
+                      "
+                    >
+                      <v-spacer></v-spacer>
+                      <div class="w-full flex justify-stretch gap-[24px]">
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: #efb008;
+                            color: white;
+                            border-radius: 8px;
+                            height: 40px;
+                          "
+                          text="Try again"
+                          @click="
+                            (isActive.value = false)
+                          "
+                        >
+                        </v-btn>
+                      </div>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+            </div>
           </button>
         </div>
-        <div v-if="eventList.length == 0" class=" grid place-content-center h-[320px]">
+        <div
+          v-if="eventList.length == 0"
+          class="grid place-content-center h-[320px]"
+        >
           <img class="w-[177.8px] h-[155px]" src="@/assets/noEvent-icon.png" />
         </div>
       </div>
@@ -399,12 +531,14 @@ const changeState = async (s, id) => {
 
 /* gap buton right */
 .v-card-actions .v-btn ~ .v-btn:not(.v-btn-toggle .v-btn) {
-    margin-inline-start: 0;
+  margin-inline-start: 0;
 }
 
-.v-dialog > .v-overlay__content > .v-card, .v-dialog > .v-overlay__content > .v-sheet, .v-dialog > .v-overlay__content > form > .v-card, .v-dialog > .v-overlay__content > form > .v-sheet {
-    --v-scrollbar-offset: 0px;
-    border-radius: 16px;
+.v-dialog > .v-overlay__content > .v-card,
+.v-dialog > .v-overlay__content > .v-sheet,
+.v-dialog > .v-overlay__content > form > .v-card,
+.v-dialog > .v-overlay__content > form > .v-sheet {
+  --v-scrollbar-offset: 0px;
+  border-radius: 16px;
 }
-
 </style>

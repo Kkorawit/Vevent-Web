@@ -172,22 +172,25 @@ const menu = (page) => {
                 Profile
               </div>
             </template>
+            <!-- popup profile -->
             <template v-slot:default="{ isActive }">
-              <v-card title="" class="w-[500px] h-[486px] relative">
+              <v-card class="  relative ">
                 <div class="cursor-pointer absolute z-[99] top-[10px] right-[10px]">
-                  <img
+                  <!-- close -->
+                  <v-btn icon="mdi-close" style="border-radius: 8px;" @click="isActive.value = false"> </v-btn>
+                  <!-- <img
                     class="w-[46px] h-[46px] rounded-[15px]"
                     src="@/assets/cross2-icon.svg"
                     alt=""
-                  />
+                  /> -->
                 </div>
                 <v-card-text class="-mt-4"><accDialog /> </v-card-text>
-                <v-card-actions>
+                <!-- <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn text="Close" @click="isActive.value = false"> </v-btn>
                   <v-btn text="Confirm" @click="isActive.value = false">
                   </v-btn>
-                </v-card-actions>
+                </v-card-actions> -->
               </v-card>
             </template>
           </v-dialog>
@@ -265,5 +268,14 @@ const menu = (page) => {
 .v-dialog > .v-overlay__content > .v-card > .v-card-item,
 .v-dialog > .v-overlay__content > form > .v-card > .v-card-item {
   padding: 0px 24px 0;
+}
+
+.v-dialog > .v-overlay__content > .v-card,
+.v-dialog > .v-overlay__content > .v-sheet,
+.v-dialog > .v-overlay__content > form > .v-card,
+.v-dialog > .v-overlay__content > form > .v-sheet {
+  --v-scrollbar-offset: 0px;
+  border-radius: 16px;
+  width: 500px;
 }
 </style>

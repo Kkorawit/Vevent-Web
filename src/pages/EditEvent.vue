@@ -84,8 +84,6 @@ onMounted(async () => {
   //   locationLongitude: response.locationLongitude,
   // };
     
-
-
   console.log(eventDetail.value);
   response.locationLatitude && response.locationLongitude
     ? (isOnline.value = false)
@@ -131,6 +129,8 @@ const onsiteValidate = [
 
 watchEffect(() => {
   // Assign Value
+  console.log(nearbyMarkers.value.latitude);
+  console.log(nearbyMarkers.value.longitude);
 
   newEvent.value = {
     id: id.value,
@@ -150,32 +150,8 @@ watchEffect(() => {
     newLocationLatitude: location.value.locationLatitude,
     newLocationLongitude: location.value.locationLongitude,
   };
+
 });
-
-// const leavePagePopup = ref(false); //for open popup leave page
-// const confirmToLeave = ref(false); //input from popup to change page
-
-// const leavePage = ref(false);
-// const confirmToLeave = async (status) => {
-//   console.log("func confirm");
-//   console.log(status);
-//   if (status) {
-//     console.log("result = true");
-//     leavePage.value = true;
-//   } else {
-//     leavePage.value = false;
-//   }
-// };
-
-// check to leave page
-// onBeforeRouteLeave(async (to, from, next) => {
-//   const hostname = "VEvent";
-//   if (window.confirm(`${hostname}Do you want to leave page?`)) {
-//     next();
-//   } else {
-//     next(false);
-//   }
-// });
 
 //poster image input
 const posterStatus = ref("");
@@ -287,13 +263,12 @@ const changePage = (p) => {
 const typeSwitch = (type) => {
   isOnline.value = type;
 
-  isOnline.value
-    ? ((location.value.locationName = "Online"),
-      (location.value.locationLatitude = null),
-      (location.value.locationLongitude = null))
-    : ((location.value.locationName = eventDetail.value.locationName),
-      (location.value.locationLatitude = nearbyMarkers.value[0].latitude),
-      (location.value.locationLongitude = nearbyMarkers.value[0].longitude));
+  isOnline.value? (location.value.locationName='Online', 
+            location.value.locationLatitude=null,
+            location.value.locationLongitude=null)
+          : (location.value.locationName=eventDetail.value.locationName,
+            location.value.locationLatitude=nearbyMarkers.value.latitude,
+          location.value.locationLongitude=nearbyMarkers.value.longitude)
 };
 
 const updateValue = (rules, action) => {
@@ -529,6 +504,7 @@ const openUpdateDialog = () => {
                   :rules="rules.description"
                 ></v-textarea>
               </div>
+              {{ nearbyMarkers }}
               <!-- วันที่เปิด - ปิด รับสมัคร -->
               <div class="flex justify-center mt-[8px] space-x-2 pb-[8px]">
                 <div>

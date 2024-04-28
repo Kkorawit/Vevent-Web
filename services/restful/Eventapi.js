@@ -171,8 +171,9 @@ console.log(data);
 
   await axios
     .put(
-      `${import.meta.env.VITE_API_ENV}/edit-event`, 
+      // `${import.meta.env.VITE_API_ENV}/edit-event`, 
       // `http://localhost:8080/local/api/edit-event`,
+      `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/book-event`,
       data, {
       headers: {
         "content-Type": "application/json",

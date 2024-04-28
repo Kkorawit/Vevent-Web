@@ -9,8 +9,7 @@ import { getEventDetailById } from "@/gql/gqlGet.js";
 import Map from "@/components/common/Map.vue";
 import { nearbyMarkers } from "@/extend/mapStore";
 import { editEventById } from "~/restful/Eventapi.js";
-defineEmits(['leave', 'close']);
-
+defineEmits(["leave", "close"]);
 
 //get event id from router
 const id = ref(0);
@@ -150,30 +149,30 @@ watchEffect(() => {
   };
 });
 
-const leavePagePopup = ref(false); //for open popup leave page
+// const leavePagePopup = ref(false); //for open popup leave page
 // const confirmToLeave = ref(false); //input from popup to change page
 
-const leavePage = ref(false);
-const confirmToLeave = async (status) => {
-  console.log("func confirm");
-  console.log(status);
-  if (status) {
-    console.log("result = true");
-    leavePage.value = true;
-  } else {
-    leavePage.value = false;
-  }
-};
+// const leavePage = ref(false);
+// const confirmToLeave = async (status) => {
+//   console.log("func confirm");
+//   console.log(status);
+//   if (status) {
+//     console.log("result = true");
+//     leavePage.value = true;
+//   } else {
+//     leavePage.value = false;
+//   }
+// };
 
 // check to leave page
-onBeforeRouteLeave( async (to, from, next) => {
-  const hostname = "VEvent"
-  if(window.confirm(`${hostname}Do you want to leave page?`)){
-    next();
-  }else {
-    next(false);
-  }
-});
+// onBeforeRouteLeave(async (to, from, next) => {
+//   const hostname = "VEvent";
+//   if (window.confirm(`${hostname}Do you want to leave page?`)) {
+//     next();
+//   } else {
+//     next(false);
+//   }
+// });
 
 //poster image input
 const posterStatus = ref("");
@@ -259,12 +258,12 @@ const onDrop = (event) => {
   }
 };
 
-const updateEventDetail = () => {
+
+
+const updateEventDetail = async () => {
   console.log(newEvent.value);
   editEventById(newEvent.value);
-  alert("Updated");
   router.push({ name: "eventDetail", params: { id: id.value } });
-  // code update event detail
 };
 
 const changePage = (p) => {
@@ -320,6 +319,13 @@ const updateValue = (rules, action) => {
 const handleLocationName = (newName) => {
   location.value.locationName = newName;
 };
+
+// const updateSuccess = ref(false);
+// const confirmDialogVisible = ref() //show success popup
+const updateDialogVisible = ref(false); //show popup confirm
+const openUpdateDialog = () => {
+    updateDialogVisible.value = true;
+};
 </script>
 <template>
   <Navbar></Navbar>
@@ -355,7 +361,7 @@ const handleLocationName = (newName) => {
             <div class="text-[24px] font-bold">รายละเอียดกิจกรรม</div>
             <div>
               <v-btn
-                @click="updateEventDetail"
+                @click="openUpdateDialog(1)"
                 class="custom-rounded-btn"
                 color="#4520CC"
                 type="submit"
@@ -363,7 +369,124 @@ const handleLocationName = (newName) => {
               >
                 Update
               </v-btn>
+
+              <!-- pop up update -->
+              <v-dialog v-model="updateDialogVisible" class="w-[400px]" style="border-radius: 24px"> 
+                <template v-slot:default="{ isActive }">
+                  <v-card class="text-center">
+                    <div class="w-full flex justify-center py-[24px]">
+                      <!-- <img
+                        src="@/assets/alert_delete.png"
+                        alt="icon"
+                        class="w-[56px] h-[56px]"
+                      /> -->
+                    </div>
+                    <v-card-title class="-my-[16px]" style="font-weight: 600"
+                      >Comfirmation</v-card-title
+                    >
+                    <v-card-text
+                      style="padding-top: 16px; padding-bottom: 24px"
+                    >
+                    Are you sure you want to update the data?
+                    </v-card-text>
+                    <v-card-actions
+                      style="
+                        padding-bottom: 24px;
+                        padding-top: 0;
+                        padding-left: 24px;
+                        padding-right: 24px;
+                      "
+                    >
+                      <v-spacer></v-spacer>
+                      <div class="w-full flex justify-stretch gap-[24px]">
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: #ececec;
+                            color: #515151;
+                            border-radius: 8px;
+                            height: 40px;
+                          "
+                          text="Cancel"
+                          @click="isActive.value = false"
+                        >
+                        </v-btn>
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: #2563EB;
+                            color: white;
+                            border-radius: 8px;
+                            height: 40px;
+                          "
+                          text="Save"
+                          @click="
+                            (isActive.value = false), updateEventDetail()
+                          "
+                        >
+                        </v-btn>
+                      </div>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+              <!-- pop up something wrong -->
+              <!-- <v-dialog v-model="confirmDialogVisible" class="w-[400px]" style="border-radius: 24px"> 
+                <template v-slot:default="{ isActive }">
+                  <v-card class="text-center">
+                    <div class="w-full flex justify-center py-[24px]">
+                      <img
+                        src="@/assets/alert_delete.png"
+                        alt="icon"
+                        class="w-[56px] h-[56px]"
+                      />
+                    </div>
+                    <v-card-title class="-my-[16px]" style="font-weight: 600"
+                      >Opps</v-card-title
+                    >
+                    <v-card-text
+                      style="padding-top: 16px; padding-bottom: 24px"
+                    >
+                      Something went wrong. Please, Try again.
+                    </v-card-text>
+                    <v-card-actions
+                      style="
+                        padding-bottom: 24px;
+                        padding-top: 0;
+                        padding-left: 24px;
+                        padding-right: 24px;
+                      "
+                    >
+                      <v-spacer></v-spacer>
+                      <div class="w-full flex justify-stretch gap-[24px]">
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: #4520CC;
+                            color: white;
+                            border-radius: 8px;
+                            height: 40px;
+                          "
+                          text="Try again"
+                          @click="isActive.value = false, updateSuccess = true"
+                        >
+                        </v-btn>
+                      </div>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog> -->
             </div>
+
+            <!-- <v-btn
+                @click="updateEventDetail"
+                class="custom-rounded-btn"
+                color="#4520CC"
+                type="submit"
+                style="height: 56px"
+              >
+                Update
+              </v-btn> -->
           </div>
           <!-- fill -->
           <div class="grid grid-cols-2 justify-items-stretch">
@@ -672,7 +795,7 @@ const handleLocationName = (newName) => {
     </div>
   </div>
 </template>
-<style scoped>
+<style>
 .custom-rounded-btn {
   border-radius: 16px;
 }
@@ -823,6 +946,10 @@ const handleLocationName = (newName) => {
   transition: transform 0.3s ease-in-out;
 }
 
+.v-dialog > .v-overlay__content {
+  width: auto !important;
+}
+
 /* gap buton right */
 .v-card-actions .v-btn ~ .v-btn:not(.v-btn-toggle .v-btn) {
   margin-inline-start: 0;
@@ -834,5 +961,6 @@ const handleLocationName = (newName) => {
 .v-dialog > .v-overlay__content > form > .v-sheet {
   --v-scrollbar-offset: 0px;
   border-radius: 16px;
+  width: 400px;
 }
 </style>

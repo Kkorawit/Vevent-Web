@@ -23,6 +23,7 @@ onMounted(async () => {
   console.log(response);
   eventDetail.value = response;
   console.log(eventDetail.value.title);
+  window.reload();
 });
 
 

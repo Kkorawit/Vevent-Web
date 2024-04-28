@@ -200,7 +200,6 @@ const handleLocationName = (newName) => {
   location.value.locationName = newName;
 };
 
-const successfull = ref(false); //pop success
 const create = async (event) => {
   await handleUpload()
   let response = await createEvent(event);
@@ -212,14 +211,22 @@ const create = async (event) => {
     setTimeout( () => {
       console.log("asdasdasd");
       successfull.value = false;
-    }, 3000);
+    }, 1000);
+    
+    // setTimeout(3000)
+    // successfull.value = false
     nearbyMarkers.value = [];
-    router.push({ name: "home" });
+    setTimeout( () => {
+      console.log("asdasdasd");
+      router.push({ name: "home" });
+
+    }, 2000);
   } else {
     somethingWrong.value = true;
   }
 };
 
+const successfull = ref(false); //pop success
 const somethingWrong = ref(false); //show popup when fetch false
 const updateDialogVisible = ref(false); //show popup confirm
 //open confirm popup

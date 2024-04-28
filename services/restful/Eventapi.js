@@ -43,13 +43,11 @@ export async function createEvent(event) {
       }
     )
     .then((response) => {
-
       return response
     })
     .catch((error) => {
       return error.response
     });
-    response.status = 201
     return response
 }
 

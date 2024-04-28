@@ -407,7 +407,7 @@ const openUpdateDialog = () => {
                           "
                           text="Save"
                           @click="
-                            (isActive.value = false), updateEventDetail()
+                            (isActive.value = false,updateEventDetail())
                           "
                         >
                         </v-btn>

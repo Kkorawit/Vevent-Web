@@ -56,6 +56,12 @@ const success = (position) => {
   // leaflet
   //     .map("map")
   //     .setView([latitude,longitude], previousZoomLevel);
+  userGeoMarker = leaflet
+      .marker([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], {
+        icon: userHereIcon,
+      })
+      .addTo(map)
+      .bindPopup("You're Here");
   map.setView([latitude,longitude],previousZoomLevel)
   
 };

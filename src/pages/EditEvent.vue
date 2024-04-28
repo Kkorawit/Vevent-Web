@@ -283,10 +283,10 @@ const updateEventDetail = async () => {
     successfull.value = true;
     setTimeout( () => {
       successfull.value = false;
-    }, 1000);
+    }, 2000);
     setTimeout( () => {
       router.push({ name: "eventDetail", params: {id:id.value} });
-    }, 2000);
+    }, 3000);
   }else{
     somethingWrong.value = true //open popup something wrong
   }

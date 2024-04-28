@@ -51,7 +51,7 @@ export async function updateDisplayName(displayName) {
     )
     .then((response) => {
       localStorage.setItem("displayName",displayName)
-      return response.data;
+      return response;
     })
     .catch((error) => {
       return error.response;

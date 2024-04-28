@@ -65,11 +65,11 @@ const deleteEvent = async (id) => {
     successfull.value = true;
     setTimeout( () => {
       successfull.value = false;
-    }, 1000);
+    }, 2000);
     setTimeout( () => {
       console.log("asdasdasd");
       router.push({ name: "home" });
-    }, 2000);
+    }, 3000);
   } else {
     somethingWrong.value = true;
   }

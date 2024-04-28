@@ -238,7 +238,8 @@ const onDrop = (event) => {
 };
 
 const updateEventDetail = async () => {
-
+  console.log(location.value);
+  console.log(nearbyMarkers.value);
   console.log(newEvent.value);
   let response = await editEventById(newEvent.value)
   if(response.status==201){

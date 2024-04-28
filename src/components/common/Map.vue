@@ -53,10 +53,10 @@ const success = (position) => {
   const latitude = position.coords.latitude;
   const longitude = position.coords.longitude;
 
-  leaflet
-      .map("map")
-      .setView([latitude,longitude], previousZoomLevel);
-
+  // leaflet
+  //     .map("map")
+  //     .setView([latitude,longitude], previousZoomLevel);
+  map.setView([latitude,longitude],previousZoomLevel)
   
 };
 
@@ -153,34 +153,35 @@ onMounted(() => {
 });
 
 ////// watch effect to map and coords lat lng
-watchEffect(() => {
-  ///// condition make sure lat long is potitive value
-  if (
-    coords.value.latitude !== Number.POSITIVE_INFINITY &&
-    coords.value.longitude !== Number.POSITIVE_INFINITY
-  ) {
-    nearbyMarkers.value.latitude = coords.value.latitude;
-    nearbyMarkers.value.longitude = coords.value.longitude;
-    console.log("lat nearby"+nearbyMarkers.value.latitude);
-    console.log("lng nearby"+nearbyMarkers.value.longitude);
-    if (userGeoMarker) {
-      map.removeLayer(userGeoMarker);
-    }
+// watchEffect(() => {
+//   ///// condition make sure lat long is potitive value
+//   if (
+//     coords.value.latitude !== Number.POSITIVE_INFINITY &&
+//     coords.value.longitude !== Number.POSITIVE_INFINITY
+//   ) {
+//     nearbyMarkers.value.latitude = coords.value.latitude;
+//     nearbyMarkers.value.longitude = coords.value.longitude;
+//     console.log("odd"+coords.value);
+//     console.log("lat nearby"+nearbyMarkers.value.latitude);
+//     console.log("lng nearby"+nearbyMarkers.value.longitude);
+//     if (userGeoMarker) {
+//       map.removeLayer(userGeoMarker);
+//     }
 
-    userGeoMarker = leaflet
-      .marker([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], {
-        icon: userHereIcon,
-      })
-      .addTo(map)
-      .bindPopup("You're Here");
+//     userGeoMarker = leaflet
+//       .marker([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], {
+//         icon: userHereIcon,
+//       })
+//       .addTo(map)
+//       .bindPopup("You're Here");
 
-    map.on("zoomend", () => {
-      previousZoomLevel = map.getZoom();
-    });
+//     map.on("zoomend", () => {
+//       previousZoomLevel = map.getZoom();
+//     });
 
-    // map.setView([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], previousZoomLevel);
-  }
-});
+//     // map.setView([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], previousZoomLevel);
+//   }
+// });
 
 let userHereIcon = leaflet.icon({
   iconUrl: currentLocationIcon,

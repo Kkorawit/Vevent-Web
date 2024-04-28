@@ -10,14 +10,14 @@ const somethingWrong = ref(false); // pop something wrong
 const successfull = ref(false); //popup success
 const cssInput = ref(""); //เมื่อแก้ name จะเเสดง ช่อง input
 const isReadonly = ref(true);
-const toggleReadonly = () => {
+const toggleReadonly = async () => {
   cssInput.value = "solo";
   if (
     !isReadonly.value &&
     displayName.value != localStorage.getItem("displayName")
   ) {
     console.log("before axios");
-    let response = updateDisplayName(displayName.value);
+    let response = await updateDisplayName(displayName.value);
     console.log(response);
     if (response.status == 200) {
       successfull.value = true;

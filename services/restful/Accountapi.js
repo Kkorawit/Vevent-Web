@@ -36,7 +36,7 @@ export async function updateDisplayName(displayName) {
   console.log("In axios");
   console.log("display: "+displayName);
   console.log(localStorage.getItem("access_token"));
-  await axios
+  let response = await axios
     .post(
       `${import.meta.env.VITE_API_ENV}/edit-account`,{},
       // `http://cp23kw1.sit.kmutt.ac.th/dev/api/edit-account?dname=`,
@@ -56,7 +56,7 @@ export async function updateDisplayName(displayName) {
     .catch((error) => {
       return error.response;
     });
-
+    return response
   // Handle successful deletion response here
   // Handle error with informative message
 }

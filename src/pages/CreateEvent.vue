@@ -1,10 +1,14 @@
 <script setup>
 import { rules } from "@/extend/utils.ts";
 import { ref, computed, watchEffect } from "vue";
-import CustomvBtnPrimary from "../components/common/CustomvBtn.primary.vue";
+// import CustomvBtnPrimary from "../components/common/CustomvBtn.primary.vue";
 import Map from "@/components/common/Map.vue";
 import { nearbyMarkers } from "@/extend/mapStore";
 import { createEvent } from "~/restful/Eventapi.js";
+import Navbar from "@/components/Navbar.vue";
+import router from "@/plugins/router";
+import { storage } from "../firebase";
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 // event
 const title = ref("");
@@ -20,12 +24,13 @@ const validationType = ref("");
 const validationRules = ref("");
 const posterImg = ref("");
 const isOnline = ref(true);
-const threeDayAfter = computed(()=>{
+const threeDayAfter = computed(() => {
   const today = new Date();
-      today.setDate(today.getDate() + 3);
-      return today.toISOString().split('T')[0];
-})
+  today.setDate(today.getDate() + 3);
+  return today.toISOString().split("T")[0];
+});
 
+// storage
 const onlineValidate = [
   { name: "Qr Code", value: "QR_CODE" },
   { name: "Step Counter", value: "STEP_COUNTER" },
@@ -64,9 +69,6 @@ watchEffect(() => {
   };
 });
 
-import Navbar from "@/components/Navbar.vue";
-import router from "@/plugins/router";
-
 // form validation
 const valid = ref(false);
 
@@ -75,6 +77,7 @@ const posterStatus = ref("");
 const newPoster = ref("");
 const images = ref([]);
 const isDraging = ref(false);
+const file = ref()
 const selectFile = () => {
   const fileInput = document.getElementById("fileInput");
   if (fileInput) {
@@ -86,19 +89,19 @@ const selectFile = () => {
 };
 
 const onFileSelect = (event) => {
-  const files = event.target.files;
-  if (files.length != 0) {
-    console.log("file != 0");
-    for (let i = 0; i < files.length; i++) {
-      console.log("loop file");
-      const file = files[i];
-      const isImage = files[i].type.split("/")[0];
+  file.value = event.target.files[0];
+  console.log(file);
+  if (file.value) {
+    console.log("file here");
+
+      const isImage = file.value.type.split("/")[0];
+      console.log(isImage);
       if (isImage == "image") {
         //check type
         console.log("check type");
 
-        const imageUrl = URL.createObjectURL(file);
-        images.value.push({ name: file.name, url: imageUrl });
+        const imageUrl = URL.createObjectURL(file.value);
+        images.value.push({ name: file.value.name, url: imageUrl });
         newPoster.value = imageUrl;
         console.log(newPoster.value);
         posterStatus.value = "addImg";
@@ -106,7 +109,6 @@ const onFileSelect = (event) => {
         console.error("Only image files are allowed!");
       }
       console.log(images.value);
-    }
   }
 };
 
@@ -130,6 +132,7 @@ const onDrop = (event) => {
   event.preventDefault();
   isDraging.value = false;
   const files = event.dataTransfer.files;
+  console.log(files[0]);
   for (let i = 0; i < files.length; i++) {
     console.log("loop file");
     const file = files[i];
@@ -195,25 +198,42 @@ const handleLocationName = (newName) => {
   location.value.locationName = newName;
 };
 
-
 const create = async (event) => {
-  let response = await createEvent(event)
+  await handleUpload()
+  let response = await createEvent(event);
   console.log(response);
-  if(response.status==201){
-    alert(response.data)
-    nearbyMarkers.value=[]
-    router.push({name:'home'})
-  }else {
+  if (response.status == 201) {
+    alert(response.data);
+    nearbyMarkers.value = [];
+    router.push({ name: "home" });
+  } else {
     somethingWrong.value = true;
   }
-}
+};
 
-const somethingWrong = ref(false) //show popup when fetch false
+const somethingWrong = ref(false); //show popup when fetch false
 const updateDialogVisible = ref(false); //show popup confirm
 //open confirm popup
 const openUpdateDialog = () => {
-    updateDialogVisible.value = true;
+  updateDialogVisible.value = true;
 };
+
+const handleUpload = async () => {
+  // const file = event.target.files[0]
+  console.log(file.value);
+  if(file.value){
+    try{
+      const uploadRef = storageRef(storage,`events/posters/${file.value.name}`)
+      const snapshot = await uploadBytes(uploadRef, file.value)
+      const downloadUrl = await getDownloadURL(snapshot.ref)
+      posterImg.value = downloadUrl;
+      event.value.posterImg = posterImg.value
+      console.log(posterImg.value);
+    }catch(error){
+      console.error("Error",error);
+    }
+  }
+}
 
 </script>
 
@@ -225,9 +245,11 @@ const openUpdateDialog = () => {
     >
       <div class="p-[40px] space-y-[40px]">
         <!-- header -->
+          <!-- <input type="file" @change="handleUpload"/> -->
         <div>
           <span class="text-[14px]">
             <button
+              disabled="true"
               @click="changePage('home')"
               class="hover:text-primaryColor hover:underline hover:underline-offset-4"
             >
@@ -245,29 +267,38 @@ const openUpdateDialog = () => {
             <!-- button on form -->
             <div>
               <v-btn
+                :disabled="!valid"
                 @click="openUpdateDialog()"
                 class="custom-rounded-btn"
                 color="#4520CC"
                 type="submit"
-                style="height: 56px; width: 120px;"
+                style="height: 56px; width: 120px"
               >
                 Create
               </v-btn>
 
               <!-- pop up update -->
-              <v-dialog v-model="updateDialogVisible" class="w-[400px]" style="border-radius: 24px"> 
+              <v-dialog
+                v-model="updateDialogVisible"
+                class="w-[400px]"
+                style="border-radius: 24px"
+              >
                 <template v-slot:default="{ isActive }">
                   <v-card class="text-center">
-                    <div class="w-full flex justify-center py-[24px]">
-                    </div>
+                    <div class="w-full flex justify-center py-[24px]"></div>
                     <v-card-title class="-my-[16px]" style="font-weight: 600"
                       >Comfirmation</v-card-title
                     >
                     <v-card-text
                       style="padding-top: 16px; padding-bottom: 24px"
                     >
-                    Are you want to create this event?
-                    <div v-if="title != ''"class="text-wrap text-[18px] mt-[4px]">" {{ title }} "</div> 
+                      Are you want to create this event?
+                      <div
+                        v-if="title != ''"
+                        class="text-wrap text-[18px] mt-[4px]"
+                      >
+                        " {{ title }} "
+                      </div>
                     </v-card-text>
                     <v-card-actions
                       style="
@@ -294,15 +325,13 @@ const openUpdateDialog = () => {
                         <v-btn
                           class="flex-grow-1"
                           style="
-                            background-color: #2563EB;
+                            background-color: #2563eb;
                             color: white;
                             border-radius: 8px;
                             height: 40px;
                           "
                           text="Create"
-                          @click="
-                            (isActive.value = false), create(event)
-                          "
+                          @click="(isActive.value = false), create(event)"
                         >
                         </v-btn>
                       </div>
@@ -311,7 +340,11 @@ const openUpdateDialog = () => {
                 </template>
               </v-dialog>
               <!-- pop up something wrong -->
-              <v-dialog v-model="somethingWrong" class="w-[400px]" style="border-radius: 24px"> 
+              <v-dialog
+                v-model="somethingWrong"
+                class="w-[400px]"
+                style="border-radius: 24px"
+              >
                 <template v-slot:default="{ isActive }">
                   <v-card class="text-center">
                     <div class="w-full flex justify-center py-[24px]">
@@ -342,13 +375,15 @@ const openUpdateDialog = () => {
                         <v-btn
                           class="flex-grow-1"
                           style="
-                            background-color: #EFB008;
+                            background-color: #efb008;
                             color: white;
                             border-radius: 8px;
                             height: 40px;
                           "
                           text="Try again"
-                          @click="isActive.value = false, updateSuccess = true"
+                          @click="
+                            (isActive.value = false), (updateSuccess = true)
+                          "
                         >
                         </v-btn>
                       </div>
@@ -405,7 +440,7 @@ const openUpdateDialog = () => {
                     <VueDatePicker
                       v-model="registerStartDate"
                       placeholder="วันเปิดรับสมัคร"
-                      :timezone="'UTC'"
+
                       :min-date="new Date()"
                       dark="true"
                     ></VueDatePicker>
@@ -417,7 +452,6 @@ const openUpdateDialog = () => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="registerEndDate"
-                      :timezone="'UTC'"
                       :min-date="new Date()"
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
@@ -432,7 +466,6 @@ const openUpdateDialog = () => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="startDate"
-                      :timezone="'UTC'"
                       placeholder="วันเริ่มกิจกรรม"
                       :min-date="threeDayAfter"
                       dark="true"
@@ -445,7 +478,6 @@ const openUpdateDialog = () => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="endDate"
-                      :timezone="'UTC'"
                       placeholder="วันจบกิจกรรม"
                       :min-date="new Date()"
                       dark="true"
@@ -833,7 +865,6 @@ const openUpdateDialog = () => {
   transition: transform 0.3s ease-in-out;
 }
 
-
 .v-dialog > .v-overlay__content {
   width: auto !important;
 }
@@ -851,5 +882,4 @@ const openUpdateDialog = () => {
   border-radius: 16px;
   width: 400px;
 }
-
 </style>

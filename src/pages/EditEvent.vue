@@ -1,6 +1,6 @@
 <script setup>
 import DateTimeFormat from "@/extend/DateTimeFormat.vue";
-import { onBeforeMount, onMounted, ref, watchEffect } from "vue";
+import { onBeforeMount, onMounted, ref, watchEffect,computed } from "vue";
 import router from "@/plugins/router";
 import { rules } from "@/extend/utils.ts";
 import Navbar from "@/components/Navbar.vue";
@@ -63,6 +63,7 @@ const location = ref({
   locationLatitude: null,
   locationLongitude: null,
 });
+// const updated = ref(false);
 
 onMounted(async () => {
   id.value = route.params.id;
@@ -132,9 +133,18 @@ const onsiteValidate = [
 ];
 
 watchEffect(() => {
+  //checkupdate
+  // (eventDetail.value.title!=newTitle.value || eventDetail.value.description!=newDescription.value || 
+  // eventDetail.value.amountReceived!=newAmountReceived.value || eventDetail.value.category!=newCategory.value ||
+  // eventDetail.value.subCategory!=newSubCategory.value || eventDetail.value.startDate!=newStartDate.value ||
+  // eventDetail.value.endDate!=newEndate.value || eventDetail.value.registerEndDate!=newRegisStartDate.value ||
+  // eventDetail.value.registerStartDate!=newRegisStartDate.value || eventDetail.value.validationRules!=newValidationRules.value ||
+  // eventDetail.value.validationType!=newValidationType.value || eventDetail.value.posterImg!=newPoster.value ||
+  // eventDetail.value.locationName!=location.value.locationName || eventDetail.value.locationLatitude!=nearbyMarkers.value[0]?.longitude ||
+  // eventDetail.value.locationLongitude!=nearbyMarkers.value[0]?.latitude) ? updated.value=true : updated.value=false
+
+
   // Assign Value
-
-
   newEvent.value = {
     id: id.value,
     newTitle: newTitle.value,
@@ -508,7 +518,6 @@ const openUpdateDialog = () => {
                   :rules="rules.description"
                 ></v-textarea>
               </div>
-              {{ nearbyMarkers }}
               <!-- วันที่เปิด - ปิด รับสมัคร -->
               <div class="flex justify-center mt-[8px] space-x-2 pb-[8px]">
                 <div>

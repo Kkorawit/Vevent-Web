@@ -1,7 +1,7 @@
 <script setup>
 //import section
 ///vue
-import { onMounted, ref, computed, defineProps, watch, reactive, watchEffect } from "vue";
+import { onMounted, ref, computed, defineProps, reactive, watchEffect } from "vue";
 ///service
 
 ///components

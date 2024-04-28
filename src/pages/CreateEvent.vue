@@ -204,12 +204,15 @@ const successfull = ref(false); //pop success
 const create = async (event) => {
   await handleUpload()
   let response = await createEvent(event);
-  console.log(response);
+  console.log(response.status);
   if (response.status == 201) {
     successfull.value = true;
-    setTimeout(() => {
+    console.log(successfull.value);
+    console.log("testset");
+    setTimeout( () => {
+      console.log("asdasdasd");
       successfull.value = false;
-    }, 2000);
+    }, 3000);
     nearbyMarkers.value = [];
     router.push({ name: "home" });
   } else {

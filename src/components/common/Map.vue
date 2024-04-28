@@ -57,7 +57,7 @@ const success = (position) => {
   //     .map("map")
   //     .setView([latitude,longitude], previousZoomLevel);
   userGeoMarker = leaflet
-      .marker([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], {
+      .marker([latitude, longitude], {
         icon: userHereIcon,
       })
       .addTo(map)

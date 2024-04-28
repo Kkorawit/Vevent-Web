@@ -129,8 +129,8 @@ const onsiteValidate = [
 
 watchEffect(() => {
   // Assign Value
-  console.log(nearbyMarkers.value.latitude);
-  console.log(nearbyMarkers.value.longitude);
+  console.log(nearbyMarkers.value[0].latitude);
+  console.log(nearbyMarkers.value[0].longitude);
 
   newEvent.value = {
     id: id.value,

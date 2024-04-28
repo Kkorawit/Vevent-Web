@@ -110,7 +110,7 @@ onMounted(() => {
       .addTo(map)
       .bindPopup(
         `Event here
-      )}</strong>`
+      </strong>`
       );
     nearbyMarkers.value.push({
       latitude: eventLocation.latitude,

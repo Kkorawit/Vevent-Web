@@ -83,6 +83,7 @@ export async function deleteEventById(eid) {
 }
 
 export async function editEventById(event) {
+  console.log("efoijaneogifjnoegss");
   console.log(event);
   console.log(event.newLocationLatitude);
   console.log(event.newLocationLongitude);

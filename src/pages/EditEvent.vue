@@ -84,8 +84,6 @@ onMounted(async () => {
   //   locationLongitude: response.locationLongitude,
   // };
     
-
-
   console.log(eventDetail.value);
   response.locationLatitude && response.locationLongitude
     ? (isOnline.value = false)
@@ -131,6 +129,8 @@ const onsiteValidate = [
 
 watchEffect(() => {
   // Assign Value
+  console.log(nearbyMarkers.value.latitude);
+  console.log(nearbyMarkers.value.longitude);
 
   newEvent.value = {
     id:id.value,
@@ -147,8 +147,8 @@ watchEffect(() => {
     newValidationRules: newValidationRules.value,
     newPosterImg: newPoster.value,
     newLocationName: location.value.locationName,
-    newLocationLatitude: location.value.locationLatitude,
-    newLocationLongitude: location.value.locationLongitude,
+    newLocationLatitude: nearbyMarkers.value.latitude,
+    newLocationLongitude: nearbyMarkers.value.longitude,
   };
 
 });

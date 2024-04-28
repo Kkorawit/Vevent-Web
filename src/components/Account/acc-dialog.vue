@@ -73,7 +73,7 @@ const toggleReadonly = () => {
 
   <!-- pop up success have icon -->
   <v-dialog v-model="successfull" class="w-[400px]" style="border-radius: 24px">
-    <template v-slot:default="{ isActive }">
+    <template>
       <v-card class="text-center">
         <div class="w-full flex justify-center py-[24px]">
           <img

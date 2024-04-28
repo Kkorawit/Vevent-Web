@@ -61,7 +61,7 @@ const somethingWrong = ref(false);
 const deleteEvent = async (id) => {
   console.log(id);
   let response = await deleteEventById(id);
-  if (response.status == 201) {
+  if (response.status == 200) {
     successfull.value = true;
     setTimeout(() => {
       successfull.value = false;
@@ -352,15 +352,9 @@ const changeState = async (s, id) => {
             </div>
             <div class="bin col-start-10 grid justify-items-end">
               <!-- delete Event -->
-              <v-dialog class="w-[400px]" style="border-radius: 24px">
+              <v-dialog class="w-[400px]" >
                 <template v-slot:activator="{ props: activatorProps }">
-                  <v-btn
-                    class="text-gray-500 hover:text-red-500"
-                    v-bind="activatorProps"
-                    icon
-                  >
-                    <v-icon>mdi-trash-can</v-icon>
-                  </v-btn>
+                  <v-btn icon="mdi-trash-can hover:text-red-500" style="border-radius: 8px; box-shadow: none; " v-bind="activatorProps"  ></v-btn>
                 </template>
                 <!-- pop up delete -->
                 <template v-slot:default="{ isActive }">
@@ -541,4 +535,6 @@ const changeState = async (s, id) => {
   --v-scrollbar-offset: 0px;
   border-radius: 16px;
 }
+
+
 </style>

@@ -147,8 +147,8 @@ watchEffect(() => {
     newValidationRules: newValidationRules.value,
     newPosterImg: newPoster.value,
     newLocationName: location.value.locationName,
-    newLocationLatitude: location.value.locationLatitude,
-    newLocationLongitude: location.value.locationLongitude,
+    newLocationLatitude: nearbyMarkers.value[0].latitude,
+    newLocationLongitude: nearbyMarkers.value[0].longitude,
   };
 
 });
@@ -268,8 +268,8 @@ const typeSwitch = (type) => {
             location.value.locationLatitude=null,
             location.value.locationLongitude=null)
           : (location.value.locationName=eventDetail.value.locationName,
-            location.value.locationLatitude=nearbyMarkers.value.latitude,
-          location.value.locationLongitude=nearbyMarkers.value.longitude)
+            location.value.locationLatitude=nearbyMarkers.value[0].latitude,
+          location.value.locationLongitude=nearbyMarkers.value[0].longitude)
 };
 
 const updateValue = (rules, action) => {

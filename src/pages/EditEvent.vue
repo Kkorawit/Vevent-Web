@@ -51,7 +51,11 @@ const newEvent = ref({
   newLocationLongitude: "",
 });
 //new event detail
-
+const threeDayAfter = computed(()=>{
+  const today = new Date();
+      today.setDate(today.getDate() + 3);
+      return today.toISOString().split('T')[0];
+})
 //map details
 const isOnline = ref(true);
 const location = ref({
@@ -129,8 +133,7 @@ const onsiteValidate = [
 
 watchEffect(() => {
   // Assign Value
-  console.log(nearbyMarkers.value.latitude);
-  console.log(nearbyMarkers.value.longitude);
+
 
   newEvent.value = {
     id: id.value,
@@ -147,8 +150,8 @@ watchEffect(() => {
     newValidationRules: newValidationRules.value,
     newPosterImg: newPoster.value,
     newLocationName: location.value.locationName,
-    newLocationLatitude: location.value.locationLatitude,
-    newLocationLongitude: location.value.locationLongitude,
+    newLocationLatitude: nearbyMarkers.value[0]?.latitude,
+    newLocationLongitude: nearbyMarkers.value[0]?.longitude,
   };
 });
 
@@ -237,19 +240,21 @@ const onDrop = (event) => {
 };
 
 const updateEventDetail = async () => {
+  console.log(location.value);
+  console.log(nearbyMarkers.value);
   console.log("update event func");
   console.log(newEvent.value);
-  let response = await editEventById(newEvent.value);
-  if (response.status == 201) {
+  let response = await editEventById(newEvent.value)
+  if(response.status==201){
     // alert(response.data);
     successfull.value = true; //popup success
     setTimeout(() => {
       successfull.value = false;
     }, 2000);
-    nearbyMarkers.value = [];
-    router.push({ name: "eventDetail", params: { id: id.value } });
-  } else {
-    somethingWrong.value = true; //open popup something wrong
+    nearbyMarkers.value=[]
+    router.push({ name: "eventDetail", params: {id:id.value} });
+  }else{
+    somethingWrong.value = true //open popup something wrong
   }
   // code update event detail
 };
@@ -266,13 +271,12 @@ const changePage = (p) => {
 const typeSwitch = (type) => {
   isOnline.value = type;
 
-  isOnline.value
-    ? ((location.value.locationName = "Online"),
-      (location.value.locationLatitude = null),
-      (location.value.locationLongitude = null))
-    : ((location.value.locationName = eventDetail.value.locationName),
-      (location.value.locationLatitude = nearbyMarkers.value.latitude),
-      (location.value.locationLongitude = nearbyMarkers.value.longitude));
+  isOnline.value? (location.value.locationName='Online', 
+            location.value.locationLatitude=null,
+            location.value.locationLongitude=null)
+          : (location.value.locationName=eventDetail.value.locationName,
+            location.value.locationLatitude=nearbyMarkers.value[0].latitude,
+          location.value.locationLongitude=nearbyMarkers.value[0].longitude)
 };
 
 const updateValue = (rules, action) => {
@@ -413,7 +417,9 @@ const openUpdateDialog = () => {
                             height: 40px;
                           "
                           text="Save"
-                          @click="(isActive.value = false), updateEventDetail()"
+                          @click="
+                            (isActive.value = false,updateEventDetail())
+                          "
                         >
                         </v-btn>
                       </div>
@@ -548,6 +554,7 @@ const openUpdateDialog = () => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       placeholder="วันเปิดรับสมัคร"
+                      :min-date="new Date()"
                       dark="true"
                       :timezone="'UTC'"
                       v-model="newRegisStartDate"
@@ -561,6 +568,7 @@ const openUpdateDialog = () => {
                     <VueDatePicker
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
+                      :min-date="new Date()"
                       :timezone="'UTC'"
                       v-model="newRegisEndDate"
                     ></VueDatePicker>
@@ -575,6 +583,7 @@ const openUpdateDialog = () => {
                     <VueDatePicker
                       placeholder="วันเริ่มกิจกรรม"
                       dark="true"
+                      :min-date="threeDayAfter"
                       :timezone="'UTC'"
                       v-model="newStartDate"
                     ></VueDatePicker>
@@ -588,6 +597,7 @@ const openUpdateDialog = () => {
                       placeholder="วันจบกิจกรรม"
                       dark="true"
                       :timezone="'UTC'"
+                      :min-date="new Date()"
                       v-model="newEndate"
                     ></VueDatePicker>
                   </div>

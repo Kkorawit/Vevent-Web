@@ -109,7 +109,7 @@ const bookingEvent = async (id) => {
                   }}</v-list-item-subtitle>
                 </v-list-item>
                 <!-- map -->
-                <Map></Map>
+                <Map :latitude="eventDetail.locationLatitude" :longitude="eventDetail.locationLongitude" :state="'details'"></Map>
               </div>
             </v-list>
           </div>

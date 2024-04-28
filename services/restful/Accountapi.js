@@ -39,7 +39,7 @@ export async function updateDisplayName(displayName) {
   await axios
     .post(
       `${import.meta.env.VITE_API_ENV}/edit-account`,{},
-      // `http://cp23kw1.sit.kmutt.ac.th/dev/api/edit-account?dname=${displayName}`,
+      // `http://cp23kw1.sit.kmutt.ac.th/dev/api/edit-account?dname=`,
       {
         params:{
           dname:displayName

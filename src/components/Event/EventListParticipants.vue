@@ -166,7 +166,7 @@ const filterEvent = computed(() => {
       </div>
     </div>
   </div>
-    <EventCard :eventList="filterEvent"></EventCard>
+    <EventCard :eventList="filterEvent" :fomat="'H'"></EventCard>
 </template>
 
 <style>

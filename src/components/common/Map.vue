@@ -102,13 +102,15 @@ onMounted(() => {
         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     })
     .addTo(map);
+  if(props.state!='details'){
 
-  map.addControl(searchControl);
-  map.on("geosearch/showlocation", (data) => {
-    locationName.value = data.location.label;
-    console.log(locationName.value);
-    emits("emitLocationName", locationName.value);
-  });
+    map.addControl(searchControl);
+    map.on("geosearch/showlocation", (data) => {
+      locationName.value = data.location.label;
+      console.log(locationName.value);
+      emits("emitLocationName", locationName.value);
+    });
+  }
 
   if (markers) {
     map.removeLayer(markers);

@@ -310,7 +310,7 @@ const changePage = (page) => {
                 </v-text-field>
               </div>
               <!-- locationName -->
-              <div
+              <div v-if="eventDetail.locationName!=''"
               >
                 <v-text-field
                   class="pt-6"

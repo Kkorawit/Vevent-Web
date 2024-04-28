@@ -36,9 +36,8 @@ const onsiteValidate = [
   { name: "Step Counter", value: "STEP_COUNTER" },
 ];
 const event = ref();
-
 const location = ref({
-  locationName: !isOnline.value ? "Online" : "",
+  locationName: isOnline.value ? "Online" : "",
   locationLatitude: null,
   locationLongitude: null,
 });

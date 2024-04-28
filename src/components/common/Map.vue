@@ -104,6 +104,10 @@ onMounted(() => {
     emits("emitLocationName", locationName.value);
   });
 
+  if (markers) {
+      map.removeLayer(markers);
+      nearbyMarkers.value = [];
+    }
   ///// Loop display event marker on map when reload web
   if (eventLocation.latitude != null && eventLocation.longitude != null) {
     markers = leaflet

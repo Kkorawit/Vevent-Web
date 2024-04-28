@@ -28,7 +28,6 @@ const props = defineProps({
   },
 });
 
-
 const provider = new OpenStreetMapProvider();
 const searchControl = new GeoSearchControl({
   provider: provider,
@@ -57,13 +56,14 @@ const success = (position) => {
   //     .map("map")
   //     .setView([latitude,longitude], previousZoomLevel);
   userGeoMarker = leaflet
-      .marker([latitude, longitude], {
-        icon: userHereIcon,
-      })
-      .addTo(map)
-      .bindPopup("You're Here");
-  map.setView([latitude,longitude],previousZoomLevel)
-  
+    .marker([latitude, longitude], {
+      icon: userHereIcon,
+    })
+    .addTo(map)
+    .bindPopup("You're Here");
+    if(eventLocation.latitude==null&&eventLocation.longitude===null){
+      map.setView([latitude, longitude], previousZoomLevel);
+    }
 };
 
 const error = (err) => {
@@ -79,7 +79,7 @@ onMounted(() => {
   console.log(eventLocation.longitude);
 
   if (
-    props.state == "edit" &&
+    (props.state == "details" || props.state == "edit") &&
     eventLocation.latitude != null &&
     eventLocation.longitude != null
   ) {
@@ -111,9 +111,9 @@ onMounted(() => {
   });
 
   if (markers) {
-      map.removeLayer(markers);
-      nearbyMarkers.value = [];
-    }
+    map.removeLayer(markers);
+    nearbyMarkers.value = [];
+  }
   ///// Loop display event marker on map when reload web
   if (eventLocation.latitude != null && eventLocation.longitude != null) {
     markers = leaflet
@@ -129,32 +129,34 @@ onMounted(() => {
       latitude: eventLocation.latitude,
       longitude: eventLocation.longitude,
     });
-    // map.setView([eventLocation.latitude, eventLocation.longitude], previousZoomLevel)
+    map.setView([eventLocation.latitude, eventLocation.longitude], previousZoomLevel)
   }
 
   ////// add event that collect lat lng from click on the map at store it to nearby marker.
   map.addEventListener("click", (e) => {
-    console.log(coords.value);
-    if (markers) {
-      map.removeLayer(markers);
-      nearbyMarkers.value = [];
+    if (props.state != "details") {
+      console.log(coords.value);
+      if (markers) {
+        map.removeLayer(markers);
+        nearbyMarkers.value = [];
+      }
+      const { lat: latitude, lng: longitude } = e.latlng;
+      console.log(e);
+      markers = leaflet
+        .marker([latitude, longitude], { icon: markerIcon })
+        .addTo(map)
+        .bindPopup(
+          `Saved Marker at <strong>${latitude.toFixed(2)},${longitude.toFixed(
+            2
+          )}</strong>`
+        );
+
+      nearbyMarkers.value.push({ latitude, longitude });
+
+      map.on("zoomend", () => {
+        previousZoomLevel = map.getZoom();
+      });
     }
-    const { lat: latitude, lng: longitude } = e.latlng;
-    console.log(e);
-    markers = leaflet
-      .marker([latitude, longitude], { icon: markerIcon })
-      .addTo(map)
-      .bindPopup(
-        `Saved Marker at <strong>${latitude.toFixed(2)},${longitude.toFixed(
-          2
-        )}</strong>`
-      );
-
-    nearbyMarkers.value.push({ latitude, longitude });
-
-    map.on("zoomend", () => {
-      previousZoomLevel = map.getZoom();
-    });
   });
 });
 

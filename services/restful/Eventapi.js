@@ -31,8 +31,7 @@ export async function createEvent(event) {
     locationLatitude: event.locationLatitude,
     locationLongitude: event.locationLongitude,
   };
-  console.log(data);
-  console.log(localStorage.getItem("access_token"));
+
   let response = await axios
     .post(
       `${import.meta.env.VITE_API_ENV}/create-event`,
@@ -112,6 +111,7 @@ console.log(data);
   let response = await axios
     .put(
       `${import.meta.env.VITE_API_ENV}/edit-event`, 
+      // `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/`,
       // `http://localhost:8080/local/api/edit-event`,
       data, {
       headers: {

@@ -261,11 +261,13 @@ const signup = async () => {
           </div>
           <!-- Craete Button -->
           <div class="">
-            <button
+            <v-btn
             @click="signup()"
-            :disabled="!(valid&&isAgreePolicy&&role)" type="submit" class="w-full h-[56px] text-white font-medium text-[18px]">
+            :disabled="!(valid&&isAgreePolicy&&role)" 
+            type="submit" 
+            class="w-full h-[56px] text-white font-medium text-[18px]" color="#4520CC">
               Create Account
-            </button>
+            </v-btn>
             <!-- <CustomvBtnPrimary
           
               :is-valid="valid"

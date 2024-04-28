@@ -20,6 +20,12 @@ const validationType = ref("");
 const validationRules = ref("");
 const posterImg = ref("");
 const isOnline = ref(true);
+const threeDayAfter = computed(()=>{
+  const today = new Date();
+      today.setDate(today.getDate() + 3);
+      return today.toISOString().split('T')[0];
+})
+
 const onlineValidate = [
   { name: "Qr Code", value: "QR_CODE" },
   { name: "Step Counter", value: "STEP_COUNTER" },
@@ -401,6 +407,7 @@ const openUpdateDialog = () => {
                       v-model="registerStartDate"
                       placeholder="วันเปิดรับสมัคร"
                       :timezone="'UTC'"
+                      :min-date="new Date()"
                       dark="true"
                     ></VueDatePicker>
                   </div>
@@ -412,6 +419,7 @@ const openUpdateDialog = () => {
                     <VueDatePicker
                       v-model="registerEndDate"
                       :timezone="'UTC'"
+                      :min-date="new Date()"
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
                     ></VueDatePicker>
@@ -427,6 +435,7 @@ const openUpdateDialog = () => {
                       v-model="startDate"
                       :timezone="'UTC'"
                       placeholder="วันเริ่มกิจกรรม"
+                      :min-date="threeDayAfter"
                       dark="true"
                     ></VueDatePicker>
                   </div>
@@ -439,6 +448,7 @@ const openUpdateDialog = () => {
                       v-model="endDate"
                       :timezone="'UTC'"
                       placeholder="วันจบกิจกรรม"
+                      :min-date="new Date()"
                       dark="true"
                     ></VueDatePicker>
                   </div>
@@ -592,6 +602,7 @@ const openUpdateDialog = () => {
                     <div v-if="!isOnline">
                       <Map
                         @emitLocationName="handleLocationName"
+                        :state="'create'"
                         ref="mapComponentsClear"
                       ></Map>
                       <v-text-field

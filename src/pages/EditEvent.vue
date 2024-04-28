@@ -51,7 +51,11 @@ const newEvent = ref({
   newLocationLongitude: "",
 });
 //new event detail
-
+const threeDayAfter = computed(()=>{
+  const today = new Date();
+      today.setDate(today.getDate() + 3);
+      return today.toISOString().split('T')[0];
+})
 //map details
 const isOnline = ref(true);
 const location = ref({
@@ -129,8 +133,7 @@ const onsiteValidate = [
 
 watchEffect(() => {
   // Assign Value
-  console.log(nearbyMarkers.value[0].latitude);
-  console.log(nearbyMarkers.value[0].longitude);
+
 
   newEvent.value = {
     id: id.value,
@@ -147,8 +150,8 @@ watchEffect(() => {
     newValidationRules: newValidationRules.value,
     newPosterImg: newPoster.value,
     newLocationName: location.value.locationName,
-    newLocationLatitude: nearbyMarkers.value[0].latitude,
-    newLocationLongitude: nearbyMarkers.value[0].longitude,
+    newLocationLatitude: nearbyMarkers.value[0]?.latitude,
+    newLocationLongitude: nearbyMarkers.value[0]?.longitude,
   };
 
 });
@@ -242,7 +245,7 @@ const updateEventDetail = async () => {
   console.log(nearbyMarkers.value);
   console.log(newEvent.value);
   let response = await editEventById(newEvent.value)
-  if(response.status==201){
+  if(response?.status==201){
     alert(response.data);
     nearbyMarkers.value=[]
     router.push({ name: "eventDetail", params: {id:id.value} });
@@ -513,6 +516,7 @@ const openUpdateDialog = () => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       placeholder="วันเปิดรับสมัคร"
+                      :min-date="new Date()"
                       dark="true"
                       :timezone="'UTC'"
                       v-model="newRegisStartDate"
@@ -526,6 +530,7 @@ const openUpdateDialog = () => {
                     <VueDatePicker
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
+                      :min-date="new Date()"
                       :timezone="'UTC'"
                       v-model="newRegisEndDate"
                     ></VueDatePicker>
@@ -540,6 +545,7 @@ const openUpdateDialog = () => {
                     <VueDatePicker
                       placeholder="วันเริ่มกิจกรรม"
                       dark="true"
+                      :min-date="threeDayAfter"
                       :timezone="'UTC'"
                       v-model="newStartDate"
                     ></VueDatePicker>
@@ -553,6 +559,7 @@ const openUpdateDialog = () => {
                       placeholder="วันจบกิจกรรม"
                       dark="true"
                       :timezone="'UTC'"
+                      :min-date="new Date()"
                       v-model="newEndate"
                     ></VueDatePicker>
                   </div>

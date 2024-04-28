@@ -5,7 +5,6 @@ import {
   onMounted,
   ref,
   computed,
-  defineProps,
   watch,
   reactive,
   onBeforeMount,

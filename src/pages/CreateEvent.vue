@@ -1,10 +1,14 @@
 <script setup>
 import { rules } from "@/extend/utils.ts";
 import { ref, computed, watchEffect } from "vue";
-import CustomvBtnPrimary from "../components/common/CustomvBtn.primary.vue";
+// import CustomvBtnPrimary from "../components/common/CustomvBtn.primary.vue";
 import Map from "@/components/common/Map.vue";
 import { nearbyMarkers } from "@/extend/mapStore";
 import { createEvent } from "~/restful/Eventapi.js";
+import Navbar from "@/components/Navbar.vue";
+import router from "@/plugins/router";
+import { storage } from "../firebase";
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 // event
 const title = ref("");
@@ -20,12 +24,13 @@ const validationType = ref("");
 const validationRules = ref("");
 const posterImg = ref("");
 const isOnline = ref(true);
-const threeDayAfter = computed(()=>{
+const threeDayAfter = computed(() => {
   const today = new Date();
-      today.setDate(today.getDate() + 3);
-      return today.toISOString().split('T')[0];
-})
+  today.setDate(today.getDate() + 3);
+  return today.toISOString().split("T")[0];
+});
 
+// storage
 const onlineValidate = [
   { name: "Qr Code", value: "QR_CODE" },
   { name: "Step Counter", value: "STEP_COUNTER" },
@@ -64,9 +69,6 @@ watchEffect(() => {
   };
 });
 
-import Navbar from "@/components/Navbar.vue";
-import router from "@/plugins/router";
-
 // form validation
 const valid = ref(false);
 
@@ -75,6 +77,7 @@ const posterStatus = ref("");
 const newPoster = ref("");
 const images = ref([]);
 const isDraging = ref(false);
+const file = ref()
 const selectFile = () => {
   const fileInput = document.getElementById("fileInput");
   if (fileInput) {
@@ -86,19 +89,19 @@ const selectFile = () => {
 };
 
 const onFileSelect = (event) => {
-  const files = event.target.files;
-  if (files.length != 0) {
-    console.log("file != 0");
-    for (let i = 0; i < files.length; i++) {
-      console.log("loop file");
-      const file = files[i];
-      const isImage = files[i].type.split("/")[0];
+  file.value = event.target.files[0];
+  console.log(file);
+  if (file.value) {
+    console.log("file here");
+
+      const isImage = file.value.type.split("/")[0];
+      console.log(isImage);
       if (isImage == "image") {
         //check type
         console.log("check type");
 
-        const imageUrl = URL.createObjectURL(file);
-        images.value.push({ name: file.name, url: imageUrl });
+        const imageUrl = URL.createObjectURL(file.value);
+        images.value.push({ name: file.value.name, url: imageUrl });
         newPoster.value = imageUrl;
         console.log(newPoster.value);
         posterStatus.value = "addImg";
@@ -106,7 +109,6 @@ const onFileSelect = (event) => {
         console.error("Only image files are allowed!");
       }
       console.log(images.value);
-    }
   }
 };
 
@@ -130,6 +132,7 @@ const onDrop = (event) => {
   event.preventDefault();
   isDraging.value = false;
   const files = event.dataTransfer.files;
+  console.log(files[0]);
   for (let i = 0; i < files.length; i++) {
     console.log("loop file");
     const file = files[i];
@@ -197,6 +200,7 @@ const handleLocationName = (newName) => {
 
 const successfull = ref(false); //pop success
 const create = async (event) => {
+  await handleUpload()
   let response = await createEvent(event);
   console.log(response);
   if (response.status == 201) {
@@ -218,6 +222,24 @@ const updateDialogVisible = ref(false); //show popup confirm
 const openUpdateDialog = () => {
   updateDialogVisible.value = true;
 };
+
+const handleUpload = async () => {
+  // const file = event.target.files[0]
+  console.log(file.value);
+  if(file.value){
+    try{
+      const uploadRef = storageRef(storage,`events/posters/${file.value.name}`)
+      const snapshot = await uploadBytes(uploadRef, file.value)
+      const downloadUrl = await getDownloadURL(snapshot.ref)
+      posterImg.value = downloadUrl;
+      event.value.posterImg = posterImg.value
+      console.log(posterImg.value);
+    }catch(error){
+      console.error("Error",error);
+    }
+  }
+}
+
 </script>
 
 <template>
@@ -228,9 +250,11 @@ const openUpdateDialog = () => {
     >
       <div class="p-[40px] space-y-[40px]">
         <!-- header -->
+          <!-- <input type="file" @change="handleUpload"/> -->
         <div>
           <span class="text-[14px]">
             <button
+              disabled="true"
               @click="changePage('home')"
               class="hover:text-primaryColor hover:underline hover:underline-offset-4"
             >
@@ -248,6 +272,7 @@ const openUpdateDialog = () => {
             <!-- button on form -->
             <div>
               <v-btn
+                :disabled="!valid"
                 @click="openUpdateDialog()"
                 class="custom-rounded-btn"
                 color="#4520CC"
@@ -447,7 +472,7 @@ const openUpdateDialog = () => {
                     <VueDatePicker
                       v-model="registerStartDate"
                       placeholder="วันเปิดรับสมัคร"
-                      :timezone="'UTC'"
+
                       :min-date="new Date()"
                       dark="true"
                     ></VueDatePicker>
@@ -459,7 +484,6 @@ const openUpdateDialog = () => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="registerEndDate"
-                      :timezone="'UTC'"
                       :min-date="new Date()"
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
@@ -474,7 +498,6 @@ const openUpdateDialog = () => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="startDate"
-                      :timezone="'UTC'"
                       placeholder="วันเริ่มกิจกรรม"
                       :min-date="threeDayAfter"
                       dark="true"
@@ -487,7 +510,6 @@ const openUpdateDialog = () => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="endDate"
-                      :timezone="'UTC'"
                       placeholder="วันจบกิจกรรม"
                       :min-date="new Date()"
                       dark="true"

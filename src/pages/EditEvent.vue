@@ -9,7 +9,8 @@ import { getEventDetailById } from "@/gql/gqlGet.js";
 import Map from "@/components/common/Map.vue";
 import { nearbyMarkers } from "@/extend/mapStore";
 import { editEventById } from "~/restful/Eventapi.js";
-defineEmits(["leave", "close"]);
+import { storage } from "../firebase";
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 //get event id from router
 const id = ref(0);

@@ -50,14 +50,11 @@ export async function updateDisplayName(displayName) {
       }
     )
     .then((response) => {
-      console.log("thennnnnnnnnnnnnnnnnnnn");
-      console.log(response.data);
       localStorage.setItem("displayName",displayName)
       return response.data;
     })
     .catch((error) => {
-      console.log("erorrrrrrrrrrrrrrrrrr");
-      console.log(error);
+      return error.response;
     });
 
   // Handle successful deletion response here

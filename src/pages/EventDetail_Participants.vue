@@ -49,6 +49,7 @@ const successfull = ref(false);
 const bookingEvent = async (id) => {
   console.log(id);
   let response = await bookEventById(id);
+  console.log(response);
   if (response.status == 201) {
     successfull.value = true;
     setTimeout(() => {

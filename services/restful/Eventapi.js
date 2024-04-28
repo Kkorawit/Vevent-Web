@@ -9,8 +9,7 @@ const currentDT = moment().format("YYYY-MM-DDTHH:mm:ss[Z]");
 export async function createEvent(event) {
   console.log(event);
   console.log(formatDateTime(event.startDate));
-  if(event.validationType=='QR_CODE'){
-    
+  if (event.validationType == "QR_CODE") {
   }
   const data = {
     title: event.title,
@@ -23,7 +22,8 @@ export async function createEvent(event) {
     registerStartDate: formatDateTime(event.registerStartDate),
     registerEndDate: formatDateTime(event.registerEndDate),
     validationType: event.validationType,
-    validationRules: event.validationType=='QR_CODE'?0:event.validationRules,
+    validationRules:
+      event.validationType == "QR_CODE" ? 0 : event.validationRules,
     posterImg: event.posterImg,
     createBy: localStorage.getItem("email"),
     updateBy: localStorage.getItem("email"),
@@ -48,14 +48,14 @@ export async function createEvent(event) {
       }
     )
     .then((response) => {
-
-      return response
+      return response;
     })
     .catch((error) => {
       console.log(error.data);
+      return error.response;
     });
 
-    return response
+  return response;
 }
 
 export async function deleteEventById(eid) {
@@ -63,9 +63,8 @@ export async function deleteEventById(eid) {
   console.log(eid);
   console.log(currentDT);
 
-  const response = await axios.delete(
-    `${import.meta.env.VITE_API_ENV}/delete-event`,
-    {
+  const response = await axios
+    .delete(`${import.meta.env.VITE_API_ENV}/delete-event`, {
       headers: {
         "content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -74,8 +73,16 @@ export async function deleteEventById(eid) {
         eid: eid,
         currentDT: currentDT,
       },
-    }
-  );
+    })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      console.log(error.data);
+      return error.response;
+    });
+
+  return response;
 
   // Handle successful deletion response here
   console.log(response.data);
@@ -88,7 +95,7 @@ export async function editEventById(event) {
   console.log(event.newLocationLongitude);
   console.log(event.newLocationName);
   const data = {
-    id:event.id,
+    id: event.id,
     title: event.newTitle,
     description: event.newDescription,
     amountReceived: event.newAmountReceived,
@@ -97,63 +104,73 @@ export async function editEventById(event) {
     startDate: event.newStartDate,
     endDate: event.newEndDate,
     registerStartDate: event.newRegisterStartDate,
-    registerEndDate: event.newRegisterEndDate,   
-     validationType: event.newValidationType,
-    validationRules: event.newValidationType=='QR_CODE'?0:event.newValidationRules,
+    registerEndDate: event.newRegisterEndDate,
+    validationType: event.newValidationType,
+    validationRules:
+      event.newValidationType == "QR_CODE" ? 0 : event.newValidationRules,
     posterImg: event.newPosterImg,
     updateBy: localStorage.getItem("email"),
     locationName: event.newLocationName,
     locationLatitude: event.newLocationLatitude,
     locationLongitude: event.newLocationLongitude,
   };
-console.log(data);
+  console.log(data);
 
   let response = await axios
     .put(
-      `${import.meta.env.VITE_API_ENV}/edit-event`, 
+      `${import.meta.env.VITE_API_ENV}/edit-event`,
       // `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/`,
       // `http://localhost:8080/local/api/edit-event`,
-      data, {
-      headers: {
-        "content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      },
-      params: {
-        currentDT: currentDT,
-      },
-    })
+      data,
+      {
+        headers: {
+          "content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+        params: {
+          currentDT: currentDT,
+        },
+      }
+    )
     .then((response) => {
       console.log(response.data);
       return response;
     })
     .catch((error) => {
       console.error(error);
+      return error.response;
     });
 
-    return response
+  return response;
 }
 
 export async function bookEventById(eid) {
-  await axios.post(
-    `${import.meta.env.VITE_API_ENV}/book-event`,
-    // `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/book-event`,
-    {},
-    {
-      headers: {
-        "content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      },
-      params: {
-        eid: eid,
-        currentDT: currentDT,
-      },
-    }
-  ).then((response) => {
-      alert(response.data)
-  }).catch((error)=>{
-      alert(error.response.data)
+  let response = await axios
+    .post(
+      `${import.meta.env.VITE_API_ENV}/book-event`,
+      // `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/book-event`,
+      {},
+      {
+        headers: {
+          "content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+        params: {
+          eid: eid,
+          currentDT: currentDT,
+        },
+      }
+    )
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      // alert(error.response.data)
       console.error(error.response);
-  });
+      return error.response;
+    });
+
+  return response;
 }
 
 export default { createEvent, deleteEventById, editEventById, bookEventById };

@@ -265,8 +265,8 @@ const typeSwitch = (type) => {
             location.value.locationLatitude=null,
             location.value.locationLongitude=null)
           : (location.value.locationName=eventDetail.value.locationName,
-            location.value.locationLatitude=nearbyMarkers.value[0].latitude,
-          location.value.locationLongitude=nearbyMarkers.value[0].longitude)
+            location.value.locationLatitude=nearbyMarkers.value.latitude,
+          location.value.locationLongitude=nearbyMarkers.value.longitude)
 };
 
 const updateValue = (rules, action) => {
@@ -378,6 +378,7 @@ const handleLocationName = (newName) => {
                   :rules="rules.description"
                 ></v-textarea>
               </div>
+              {{ nearbyMarkers }}
               <!-- วันที่เปิด - ปิด รับสมัคร -->
               <div class="flex justify-center mt-[8px] space-x-2 pb-[8px]">
                 <div>

@@ -53,7 +53,10 @@ const success = (position) => {
   const latitude = position.coords.latitude;
   const longitude = position.coords.longitude;
 
-  map.setView([latitude,longitude],previousZoomLevel)
+  leaflet
+      .map("map")
+      .setView([latitude,longitude], previousZoomLevel);
+
   
 };
 
@@ -154,7 +157,8 @@ watchEffect(() => {
   ) {
     nearbyMarkers.value.latitude = coords.value.latitude;
     nearbyMarkers.value.longitude = coords.value.longitude;
-
+    console.log("lat nearby"+nearbyMarkers.value.latitude);
+    console.log("lng nearby"+nearbyMarkers.value.longitude);
     if (userGeoMarker) {
       map.removeLayer(userGeoMarker);
     }

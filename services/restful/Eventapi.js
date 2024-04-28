@@ -2,71 +2,8 @@ import { data } from "autoprefixer";
 import axios from "axios";
 import moment from "moment";
 import { formatDateTime } from "@/extend/formatDateTime.js";
+import { nearbyMarkers } from "@/extend/mapStore";
 
-
-// export async function createEvent(event){
-//   console.log(event);
-
-//   const data = {
-//           "title": event.title,
-//           "description": event.description,
-//           "amountReceived": event.amountReceived,
-//           "category": event.category,
-//           "subCategory": event.subCategory,
-//           "startDate": formatDateTime(event.startDate),
-//           "endDate": formatDateTime(event.endDate),
-//           "registerStartDate": formatDateTime(event.registerStartDate),
-//           "registerEndDate": formatDateTime(event.registerEndDate),
-//           "validationType": event.validationType,
-//           "validationRules": event.validationRules,
-//           "posterImg": event.posterImg,
-//           "createBy": localStorage.getItem("email"),
-//           "updateBy": localStorage.getItem("email"),
-//           "locationName": event.locationName,
-//           "locationLatitude": event.locationLatitude,
-//           "locationLongitude": event.locationLongitude
-//       }
-
-//       const data2 = {
-//         "title": "MOCK",
-//         "description": "MOCK description",
-//         "amountReceived": 3,
-//         "category": "BB",
-//         "subCategory": "CC",
-//         "startDate": "2024-04-28T16:59:00Z",
-//         "endDate": "2024-04-28T18:41:02Z",
-//         "registerStartDate": "2024-04-28T18:41:02Z",
-//         "registerEndDate": "2024-04-28T18:41:02Z",
-//         "validationType": "Qr_Code,CURRENT_GPS",
-//         "validationRules": 225,
-//         "posterImg": "",
-//         "createBy": "koraw2948@gmail.com",
-//         // "createDate": "2024-04-24T18:41:02ZZ",
-//         "updateBy": "koraw2948@gmail.com",
-//         // "updateDate": "2024-04-24T18:41:02Z",
-//         "locationName": "โรงเรียนวัดบางในน้อย อ.บางเลน จ.นครปฐม",
-//         "locationLatitude": 14.1423399808249,
-//         "locationLongitude": 100.116024883473
-//     }
-
-//     const currentDT = moment().format('YYYY-MM-DDTHH:mm:ss[Z]')
-
-//     const res = await fetch(`${import.meta.env.VITE_API_ENV}/create-event?currentDT=${currentDT}`,{
-//     method:'POST',
-//     headers:{
-//       "Authorization": `Bearer ${localStorage.getItem("access_token")}`,
-//       'Content-Type': 'application/json'
-//     },
-//     body:JSON.stringify(data)
-//   });
-
-//   if(res.status!=201){
-//     const textRes = await res.text()
-//     console.error(textRes)
-//   }
-//   console.log(res.json());
-
-// }
 const currentDT = moment().format("YYYY-MM-DDTHH:mm:ss[Z]");
 
 export async function createEvent(event) {
@@ -96,7 +33,7 @@ export async function createEvent(event) {
   };
   console.log(data);
   console.log(localStorage.getItem("access_token"));
-  await axios
+  let response = await axios
     .post(
       `${import.meta.env.VITE_API_ENV}/create-event`,
       // `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/create-event`,
@@ -112,12 +49,14 @@ export async function createEvent(event) {
       }
     )
     .then((response) => {
-      console.log(response.data);
-      alert(response.data);
+
+      return response
     })
     .catch((error) => {
       console.log(error.data);
     });
+
+    return response
 }
 
 export async function deleteEventById(eid) {
@@ -155,11 +94,11 @@ export async function editEventById(event) {
     amountReceived: event.newAmountReceived,
     category: event.newCategory,
     subCategory: event.newSubCategory,
-    startDate: formatDateTime(event.newStartDate),
-    endDate: formatDateTime(event.newEndDate),
-    registerStartDate: formatDateTime(event.newRegisterStartDate),
-    registerEndDate: formatDateTime(event.newRegisterEndDate),
-    validationType: event.newValidationType,
+    startDate: event.newStartDate,
+    endDate: event.newEndDate,
+    registerStartDate: event.newRegisterStartDate,
+    registerEndDate: event.newRegisterEndDate,   
+     validationType: event.newValidationType,
     validationRules: event.newValidationType=='QR_CODE'?0:event.newValidationRules,
     posterImg: event.newPosterImg,
     updateBy: localStorage.getItem("email"),
@@ -169,7 +108,7 @@ export async function editEventById(event) {
   };
 console.log(data);
 
-  await axios
+  let response = await axios
     .put(
       // `${import.meta.env.VITE_API_ENV}/edit-event`, 
       // `http://localhost:8080/local/api/edit-event`,
@@ -185,11 +124,13 @@ console.log(data);
     })
     .then((response) => {
       console.log(response.data);
-      return response.data;
+      return response;
     })
     .catch((error) => {
       console.error(error);
     });
+
+    return response
 }
 
 export async function bookEventById(eid) {

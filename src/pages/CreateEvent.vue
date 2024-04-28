@@ -189,6 +189,27 @@ const updateValue = (rules, action) => {
 const handleLocationName = (newName) => {
   location.value.locationName = newName;
 };
+
+
+const create = async (event) => {
+  let response = await createEvent(event)
+  console.log(response);
+  if(response.status==201){
+    alert(response.data)
+    nearbyMarkers.value=[]
+    router.push({name:'home'})
+  }else {
+    somethingWrong.value = true;
+  }
+}
+
+const somethingWrong = ref(false) //show popup when fetch false
+const updateDialogVisible = ref(false); //show popup confirm
+//open confirm popup
+const openUpdateDialog = () => {
+    updateDialogVisible.value = true;
+};
+
 </script>
 
 <template>
@@ -216,16 +237,131 @@ const handleLocationName = (newName) => {
         <v-form v-model="valid" fast-fail @submit.prevent class="mt-0">
           <div class="flex justify-between items-center py-[40px]">
             <div class="text-[24px] font-bold">รายละเอียดกิจกรรม</div>
+            <!-- button on form -->
             <div>
               <v-btn
-                @click="createEvent(event)"
+                @click="openUpdateDialog()"
+                class="custom-rounded-btn"
+                color="#4520CC"
+                type="submit"
+                style="height: 56px; width: 120px;"
+              >
+                Create
+              </v-btn>
+
+              <!-- pop up update -->
+              <v-dialog v-model="updateDialogVisible" class="w-[400px]" style="border-radius: 24px"> 
+                <template v-slot:default="{ isActive }">
+                  <v-card class="text-center">
+                    <div class="w-full flex justify-center py-[24px]">
+                    </div>
+                    <v-card-title class="-my-[16px]" style="font-weight: 600"
+                      >Comfirmation</v-card-title
+                    >
+                    <v-card-text
+                      style="padding-top: 16px; padding-bottom: 24px"
+                    >
+                    Are you want to create this event?
+                    <div v-if="title != ''"class="text-wrap text-[18px] mt-[4px]">" {{ title }} "</div> 
+                    </v-card-text>
+                    <v-card-actions
+                      style="
+                        padding-bottom: 24px;
+                        padding-top: 0;
+                        padding-left: 24px;
+                        padding-right: 24px;
+                      "
+                    >
+                      <v-spacer></v-spacer>
+                      <div class="w-full flex justify-stretch gap-[24px]">
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: #ececec;
+                            color: #515151;
+                            border-radius: 8px;
+                            height: 40px;
+                          "
+                          text="Cancel"
+                          @click="isActive.value = false"
+                        >
+                        </v-btn>
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: #2563EB;
+                            color: white;
+                            border-radius: 8px;
+                            height: 40px;
+                          "
+                          text="Create"
+                          @click="
+                            (isActive.value = false), create(event)
+                          "
+                        >
+                        </v-btn>
+                      </div>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+              <!-- pop up something wrong -->
+              <v-dialog v-model="somethingWrong" class="w-[400px]" style="border-radius: 24px"> 
+                <template v-slot:default="{ isActive }">
+                  <v-card class="text-center">
+                    <div class="w-full flex justify-center py-[24px]">
+                      <img
+                        src="@/assets/alert_wrong.png"
+                        alt="icon"
+                        class="w-[56px] h-[56px]"
+                      />
+                    </div>
+                    <v-card-title class="-my-[16px]" style="font-weight: 600"
+                      >Opps</v-card-title
+                    >
+                    <v-card-text
+                      style="padding-top: 16px; padding-bottom: 24px"
+                    >
+                      Something went wrong. Please, Try again.
+                    </v-card-text>
+                    <v-card-actions
+                      style="
+                        padding-bottom: 24px;
+                        padding-top: 0;
+                        padding-left: 24px;
+                        padding-right: 24px;
+                      "
+                    >
+                      <v-spacer></v-spacer>
+                      <div class="w-full flex justify-stretch gap-[24px]">
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: #EFB008;
+                            color: white;
+                            border-radius: 8px;
+                            height: 40px;
+                          "
+                          text="Try again"
+                          @click="isActive.value = false, updateSuccess = true"
+                        >
+                        </v-btn>
+                      </div>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+            </div>
+            <!-- <div>
+              <v-btn
+                @click="create(event)"
                 :disabled="!valid"
                 color="#4520CC"
                 type="submit"
               >
                 Done
               </v-btn>
-            </div>
+            </div> -->
           </div>
           <!-- fill -->
           <div class="grid grid-cols-2 justify-items-stretch pb-36">
@@ -264,6 +400,7 @@ const handleLocationName = (newName) => {
                     <VueDatePicker
                       v-model="registerStartDate"
                       placeholder="วันเปิดรับสมัคร"
+                      :timezone="'UTC'"
                       dark="true"
                     ></VueDatePicker>
                   </div>
@@ -274,6 +411,7 @@ const handleLocationName = (newName) => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="registerEndDate"
+                      :timezone="'UTC'"
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
                     ></VueDatePicker>
@@ -287,6 +425,7 @@ const handleLocationName = (newName) => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="startDate"
+                      :timezone="'UTC'"
                       placeholder="วันเริ่มกิจกรรม"
                       dark="true"
                     ></VueDatePicker>
@@ -298,6 +437,7 @@ const handleLocationName = (newName) => {
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
                       v-model="endDate"
+                      :timezone="'UTC'"
                       placeholder="วันจบกิจกรรม"
                       dark="true"
                     ></VueDatePicker>
@@ -682,4 +822,24 @@ const handleLocationName = (newName) => {
   transform: scale(1.2);
   transition: transform 0.3s ease-in-out;
 }
+
+
+.v-dialog > .v-overlay__content {
+  width: auto !important;
+}
+
+/* gap buton right */
+.v-card-actions .v-btn ~ .v-btn:not(.v-btn-toggle .v-btn) {
+  margin-inline-start: 0;
+}
+
+.v-dialog > .v-overlay__content > .v-card,
+.v-dialog > .v-overlay__content > .v-sheet,
+.v-dialog > .v-overlay__content > form > .v-card,
+.v-dialog > .v-overlay__content > form > .v-sheet {
+  --v-scrollbar-offset: 0px;
+  border-radius: 16px;
+  width: 400px;
+}
+
 </style>

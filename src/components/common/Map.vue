@@ -1,7 +1,7 @@
 <script setup>
 import leaflet from "leaflet";
 // import 'leaflet-control-geocoder';
-import { onMounted, watchEffect,ref } from "vue";
+import { onMounted, watchEffect,ref, reactive } from "vue";
 import { useGeolocation } from "@vueuse/core";
 import { userMarker, nearbyMarkers } from "@/extend/mapStore";
 import currentLocationIcon from "@/assets/currentLocation.svg";
@@ -10,6 +10,23 @@ import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 const emits = defineEmits(['emitLocationName'])
+const props = defineProps({
+  latitude:{
+    type:Number,
+    require:false,
+    default:null,
+  },
+  longitude:{
+    type:Number,
+    require:false,
+    default:null
+  },
+  state:{
+    type:String,
+    require:false,
+    default:null
+  }
+})
 
 const provider = new OpenStreetMapProvider();
 const searchControl = new GeoSearchControl({
@@ -26,20 +43,33 @@ let markers;
 const { coords } = useGeolocation();
 let previousZoomLevel = 0;
 const locationName = ref('');
-
+const eventLocation = reactive({
+  latitude:props.latitude,
+  longitude:props.longitude
+})
 
 onMounted(() => {
+  console.log(coords.value);
+  console.log(eventLocation.latitude);
+  console.log(eventLocation.longitude);
 
-  map = leaflet
-    .map("map")
-    .setView([userMarker.value.latitude, userMarker.value.longitude], 17)
-
+    if(props.state=='edit'&&eventLocation.latitude!=null&&eventLocation.longitude!=null){
+      console.log("user location");
+      map = leaflet
+      .map("map")
+      .setView([eventLocation.latitude, eventLocation.longitude], 13)
+    }else{
+      map = leaflet
+        .map("map")
+        .setView([userMarker.value.latitude, userMarker.value.longitude], 13)
+        
+    }
 
   ////// Display map layer
   leaflet
     .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
-      minZoom:-20,
+      minZoom:10,
       attribution:
         '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     })
@@ -53,29 +83,32 @@ onMounted(() => {
     })
 
 
-  ///// Loop display nearby marker on map when reload web
-  // nearbyMarkers.value.forEach(({ latitude, longitude }) => {
-  //   leaflet
-  //     .marker([latitude, longitude])
-  //     .addTo(map)
-  //     .bindPopup(
-  //       `Saved Marker at <strong>${latitude.toFixed(2)},${longitude.toFixed(
-  //         2
-  //       )}</strong>`
-  //     );
+  ///// Loop display event marker on map when reload web
+    if(eventLocation.latitude!=null&&eventLocation.longitude!=null){
 
-  //   nearbyMarkers.value.push({ latitude, longitude });
-  // });
+      markers = leaflet
+      .marker([eventLocation.latitude, eventLocation.longitude],{icon:markerIcon})
+      .addTo(map)
+      .bindPopup(
+        `Event here
+      )}</strong>`
+    );
+    nearbyMarkers.value.push({ latitude:eventLocation.latitude,longitude:eventLocation.longitude });
+    // map.setView([eventLocation.latitude, eventLocation.longitude], previousZoomLevel)
+    
+  }
+
+    
 
   ////// add event that collect lat lng from click on the map at store it to nearby marker.
   map.addEventListener("click", (e) => {
-
+      console.log(coords.value);
     if(markers){
       map.removeLayer(markers)
       nearbyMarkers.value = []
     }
     const { lat: latitude, lng: longitude } = e.latlng;
-
+    console.log(e);
     markers = leaflet
       .marker([latitude, longitude],{icon:markerIcon})
       .addTo(map)
@@ -84,13 +117,15 @@ onMounted(() => {
           2
         )}</strong>`
       );
+
+      nearbyMarkers.value.push({ latitude, longitude });
+
       map.on('zoomend',()=>{
       previousZoomLevel = map.getZoom();
     })
-
-    nearbyMarkers.value.push({ latitude, longitude });
     
   });
+
 });
 
 ////// watch effect to map and coords lat lng
@@ -118,16 +153,14 @@ watchEffect(() => {
     map.on('zoomend',()=>{
       previousZoomLevel = map.getZoom();
     })
-      
+
+    
     map.setView([nearbyMarkers.value.latitude, nearbyMarkers.value.longitude], previousZoomLevel);
 
-    // const el = userGeoMarker.getElement();
-    // if (el) {
-    //   el.style.filter;
-    // }
+    
   }
 });
-// console.log(editIcon);
+
 
 
   let userHereIcon = leaflet.icon({

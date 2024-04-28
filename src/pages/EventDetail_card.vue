@@ -163,8 +163,8 @@ const changePage = (page) => {
                     <VueDatePicker
                       placeholder="วันเปิดรับสมัคร"
                       dark="true"
+                      :timezone="'UTC'"
                       v-model="eventDetail.registerStartDate"
-                      :timezone="'Asia/Bangkok'"
                       readonly
                       cursor-none
                     ></VueDatePicker>
@@ -177,6 +177,7 @@ const changePage = (page) => {
                     <VueDatePicker
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
+                      :timezone="'UTC'"
                       v-model="eventDetail.registerEndDate"
                       readonly
                       cursor-none
@@ -190,9 +191,10 @@ const changePage = (page) => {
                   <label>วันเริ่มกิจกรรม </label>
                   <div class="w-[300px] mt-[8px]">
                     <VueDatePicker
-                      placeholder="วันเปิดรับสมัคร"
+                      placeholder="วันเริ่มกิจกรรม"
                       dark="true"
                       v-model="eventDetail.startDate"
+                      :timezone="'UTC'"
                       readonly
                       cursor-none
                     ></VueDatePicker>
@@ -205,6 +207,7 @@ const changePage = (page) => {
                     <VueDatePicker
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
+                      :timezone="'UTC'"
                       v-model="eventDetail.endDate"
                       readonly
                       cursor-none

@@ -83,6 +83,9 @@ onMounted(async () => {
   //   locationLatitude: response.locationLatitude,
   //   locationLongitude: response.locationLongitude,
   // };
+    
+
+
   console.log(eventDetail.value);
   response.locationLatitude && response.locationLongitude
     ? (isOnline.value = false)
@@ -100,8 +103,8 @@ onMounted(async () => {
   newStartDate.value = eventDetail.value.startDate;
   newEndate.value = eventDetail.value.endDate;
   location.value.locationName = eventDetail.value.locationName;
-  location.value.locationLatitude = nearbyMarkers.value[0]?.latitude;
-  location.value.locationLongitude = nearbyMarkers.value[0]?.longitude;
+  location.value.locationLatitude = eventDetail.value.locationLatitude;
+  location.value.locationLongitude = eventDetail.value.locationLongitude;
 });
 
 const newTitle = ref("");
@@ -258,12 +261,18 @@ const onDrop = (event) => {
   }
 };
 
-
-
 const updateEventDetail = async () => {
+  console.log('update event func');
   console.log(newEvent.value);
-  editEventById(newEvent.value);
-  router.push({ name: "eventDetail", params: { id: id.value } });
+  let response = await editEventById(newEvent.value)
+  if(response.status==201){
+    alert(response.data);
+    nearbyMarkers.value=[]
+    router.push({ name: "eventDetail", params: {id:id.value} });
+  }else{
+    somethingWrong.value = true //open popup something wrong
+  }
+  // code update event detail
 };
 
 const changePage = (p) => {
@@ -320,8 +329,8 @@ const handleLocationName = (newName) => {
   location.value.locationName = newName;
 };
 
-// const updateSuccess = ref(false);
-// const confirmDialogVisible = ref() //show success popup
+
+const somethingWrong = ref(false) //show popup when fetch false
 const updateDialogVisible = ref(false); //show popup confirm
 const openUpdateDialog = () => {
     updateDialogVisible.value = true;
@@ -359,9 +368,10 @@ const openUpdateDialog = () => {
         <v-form fast-fail @submit.prevent class="mt-0">
           <div class="flex justify-between items-center py-[40px]">
             <div class="text-[24px] font-bold">รายละเอียดกิจกรรม</div>
+            <!-- button on form -->
             <div>
               <v-btn
-                @click="openUpdateDialog(1)"
+                @click="openUpdateDialog()"
                 class="custom-rounded-btn"
                 color="#4520CC"
                 type="submit"
@@ -431,12 +441,12 @@ const openUpdateDialog = () => {
                 </template>
               </v-dialog>
               <!-- pop up something wrong -->
-              <!-- <v-dialog v-model="confirmDialogVisible" class="w-[400px]" style="border-radius: 24px"> 
+              <v-dialog v-model="somethingWrong" class="w-[400px]" style="border-radius: 24px"> 
                 <template v-slot:default="{ isActive }">
                   <v-card class="text-center">
                     <div class="w-full flex justify-center py-[24px]">
                       <img
-                        src="@/assets/alert_delete.png"
+                        src="@/assets/alert_wrong.png"
                         alt="icon"
                         class="w-[56px] h-[56px]"
                       />
@@ -462,7 +472,7 @@ const openUpdateDialog = () => {
                         <v-btn
                           class="flex-grow-1"
                           style="
-                            background-color: #4520CC;
+                            background-color: #EFB008;
                             color: white;
                             border-radius: 8px;
                             height: 40px;
@@ -475,7 +485,7 @@ const openUpdateDialog = () => {
                     </v-card-actions>
                   </v-card>
                 </template>
-              </v-dialog> -->
+              </v-dialog>
             </div>
 
             <!-- <v-btn
@@ -527,6 +537,7 @@ const openUpdateDialog = () => {
                     <VueDatePicker
                       placeholder="วันเปิดรับสมัคร"
                       dark="true"
+                      :timezone="'UTC'"
                       v-model="newRegisStartDate"
                     ></VueDatePicker>
                   </div>
@@ -538,6 +549,7 @@ const openUpdateDialog = () => {
                     <VueDatePicker
                       placeholder="วันปิดรับสมัคร"
                       dark="true"
+                      :timezone="'UTC'"
                       v-model="newRegisEndDate"
                     ></VueDatePicker>
                   </div>
@@ -551,6 +563,7 @@ const openUpdateDialog = () => {
                     <VueDatePicker
                       placeholder="วันเริ่มกิจกรรม"
                       dark="true"
+                      :timezone="'UTC'"
                       v-model="newStartDate"
                     ></VueDatePicker>
                   </div>
@@ -562,6 +575,7 @@ const openUpdateDialog = () => {
                     <VueDatePicker
                       placeholder="วันจบกิจกรรม"
                       dark="true"
+                      :timezone="'UTC'"
                       v-model="newEndate"
                     ></VueDatePicker>
                   </div>
@@ -712,11 +726,12 @@ const openUpdateDialog = () => {
                       </button>
                     </div>
                   </div>
+                  <!-- {{ location }} -->
                   <!-- Map || Meeting Link -->
                   <div class="">
                     <!-- Map -->
                     <div v-if="!isOnline">
-                      <Map @emitLocationName="handleLocationName"></Map>
+                      <Map @emitLocationName="handleLocationName" :latitude="location.locationLatitude" :longitude="location.locationLongitude" :state="'edit'"></Map>
                       <v-text-field
                         class="pt-6"
                         variant="outlined"

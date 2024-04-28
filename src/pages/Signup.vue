@@ -153,7 +153,7 @@ const signup = async () => {
           </div>
 
           <!-- Role Section -->
-          <div class="role-section grid justify-items-center">
+          <div class="role-section grid justify-items-center pt-[24px]">
             <div class="grid justify-items-center">
               <div class="font-medium text-[20px]">Choose your Role</div>
               <div class="text-[14px]">
@@ -196,7 +196,7 @@ const signup = async () => {
                       ค้นหากิจกรรมที่คุณสนใจ
                     </li>
                     <li>ลงทะเบียนร่วมกิจกรรมที่ใช่สำหรับคุณ</li>
-                    <li>-</li>
+                    <li>ตรวจสอบสถานะการเข้าร่วมกิจกรรมของคุณ</li>
                   </ul>
                 </div>
               </div>
@@ -221,11 +221,11 @@ const signup = async () => {
             </div>
           </div>
           <!-- term and condition -->
-          <div class="flex justify-center">
+          <div class="flex justify-center h-[54px]">
             <div>
-                <v-checkbox class="" v-model="isAgreePolicy"> </v-checkbox>
+                <v-checkbox v-model="isAgreePolicy"> </v-checkbox>
             </div>
-            <div class="flex pt-5 space-x-1">
+            <div class="flex pt-[18px] space-x-1">
               <div class="text-[14px]">
                 You have read and agree to the
               </div>
@@ -260,12 +260,14 @@ const signup = async () => {
             
           </div>
           <!-- Craete Button -->
-          <div class="">
+          <div>
             <v-btn
+            style="height: 48px; border-radius: 8px;"
+            color="#4520CC"
             @click="signup()"
             :disabled="!(valid&&isAgreePolicy&&role)" 
             type="submit" 
-            class="w-full h-[56px] text-white font-medium text-[18px]" color="#4520CC">
+            class="w-full h-[56px] text-white font-medium text-[18px]">
               Create Account
             </v-btn>
             <!-- <CustomvBtnPrimary
@@ -294,10 +296,6 @@ const signup = async () => {
 .swiper-pagination-bullet-active {
   background-color: white;
 }
-/* .image-role{
-  border:2px solid black;
-  border-radius: 15px;
-} */
 
 .image-role:hover {
   border: 2px solid;
@@ -313,4 +311,6 @@ const signup = async () => {
 .v-text-field.v-input_outlined .v-input__slot {
   border: none !important;
 }
+
+
 </style>

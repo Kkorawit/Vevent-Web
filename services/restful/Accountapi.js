@@ -33,9 +33,9 @@ import axios from "axios";
 // }
 
 export async function updateDisplayName(displayName) {
-  console.log("In axios");
-  console.log("display: "+displayName);
-  console.log(localStorage.getItem("access_token"));
+  // console.log("In axios");
+  // console.log("display: "+displayName);
+  // console.log(localStorage.getItem("access_token"));
   let response = await axios
     .post(
       `${import.meta.env.VITE_API_ENV}/edit-account`,{},

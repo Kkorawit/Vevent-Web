@@ -18,6 +18,7 @@ const toggleReadonly = () => {
   ) {
     console.log("before axios");
     let response = updateDisplayName(displayName.value);
+    console.log(response);
     if (response.status == 200) {
       successfull.value = true;
       setTimeout(() => {

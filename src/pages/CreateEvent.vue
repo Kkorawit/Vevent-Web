@@ -78,6 +78,7 @@ const newPoster = ref("");
 const images = ref([]);
 const isDraging = ref(false);
 const file = ref()
+const hadPoster = ref(true)
 const selectFile = () => {
   const fileInput = document.getElementById("fileInput");
   if (fileInput) {
@@ -103,6 +104,7 @@ const onFileSelect = (event) => {
         const imageUrl = URL.createObjectURL(file.value);
         images.value.push({ name: file.value.name, url: imageUrl });
         newPoster.value = imageUrl;
+        hadPoster.value = false;
         console.log(newPoster.value);
         posterStatus.value = "addImg";
       } else if (isImage != "image") {
@@ -114,6 +116,8 @@ const onFileSelect = (event) => {
 
 const deleteImage = () => {
   newPoster.value = "";
+  posterImg.value = ""
+  hadPoster.value = true
   posterStatus.value = "delete";
 };
 
@@ -131,22 +135,20 @@ const onDragleave = (event) => {
 const onDrop = (event) => {
   event.preventDefault();
   isDraging.value = false;
-  const files = event.dataTransfer.files;
-  console.log(files[0]);
-  for (let i = 0; i < files.length; i++) {
-    console.log("loop file");
-    const file = files[i];
-    const isImage = files[i].type.split("/")[0];
+  file.value = event.dataTransfer.files[0];
+
+    const isImage = file.value.type.split("/")[0];
     if (isImage == "image") {
       //check type
       console.log("check type");
-      if (images.value.some((e) => e.name === file.name)) {
+      if (images.value.some((e) => e.name === file.value.name)) {
         // Skip adding duplicate files
-        console.warn("A file with the same name already exists:", file.name);
+        console.warn("A file with the same name already exists:", file.value.name);
       } else {
-        const imageUrl = URL.createObjectURL(file);
-        images.value.push({ name: file.name, url: imageUrl });
+        const imageUrl = URL.createObjectURL(file.value);
+        images.value.push({ name: file.value.name, url: imageUrl });
         newPoster.value = imageUrl;
+        hadPoster.value = false;
         console.log(newPoster.value);
         posterStatus.value = "addImg";
       }
@@ -154,7 +156,7 @@ const onDrop = (event) => {
       console.error("Only image files are allowed!");
     }
     console.log(images.value);
-  }
+  
 };
 
 const changePage = () => {
@@ -197,25 +199,26 @@ const updateValue = (rules, action) => {
 const handleLocationName = (newName) => {
   location.value.locationName = newName;
 };
-
-const successfull = ref(false); //pop success
+ 
 const create = async (event) => {
   await handleUpload()
   let response = await createEvent(event);
-  console.log(response);
+  console.log(response.status);
   if (response.status == 201) {
-    // alert(response.data);
     nearbyMarkers.value = [];
     successfull.value = true;
-    setTimeout(() => {
+    setTimeout( () => {
       successfull.value = false;
+    }, 1000);
+    setTimeout( () => {
+      router.push({ name: "home" });
     }, 2000);
-    // router.push({ name: "home" });
   } else {
     somethingWrong.value = true;
   }
 };
 
+const successfull = ref(false); //pop success
 const somethingWrong = ref(false); //show popup when fetch false
 const updateDialogVisible = ref(false); //show popup confirm
 //open confirm popup
@@ -271,8 +274,9 @@ const handleUpload = async () => {
             <div class="text-[24px] font-bold">รายละเอียดกิจกรรม</div>
             <!-- button on form -->
             <div>
+              <!-- true = ปิด ||||||| valid -> true -> ไม่ครบ event.posterImg -->
               <v-btn
-                :disabled="!valid"
+                :disabled="!valid||hadPoster"
                 @click="openUpdateDialog()"
                 class="custom-rounded-btn"
                 color="#4520CC"

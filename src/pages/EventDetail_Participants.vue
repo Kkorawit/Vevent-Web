@@ -53,10 +53,13 @@ const bookingEvent = async (id) => {
   console.log(response);
   if (response.status == 201) {
     successfull.value = true;
-    setTimeout(() => {
-      successfull.value = false},2000
-    );
-    router.push({ name: "myEvents", params: email });
+    setTimeout( () => {
+      successfull.value = false;
+    }, 1000);
+    setTimeout( () => {
+      console.log("asdasdasd");
+      router.push({ name: "myEvents", params: email });
+    }, 2000);
   }else {
     somethingWrong.value = true;
   }
@@ -294,7 +297,7 @@ const bookingEvent = async (id) => {
                 </template>
               </v-dialog>
 
-              <button
+              <!-- <button
                 class="bg-primaryLight text-bold text-[16px] text-white px-[16px] h-[48px] rounded-[8px]"
               >
                 <img
@@ -303,7 +306,7 @@ const bookingEvent = async (id) => {
                   height="18"
                   alt="share"
                 />
-              </button>
+              </button> -->
             </div>
           </div>
         </div>

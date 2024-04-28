@@ -63,10 +63,13 @@ const deleteEvent = async (id) => {
   let response = await deleteEventById(id);
   if (response.status == 200) {
     successfull.value = true;
-    setTimeout(() => {
+    setTimeout( () => {
       successfull.value = false;
+    }, 1000);
+    setTimeout( () => {
+      console.log("asdasdasd");
+      router.push({ name: "home" });
     }, 2000);
-    router.push({ name: "home" }); // relaod
   } else {
     somethingWrong.value = true;
   }

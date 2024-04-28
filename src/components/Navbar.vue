@@ -52,8 +52,8 @@ async function callback(response) {
       },
     });
   } else {
-    window.location.reload();
     router.push({name:'home'})
+    window.location.reload();
   }
 }
 
@@ -75,6 +75,7 @@ const toggleDropdown = () => {
 const logout = () => {
   googleLogout();
   clearStorage();
+  router.push({name:'home'})
   window.location.reload();
 };
 

@@ -11,6 +11,7 @@ import Map from "../components/common/Map.vue";
 const email = ref(localStorage.getItem("email"));
 
 const eid = ref();
+const format = ref("");
 //get event detail
 const eventDetail = ref();
 
@@ -21,7 +22,7 @@ const route = useRoute();
 
 onBeforeMount(async () => {
   eid.value = route.params.id;
-
+  format.value = route.params.state;
   let response = await getEventDetailById(eid.value);
   console.log(response);
   eventDetail.value = response;
@@ -129,6 +130,7 @@ const bookingEvent = async (id) => {
               <v-dialog>
                 <template v-slot:activator="{ props: activatorProps }">
                   <v-btn
+                  v-if="format=='H'"
                     class="text-[16px] text-white rounded-[8px] mr-[8px]"
                     v-bind="activatorProps"
                     style="

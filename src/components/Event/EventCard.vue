@@ -44,9 +44,9 @@ const monthChars = [
   "DEC",
 ];
 
-const showDetail = (id) => {
+const showDetail = (id,fomat) => {
   console.log(id);
-  router.push({ name: "eventDetailParticipant", params: { id: id } });
+  router.push({ name: "eventDetailParticipant", params: { id: id,state:fomat } });
 };
 
 
@@ -57,12 +57,12 @@ const scrollToTop = () => {
 </script>
 <template>
   <div
-    v-if="props.fomat == null"
+    v-if="props.fomat == 'H'"
     class="grid grid-cols-4 gap-[40px] place-content-center mx-[80px] my-[40px]"
   >
     <div v-if="eventList" v-for="eventObj in filteredEvent" :key="eventObj">
       <v-card
-        @click="showDetail(eventObj.id)"
+        @click="showDetail(eventObj.id,'H')"
         class="w-full mx-auto cursor-pointer hover:scale-105"
         style="border-radius: 16px"
         max-width="400"
@@ -121,12 +121,12 @@ const scrollToTop = () => {
 
   <!-- for My events page -->
   <div
-    v-if="props.fomat == 'myEvent'"
+    v-if="props.fomat == 'M'"
     class="grid grid-cols-4 gap-[40px] place-content-center mx-[80px] my-[40px]"
   >
     <div v-if="eventList" v-for="eventObj in filteredEvent" :key="eventObj">
       <v-card
-        @click="showDetail(eventObj.event.id)"
+        @click="showDetail(eventObj.event.id,'M')"
         class="w-full mx-auto cursor-pointer hover:scale-105"
         style="border-radius: 16px"
         max-width="400"

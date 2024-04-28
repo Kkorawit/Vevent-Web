@@ -169,7 +169,7 @@ watchEffect(() => {
 const posterStatus = ref("");
 const images = ref([]);
 const isDraging = ref(false);
-
+const file = ref();
 const selectFile = () => {
   const fileInput = document.getElementById("fileInput");
   if (fileInput) {
@@ -179,21 +179,20 @@ const selectFile = () => {
     console.error("File input element not found!");
   }
 };
-
 const onFileSelect = (event) => {
-  const files = event.target.files;
-  if (files.length != 0) {
-    console.log("file != 0");
-    for (let i = 0; i < files.length; i++) {
-      console.log("loop file");
-      const file = files[i];
-      const isImage = files[i].type.split("/")[0];
+  file.value = event.target.files[0];
+  console.log(file);
+  if (file.value) {
+    console.log("file here");
+
+      const isImage = file.value.type.split("/")[0];
+      console.log(isImage);
       if (isImage == "image") {
         //check type
         console.log("check type");
 
-        const imageUrl = URL.createObjectURL(file);
-        images.value.push({ name: file.name, url: imageUrl });
+        const imageUrl = URL.createObjectURL(file.value);
+        images.value.push({ name: file.value.name, url: imageUrl });
         newPoster.value = imageUrl;
         console.log(newPoster.value);
         posterStatus.value = "addImg";
@@ -201,9 +200,33 @@ const onFileSelect = (event) => {
         console.error("Only image files are allowed!");
       }
       console.log(images.value);
-    }
   }
 };
+// const onFileSelect = (event) => {
+//   const files = event.target.files;
+//   if (files.length != 0) {
+//     console.log("file != 0");
+//     for (let i = 0; i < files.length; i++) {
+//       console.log("loop file");
+//       const file = files[i];
+//       const isImage = files[i].type.split("/")[0];
+//       if (isImage == "image") {
+//         //check type
+//         console.log("check type");
+
+//         const imageUrl = URL.createObjectURL(file);
+//         images.value.push({ name: file.name, url: imageUrl });
+//         newPoster.value = imageUrl;
+//         console.log(newPoster.value);
+//         posterStatus.value = "addImg";
+//       } else if (isImage != "image") {
+//         console.error("Only image files are allowed!");
+//       }
+//       console.log(images.value);
+//     }
+//   }
+// };
+
 
 const deleteImage = () => {
   newPoster.value = "";
@@ -224,20 +247,18 @@ const onDragleave = (event) => {
 const onDrop = (event) => {
   event.preventDefault();
   isDraging.value = false;
-  const files = event.dataTransfer.files;
-  for (let i = 0; i < files.length; i++) {
-    console.log("loop file");
-    const file = files[i];
-    const isImage = files[i].type.split("/")[0];
+  file.value = event.dataTransfer.files[0];
+
+    const isImage = file.value.type.split("/")[0];
     if (isImage == "image") {
       //check type
       console.log("check type");
-      if (images.value.some((e) => e.name === file.name)) {
+      if (images.value.some((e) => e.name === file.value.name)) {
         // Skip adding duplicate files
-        console.warn("A file with the same name already exists:", file.name);
+        console.warn("A file with the same name already exists:", file.value.name);
       } else {
-        const imageUrl = URL.createObjectURL(file);
-        images.value.push({ name: file.name, url: imageUrl });
+        const imageUrl = URL.createObjectURL(file.value);
+        images.value.push({ name: file.value.name, url: imageUrl });
         newPoster.value = imageUrl;
         console.log(newPoster.value);
         posterStatus.value = "addImg";
@@ -246,7 +267,7 @@ const onDrop = (event) => {
       console.error("Only image files are allowed!");
     }
     console.log(images.value);
-  }
+  
 };
 
 const updateEventDetail = async () => {
@@ -254,6 +275,7 @@ const updateEventDetail = async () => {
   console.log(nearbyMarkers.value);
   console.log("update event func");
   console.log(newEvent.value);
+  await handleUpload()
   let response = await editEventById(newEvent.value)
   if(response.status==201){
     // alert(response.data);
@@ -328,6 +350,25 @@ const updateDialogVisible = ref(false); //show popup confirm
 const openUpdateDialog = () => {
   updateDialogVisible.value = true;
 };
+
+
+const handleUpload = async () => {
+  // const file = event.target.files[0]
+  console.log(file.value);
+  if(file.value){
+    try{
+      const uploadRef = storageRef(storage,`events/posters/${file.value.name}`)
+      const snapshot = await uploadBytes(uploadRef, file.value)
+      const downloadUrl = await getDownloadURL(snapshot.ref)
+      posterImg.value = downloadUrl;
+      event.value.posterImg = posterImg.value
+      console.log(posterImg.value);
+    }catch(error){
+      console.error("Error",error);
+    }
+  }
+}
+
 </script>
 <template>
   <Navbar></Navbar>

@@ -293,7 +293,7 @@ const bookingEvent = async (id) => {
                 </template>
               </v-dialog>
 
-              <button
+              <!-- <button
                 class="bg-primaryLight text-bold text-[16px] text-white px-[16px] h-[48px] rounded-[8px]"
               >
                 <img
@@ -302,7 +302,7 @@ const bookingEvent = async (id) => {
                   height="18"
                   alt="share"
                 />
-              </button>
+              </button> -->
             </div>
           </div>
         </div>

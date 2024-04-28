@@ -7,7 +7,9 @@ import { useRoute } from "vue-router";
 import { bookEventById } from "~/restful/Eventapi";
 import Map from "../components/common/Map.vue";
 
-const eid = ref()
+const email = ref(localStorage.getItem("email"));
+
+const eid = ref();
 //get event detail
 const eventDetail = ref();
 
@@ -17,29 +19,28 @@ const detailLeft = ref();
 const route = useRoute();
 
 onBeforeMount(async () => {
-  eid.value = route.params.id
-    
+  eid.value = route.params.id;
+
   let response = await getEventDetailById(eid.value);
   console.log(response);
   eventDetail.value = response;
 
-
-  detailLeft.value =  [{
-    titile: "วันที่จัดกิจกรรม",
-    detail: moment(eventDetail.value.startDate).format("MM/DD/YYYY HH:mm"),
-  },
-  {
-    titile: "วันที่รับสมัครวันสุดท้าย",
-    detail: moment(eventDetail.value.registerEndDate).format(
-      "MM/DD/YYYY HH:mm"
-    ),
-  },
-  { titile: "จำนวนที่เปิดรับ", detail: eventDetail.value.amountReceived },
-  { titile: "ค่าใช้จ่าย", detail: "ไม่มีค่าใช้จ่าย" },
-  { titile: "จัดโดย", detail: eventDetail.value.createBy }]
+  detailLeft.value = [
+    {
+      titile: "วันที่จัดกิจกรรม",
+      detail: moment(eventDetail.value.startDate).format("MM/DD/YYYY HH:mm"),
+    },
+    {
+      titile: "วันที่รับสมัครวันสุดท้าย",
+      detail: moment(eventDetail.value.registerEndDate).format(
+        "MM/DD/YYYY HH:mm"
+      ),
+    },
+    { titile: "จำนวนที่เปิดรับ", detail: eventDetail.value.amountReceived },
+    { titile: "ค่าใช้จ่าย", detail: "ไม่มีค่าใช้จ่าย" },
+    { titile: "จัดโดย", detail: eventDetail.value.createBy },
+  ];
 });
-
-
 </script>
 
 <template>
@@ -52,7 +53,8 @@ onBeforeMount(async () => {
       <img
         class="object-cover object-center w-full h-[450px]"
         :src="eventDetail.posterImg"
-        alt="poster"/>
+        alt="poster"
+      />
       <!-- header -->
       <div class="grid place-content-center p-[56px]">
         <div
@@ -105,12 +107,106 @@ onBeforeMount(async () => {
             </v-list>
             <hr />
             <div class="flex justify-start">
-              <button
+              <!-- booking Event -->
+              <v-dialog>
+                <template v-slot:activator="{ props: activatorProps }">
+                  <v-btn
+                    class="text-[16px] text-white rounded-[8px] mr-[8px]"
+                    v-bind="activatorProps"
+                    style="
+                      background-color: #4520cc;
+                      width: 240px;
+                      height: 48px;
+                      border-radius: 8px;
+                    "
+                  >
+                    Book Now!
+                  </v-btn>
+                </template>
+                <!-- pop up booking -->
+                <template v-slot:default="{ isActive }">
+                  <v-card class="text-center">
+                    <div class="w-full flex justify-center pt-[40px] pb-[24px]">
+                      <img
+                        src="@/assets/bookingImg.png"
+                        width="413"
+                        height="340"
+                        alt="icon"
+                      />
+                    </div>
+                    <v-card-text class="-my-[8px]"
+                      >You're registersed for</v-card-text
+                    >
+                    <v-card-title
+                      style="
+                        font-size: 24px;
+                        padding-left: 80px;
+                        padding-right: 80px;
+                      "
+                      class="text-wrap"
+                      >{{ eventDetail.title }}</v-card-title
+                    >
+                    <v-card-text
+                      style="
+                        padding-bottom: 40px;
+                        padding-top: 0px;
+                        padding-left: 80px;
+                        padding-right: 80px;
+                      "
+                    >
+                      Email: <span class="text-primaryColor">{{ email }}</span>
+                    </v-card-text>
+                    <v-card-actions
+                      style="
+                        padding-bottom: 24px;
+                        padding-top: 0;
+                        padding-left: 80px;
+                        padding-right: 80px;
+                      "
+                    >
+                      <v-spacer></v-spacer>
+                      <div class="w-full flex justify-stretch gap-[24px]">
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: #ececec;
+                            color: #515151;
+                            border-radius: 8px;
+                            height: 48px;
+                          "
+                          text="Cancel"
+                          @click="isActive.value = false"
+                        >
+                        </v-btn>
+                        <v-btn
+                          class="flex-grow-1"
+                          style="
+                            background-color: #4520cc;
+                            color: white;
+                            border-radius: 8px;
+                            height: 48px;
+                          "
+                          text="Confirm"
+                          @click="
+                            (isActive.value = false),
+                              bookEventById(eventDetail.id)
+                          "
+                        >
+                        </v-btn>
+                      </div>
+                    </v-card-actions>
+                  </v-card>
+                </template>
+              </v-dialog>
+              
+              <!-- old button -->
+              <!-- <button
               @click="bookEventById(eventDetail.id)"
                 class="bg-primaryColor font-semibold text-[16px] text-white w-[240px] h-[48px] rounded-[8px] mr-[8px]"
               >
                 Book Now!!
-              </button>
+              </button> -->
+              <!-- share button -->
               <button
                 class="bg-primaryLight text-bold text-[16px] text-white px-[16px] h-[48px] rounded-[8px]"
               >
@@ -139,10 +235,28 @@ onBeforeMount(async () => {
     </div>
   </div> -->
 </template>
-<style scoped>
+<style>
 .v-list-item--density-default.v-list-item--three-line {
   min-height: 88px;
   padding: 0px;
+}
+
+.v-dialog > .v-overlay__content {
+  width: auto !important;
+}
+
+/* gap buton right */
+.v-card-actions .v-btn ~ .v-btn:not(.v-btn-toggle .v-btn) {
+  margin-inline-start: 0;
+}
+
+.v-dialog > .v-overlay__content > .v-card,
+.v-dialog > .v-overlay__content > .v-sheet,
+.v-dialog > .v-overlay__content > form > .v-card,
+.v-dialog > .v-overlay__content > form > .v-sheet {
+  --v-scrollbar-offset: 0px;
+  border-radius: 16px;
+  width: 760px;
 }
 
 .v-list-item-title {
@@ -158,8 +272,4 @@ onBeforeMount(async () => {
   line-height: 1.4em;
   -webkit-line-clamp: 50;
 }
-
-/* .v-list-item--three-line .v-list-item-subtitle {
-    -webkit-line-clamp: 10;
-} */
 </style>

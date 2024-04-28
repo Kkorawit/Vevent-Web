@@ -1,16 +1,17 @@
 <script setup>
 import router from "@/plugins/router";
 import { getEventDetailById } from "@/gql/gqlGet.js";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { rules } from "@/extend/utils.ts";
 import Navbar from "@/components/Navbar.vue";
 import Participants from "@/pages/Participants.vue";
 import { useRoute } from "vue-router";
 
+
 //get event id from router
 const id = ref();
 const route = useRoute();
-
+const RegisDate = ref();
 //get event detail
 const eventDetail = ref([]);
 
@@ -22,28 +23,23 @@ onMounted(async () => {
   console.log(response);
   eventDetail.value = response;
   console.log(eventDetail.value.title);
-
+  window.reload();
 });
+
 
 
 const state = ref("eventDetail");
 
-const changePage = (p) => {
-  console.log(p);
-
-  // state.value = '';
-  if (p == "home") {
+const changePage = (page) => {
+  console.log(page);
+  if (page == "home") {
     router.push({ name: "home" });
-  } else if (p == "eventDetail") {
-    state.value = p;
-    // router.push({ name: "eventDetail" });
-  } else if (p == "participants") {
-    // router.push({name: "participants" , params: eventDetail.value.id});
-    state.value = p;
-    console.log(p);
-  } else if (p == "editEvent") {
-    // router.push({name: "editEvent" , component: EditEvent, props:{info: eventDetail}});
-    // router.push({name: "editEvent" , component: EditEvent, info: eventDetail});
+  } else if (page == "eventDetail") {
+    state.value = page;
+  } else if (page == "participants") {
+    state.value = page;
+    console.log(page);
+  } else if (page == "editEvent") {
     router.push({ name: "editEvent", params: { id: id.value } });
   }
 };

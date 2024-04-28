@@ -210,7 +210,7 @@ const create = async (event) => {
     setTimeout(() => {
       successfull.value = false;
     }, 2000);
-    router.push({ name: "home" });
+    // router.push({ name: "home" });
   } else {
     somethingWrong.value = true;
   }
@@ -398,7 +398,7 @@ const handleUpload = async () => {
               </v-dialog>
 
               <!-- pop up success have icon -->
-              <v-dialog
+              <v-dialog 
                 v-model="successfull"
                 class="w-[400px]"
                 style="border-radius: 24px"

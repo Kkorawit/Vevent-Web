@@ -135,8 +135,8 @@ console.log(data);
 
 export async function bookEventById(eid) {
   await axios.post(
-    // `${import.meta.env.VITE_API_ENV}/book-event`,
-    `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/book-event`,
+    `${import.meta.env.VITE_API_ENV}/book-event`,
+    // `https://capstone23.sit.kmutt.ac.th/kw1/dev/api/book-event`,
     {},
     {
       headers: {

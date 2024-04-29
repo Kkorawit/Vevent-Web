@@ -72,6 +72,11 @@ const filterEvent = computed(() => {
         });                 
 });
 
+const upComingEvent = computed(()=>{
+  return allEvents.filter((event)=>{
+    return event.eventStatus=='UP'
+  })
+})
 
 // const onSwiper = (swiper) => {
 //   console.log(swiper);
@@ -110,7 +115,7 @@ const filterEvent = computed(() => {
         class="my-swiper"
         :modules="[Pagination, Navigation, Autoplay]"
       >
-        <swiper-slide v-for="event in allEvents" :key="event.id" class="pb-12">
+        <swiper-slide v-for="event in upComingEvent" :key="event.id" class="pb-12">
           <img
             :src="event.posterImg"
             alt="poster"
